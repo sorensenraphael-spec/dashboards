@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Playbook — Crude · Diesel · Gasoline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101619; --panel:#17211f; --panel2:#1b2628; --line:#26343320;
+    --ink:#e9e5da; --mut:#8fa19a; --dim:#5f6f6a;
+    --crude:#d9a441; --dist:#e4572e; --gaso:#5fa8a0;
+    --red:#e4572e; --amb:#d9a441; --ok:#5fa8a0;
+    --live:#7cc98f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.55;font-size:15px}
+  .wrap{max-width:1060px;margin:0 auto;padding:36px 22px 80px}
+  header h1{font-size:30px;font-weight:800;letter-spacing:-.01em}
+  header .sub{color:var(--mut);margin-top:6px;max-width:70ch}
+  .stamp{display:inline-block;margin-top:12px;padding:4px 10px;border:1px solid #2b3a38;border-radius:4px;color:var(--amb);font-size:12.5px}
+  section{margin-top:42px}
+  h2{font-size:19px;font-weight:700;display:flex;align-items:baseline;gap:10px}
+  h3{font-size:15px;font-weight:700;margin-bottom:6px}
+  .tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px;vertical-align:middle}
+  .tag.live{background:#1d2f26;color:var(--live)}
+  .tag.stale{background:#332a1a;color:var(--amb)}
+  .asof{color:var(--dim);font-size:12px;font-weight:500}
+  p{color:#c9c4b8;margin-top:8px;max-width:78ch}
+  p b, li b{color:var(--ink)}
+  .panel{background:var(--panel);border:1px solid #223230;border-radius:8px;padding:18px 20px;margin-top:14px}
+  .grid{display:grid;gap:14px;margin-top:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:780px){.g3,.g2{grid-template-columns:1fr}}
+  .prod{border-top:3px solid;border-radius:0 0 8px 8px;background:var(--panel);padding:16px 18px}
+  .prod.crude{border-color:var(--crude)} .prod.dist{border-color:var(--dist)} .prod.gaso{border-color:var(--gaso)}
+  .big{font-size:24px;font-weight:800;margin-top:2px}
+  .prod .lbl{color:var(--mut);font-size:12.5px}
+  .prod p{font-size:13.5px;margin-top:8px}
+  ul{margin:8px 0 0 18px;color:#c9c4b8}
+  li{margin-top:6px;max-width:75ch}
+  li::marker{color:var(--dim)}
+  .alert{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #1f2c2a;align-items:baseline}
+  .alert:last-child{border-bottom:none}
+  .alert .sev{flex:0 0 26px;font-size:15px}
+  .alert .txt{color:#c9c4b8;font-size:14px;max-width:80ch}
+  .alert .txt b{color:var(--ink)}
+  .cal{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:14px}
+  .cal .m{font-size:10.5px;color:var(--dim);text-align:center;padding-bottom:4px}
+  .bar{height:22px;border-radius:3px;font-size:10.5px;display:flex;align-items:center;padding-left:7px;color:#101619;font-weight:700;white-space:nowrap;overflow:visible}
+  .rowlbl{grid-column:1/-1;color:var(--mut);font-size:12px;margin-top:8px}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+  th{text-align:left;color:var(--mut);font-weight:600;padding:7px 10px 7px 0;border-bottom:1px solid #2a3937}
+  td{padding:8px 10px 8px 0;border-bottom:1px solid #1e2b29;color:#c9c4b8;vertical-align:top}
+  td b{color:var(--ink)}
+  .book{border:1px solid #3a2c22;background:#1c1a15;border-radius:8px;padding:18px 20px;margin-top:14px}
+  .verify{color:var(--amb);font-size:12.5px;margin-top:10px}
+  .quiet{color:var(--dim);font-size:12.5px;margin-top:10px}
+  svg text{font-family:'Archivo',sans-serif}
+  .legend{display:flex;gap:18px;color:var(--mut);font-size:12px;margin-top:6px;flex-wrap:wrap}
+  .dotc{color:var(--crude)} .dotd{color:var(--dist)} .dotg{color:var(--gaso)}
+  .changelog td{font-size:13px}
+</style>
+
+<!-- public build 2026-09-10 11:25 — structural strips: 1; prose edits: 7 -->
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Energy Playbook — Crude · Diesel · Gasoline</h1>
+  <div class="sub">Sixth playbook in the family. Organizing idea: in 2026 the barrel is not the story — <b>the split is</b>. The war rocks crude, the world is running out of diesel, and gasoline has become a byproduct of making it.</div>
+  <div class="stamp">All price marks from press sources 8–9 Sep 2026 — verify on terminal &amp; the data pack before acting. Web is for news, never for prices.</div>
+</header>
+
+<!-- ====================== HERO: 2026 IN ONE LINE ====================== -->
+<section>
+  <h2>2026 in one line <span class="tag live">LIVE</span> <span class="asof">as of 9 Sep 2026</span></h2>
+  <div class="panel">
+    <svg viewBox="0 0 1000 230" width="100%" role="img" aria-label="Brent 2026 price path with events">
+      <line x1="40" y1="195" x2="980" y2="195" stroke="#2a3937" stroke-width="1"/>
+      <line x1="40" y1="30" x2="40" y2="195" stroke="#2a3937" stroke-width="1"/>
+      <text x="14" y="45" fill="#5f6f6a" font-size="11">140</text>
+      <text x="14" y="105" fill="#5f6f6a" font-size="11">100</text>
+      <text x="20" y="165" fill="#5f6f6a" font-size="11">70</text>
+      <!-- path: Jan ~70, Feb glut 64(sub-$69 Brent), Apr peak 126 (spike 140 dated), Jun 26 low 72, mid-Jul rebound, Sep ~99 -->
+      <polyline points="60,158 150,168 250,120 330,48 360,38 420,80 500,150 560,160 640,120 730,132 820,118 930,102"
+        fill="none" stroke="#d9a441" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="150" cy="168" r="4" fill="#d9a441"/>
+      <text x="120" y="188" fill="#8fa19a" font-size="11.5">Feb · glut, ~$69</text>
+      <circle cx="330" cy="48" r="4" fill="#e4572e"/>
+      <text x="255" y="36" fill="#e4572e" font-size="11.5" font-weight="700">30 Apr · war peak $126</text>
+      <circle cx="560" cy="160" r="4" fill="#5fa8a0"/>
+      <text x="505" y="182" fill="#8fa19a" font-size="11.5">26 Jun · MOU low $72</text>
+      <circle cx="930" cy="102" r="5" fill="#e4572e"/>
+      <text x="800" y="88" fill="#e9e5da" font-size="12" font-weight="700">9 Sep · ~$99 re-escalation</text>
+      <text x="60" y="222" fill="#5f6f6a" font-size="11">Jan</text><text x="330" y="222" fill="#5f6f6a" font-size="11">Apr</text><text x="560" y="222" fill="#5f6f6a" font-size="11">Jun</text><text x="930" y="222" fill="#5f6f6a" font-size="11">Sep</text>
+    </svg>
+    <p><b>The regime:</b> February's surplus (fastest inventory builds since 2020, Brent under $70) was vaporized in March by the Iran war — the largest supply disruption in oil history: <b>&gt;13&nbsp;mb/d of exports lost</b> at the peak, Hormuz loadings down from 20+ to ~3.8&nbsp;mb/d, global supply −10.1&nbsp;mb/d in a month, dated Brent touching $140. The 17 June US–Iran MOU to reopen the Strait crushed prices to $72; since July the deal has been fraying. This weekend: US and Iran exchanged strikes, Houthis hit Saudi Jazan (400&nbsp;kb/d), the US struck Iranian tankers, and Iran declared a toll-corridor scheme with Oman for the Strait. Brent ~$99, WTI ~$93 — highest in ~3 months. <b>UAE has left OPEC</b>, removing the group's main spare-capacity anchor.</p>
+    <p><b>The tension to trade:</b> physical reality (record global draws, ~5.1&nbsp;mb/d in Q2) vs. the banks fading it — JPM sees Brent averaging $86 in Q3, $80 in Q4, $78 at year-end on demand destruction. Every headline cycle since June has resolved as: escalation spikes sold, de-escalation dips bought. The market prices a war ending; the war keeps not ending.</p>
+  </div>
+</section>
+
+<!-- ====================== THREE PRODUCTS ====================== -->
+<section>
+  <h2>The complex at a glance <span class="tag live">LIVE</span> <span class="asof">marks 8–9 Sep · verify vs terminal</span></h2>
+  <div class="grid g3">
+    <div class="prod crude">
+      <div class="lbl">Crude — Brent / WTI</div>
+      <div class="big">~$99 / ~$93</div>
+      <p>Headline-driven whipsaw around the Hormuz binary. Record draws vs. bank forecasts of demand destruction. China restocking after wartime import restraint is bidding Atlantic-basin grades. Alt-routes (Saudi west coast, Fujairah, ITP) carry ~7.2&nbsp;mb/d vs &lt;4 pre-war.</p>
+    </div>
+    <div class="prod dist">
+      <div class="lbl">Middle distillates — the star</div>
+      <div class="big">USGC crack ~$93/bbl</div>
+      <p><b>All-time record territory.</b> ULSD-vs-WTI printed $102.20 on 17 Aug — first time ever above $100 (old record: $89, Oct 2022; normal range $15–40). NWE gasoil crack ~$78 (peak ~$95), Singapore ~$72. Structural shortfall, "early innings" per the trade.</p>
+    </div>
+    <div class="prod gaso">
+      <div class="lbl">Gasoline — the byproduct</div>
+      <div class="big">Cracks lagging</div>
+      <p>Driving season over, winter-RVP switch mid-Sep, and refiners worldwide maximizing distillate yield <b>at gasoline's expense</b>. Early-2026 saw 12 straight weeks of US builds to 5-yr seasonal highs. Gasoline weakness is the shadow of diesel strength — a relative trade, not an outright one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== DISTILLATE DEEP DIVE ====================== -->
+<section>
+  <h2>The diesel squeeze — balance sheet <span class="tag live">LIVE</span> <span class="asof">data mid-Aug → Sep 2026</span></h2>
+  <div class="panel">
+    <table>
+      <tr><th>Ledger item</th><th>Reading</th><th>Why it matters</th></tr>
+      <tr><td><b>US distillate stocks</b></td><td>~105.6M bbl (w/e 14 Aug) — lowest for the season since the <b>mid-1990s</b>, 12–13% under the 5-yr average</td><td>US is doing two jobs: supplying itself and acting as swing diesel supplier to Europe &amp; LatAm. Stocks fall while refineries run flat out.</td></tr>
+      <tr><td><b>EU diesel stocks</b></td><td>Lowest since 2022; gas storage only ~50% full at refill season — historically low</td><td>Structural EU short (diesel fleet legacy, refinery closures, 2023 Russian-product ban) now colliding with wartime loss of Gulf exports and disrupted Qatari LNG.</td></tr>
+      <tr><td><b>Refining system</b></td><td>Global runs cut ~4.5&nbsp;mb/d in Q2 (damage, feedstock loss); margins at historic highs on record distillate cracks</td><td>Years of closures + underinvestment = no spare kit. Every incremental barrel of diesel must be bid away from someone else.</td></tr>
+      <tr><td><b>Trade flows</b></td><td>Seaborne diesel/jet/naphtha trade sharply down; Asian jet+diesel loadings to US West Coast at multi-year lows; east–west gasoil spread blown out</td><td>25–45 day transit lags mean Asian tightness lands on the US West Coast late and lingers. Tightness is global and self-reinforcing.</td></tr>
+      <tr><td><b>Demand into Q4</b></td><td>Harvest season + Northern Hemisphere heating season arrive on depleted stocks</td><td>The seasonal bid begins from the worst starting inventory in ~30 years. Cold snaps have no buffer to absorb them.</td></tr>
+    </table>
+    <p class="quiet">Structural drivers checklist (standing): China's quarterly diesel/gasoline export quotas · jet-vs-diesel yield competition · refinery maintenance calendars · cold-weather events US NE / EU / N-Asia · freight rates.</p>
+  </div>
+</section>
+
+
+
+<!-- ====================== SEASONAL CALENDAR ====================== -->
+<section>
+  <h2>Seasonal map</h2>
+  <div class="panel">
+    <div class="cal">
+      <div class="m">J</div><div class="m">F</div><div class="m">M</div><div class="m">A</div><div class="m">M</div><div class="m">J</div><div class="m">J</div><div class="m">A</div><div class="m">S</div><div class="m">O</div><div class="m">N</div><div class="m">D</div>
+      <div class="bar" style="grid-column:1/4;background:var(--dist)">Peak heating demand</div>
+      <div class="bar" style="grid-column:10/13;background:var(--dist)">Heating season begins</div>
+      <div class="rowlbl"></div>
+      <div class="bar" style="grid-column:3/5;background:#8a7a4a">Spring turnarounds · summer-RVP switch</div>
+      <div class="bar" style="grid-column:9/11;background:#8a7a4a">Fall turnarounds · winter-RVP (≈15 Sep)</div>
+      <div class="rowlbl"></div>
+      <div class="bar" style="grid-column:4/10;background:var(--gaso)">Driving season (gasoline bid)</div>
+      <div class="bar" style="grid-column:9/12;background:#b0713a">Harvest diesel (US/EU ag)</div>
+      <div class="rowlbl"></div>
+      <div class="bar" style="grid-column:6/12;background:#5b7d8f">Atlantic hurricanes (peak Aug–Sep · GoM refining risk)</div>
+      <div class="bar" style="grid-column:12/13;background:#7d5b8f">Cold-snap window →Feb</div>
+    </div>
+    <p class="quiet">Now (Sep): winter-RVP switch + fall turnarounds cutting product output exactly as harvest diesel demand starts and heating season approaches — the seasonally tightest corner of the year for distillates, arriving on empty tanks.</p>
+  </div>
+</section>
+
+<!-- ====================== LISTENING / BIAS ====================== -->
+<section>
+  <h2>Listening framework — behaviour over words</h2>
+  <div class="panel">
+    <table>
+      <tr><th>Source</th><th>Bias / incentive</th><th>Correction</th></tr>
+      <tr><td>OPEC(+) statements</td><td>Demand-optimistic; post-UAE-exit, cohesion talk is book-talking</td><td>Trust tanker trackers (Kpler/Vortexa loadings) and alt-route volumes, never communiqués</td></tr>
+      <tr><td>IEA</td><td>Transition-tilted, historically demand-pessimistic</td><td>Use for inventory/flow data (excellent), de-mean the demand narrative</td></tr>
+      <tr><td>EIA weeklies</td><td>Adjustment-factor noise, holiday distortions</td><td>4-week averages; single-week surprises need confirmation</td></tr>
+      <tr><td>Shale executives</td><td>"Capital discipline" is talked while completions decide</td><td>Watch frac spreads, DUC draws and completions data — behaviour, not earnings-call virtue</td></tr>
+      <tr><td>Refiners</td><td>"Unplanned maintenance" clusters when cracks say run flat-out are real signal; when margins are thin they're economic run-cuts wearing overalls</td><td>Read outages against the margin backdrop</td></tr>
+      <tr><td>Banks (JPM et al.)</td><td>Forecasts adjacent to positioning; fading geopolitics is the consensus trade</td><td>Track forecast-vs-strip gap as a sentiment gauge, not as information</td></tr>
+      <tr><td>War headlines</td><td>Both sides message for markets; escalation sells papers</td><td>Price only physical verifiables: loadings through the Strait, alt-route volumes, facilities confirmed hit</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ====================== BULL / BEAR ====================== -->
+<section>
+  <h2>Bull / bear ledger</h2>
+  <div class="grid g2">
+    <div class="panel">
+      <h3 style="color:var(--dist)">Bull (complex, distillate-led)</h3>
+      <ul>
+        <li>Record global inventory draws; OECD on-land stocks fell ~146M bbl in a single month at the war's peak</li>
+        <li>US distillates at ~30-year seasonal lows into heating season + harvest</li>
+        <li>EU double deficit: diesel lowest since 2022 <i>and</i> gas storage ~50% — fuel-switching bid both ways</li>
+        <li>No spare refining kit; every closure since 2020 is now a bid on cracks</li>
+        <li>Hormuz still restricted; each escalation re-prices the whole curve in hours</li>
+        <li>OPEC cohesion broken (UAE exit) — spare capacity less deliverable than quoted</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3 style="color:var(--gaso)">Bear / normalization</h3>
+      <ul>
+        <li>A durable Hormuz reopening returns &gt;10&nbsp;mb/d of flow capability — the single biggest bearish binary in any market you trade</li>
+        <li>Demand destruction is real: JPM's case rests on it; China showed imports can be cut hard</li>
+        <li>$90+ cracks are their own cure — every refinery on earth is running for diesel; supply response compounds</li>
+        <li>El Niño warm-winter tilt in the US removes the cold-snap kicker from HO</li>
+        <li>Gasoline already oversupplied — the byproduct glut caps total refinery economics eventually</li>
+        <li>SPR / IEA coordinated releases remain a policy option at $100+</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== ALERTS ====================== -->
+<section>
+  <h2>Pre-registered alerts</h2>
+  <div class="panel">
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Hormuz binary, either direction:</b> full closure (loadings →0) or a signed, verifiable reopening deal with tanker traffic resuming. Both are regime flips; both re-price every position on this page within the day. Act per the branch plan, not the headline.</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Strike on &gt;1 mb/d of capacity</b> (Abqaiq-class facility, major export terminal). Jazan (400 kb/d) was the warning shot.</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>US Northeast cold-snap forecast (D6–D10)</b> into lowest-since-1990s stocks = HO squeeze risk directly against the short leg. This alert exists to protect the book, not to find a trade.</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>OPEC quota war</b> post-UAE exit (competitive supply announcements). Bearish crude, ambiguous products.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>USGC ULSD crack &lt; $60</b> — normalization underway; the distillate thesis is expiring, book the relative trade.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>Three consecutive US distillate builds</b> (EIA) — the swing-supplier engine is catching up.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>EU gas storage failing to approach ~80% by Nov 1</b> — winter crisis premium builds on the long gasoil leg.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>China export-quota announcement</b> (quarterly): generous diesel quotas soften Asian cracks with a 25–45 day lag to the Atlantic.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>MM positioning extremes</b> in HO / LSGO / crude (weekly, from the the data pack COT pack) — correlated positioning to watch across ag.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>SPR / IEA release announcements</b> — sell-the-news pattern on crude, usually steepens product cracks (releases are crude, not products).</div></div>
+  </div>
+</section>
+
+<!-- ====================== CHANGELOG ====================== -->
+<section>
+  <h2>Changelog</h2>
+  <div class="panel">
+    <table class="changelog">
+      <tr><td style="white-space:nowrap"><b>v1 · 9 Sep 2026</b></td><td>Initial build. Regime: Iran-war year, distillate-led. Marks from press 8–9 Sep (Brent ~$99, WTI ~$93, USGC ULSD crack ~$93 after 17 Aug record $102.20, US distillates 105.6M bbl w/e 14 Aug). Book panel: transatlantic diesel spread documented with leg-integrity + roll rules. Standing convention adopted from a past experience: <b>terminal &amp; the data pack for prices, web for news only</b>. Pending: wire HO/LSGO/CL into the weekly build; add COT panel when energy backfill lands.</td></tr>
+    </table>
+  </div>
+</section>
+
+</div>
+</body>
+</html>
