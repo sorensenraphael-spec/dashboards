@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee — Market Playbook &amp; Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cacao:#2b1a10;
+    --nib:#3a2718;
+    --shell:#57402a;
+    --husk:#f0e2cb;
+    --husk-dim:#c9b394;
+    --amber:#e39a3b;
+    --leaf:#8fb069;
+    --ember:#cf6349;
+    --live:#e39a3b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{background:var(--cacao);color:var(--husk);font-family:'Archivo',system-ui,sans-serif;font-size:15.5px;line-height:1.6}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 28px 90px}
+  a{color:var(--amber)}
+  header{padding:56px 0 34px;border-bottom:1px solid var(--shell)}
+  .kicker{color:var(--husk-dim);font-size:14px;margin-bottom:10px}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(40px,6vw,64px);line-height:1.02;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--amber)}
+  .contracts{margin-top:14px;color:var(--husk-dim);font-size:14.5px;max-width:62ch}
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--shell);border:1px solid var(--shell);margin:34px 0 0}
+  .cell{background:var(--nib);padding:16px 18px}
+  .cell .v{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1.15}
+  .cell .l{color:var(--husk-dim);font-size:13px;margin-top:4px}
+  .v.up{color:var(--leaf)} .v.down{color:var(--ember)} .v.warn{color:var(--amber)}
+  .asof{display:inline-flex;align-items:center;gap:8px;margin-top:14px;color:var(--amber);font-size:13px}
+  .asof::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live)}
+  section{padding:44px 0 8px;border-bottom:1px solid var(--shell)}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:30px;letter-spacing:-.005em;margin-bottom:6px}
+  .sub{color:var(--husk-dim);margin-bottom:24px;max-width:72ch}
+  .livebadge{display:inline-block;margin-left:10px;vertical-align:middle;font-family:'Archivo';font-size:12px;font-weight:600;color:var(--cacao);background:var(--amber);padding:2px 9px;border-radius:2px}
+  h3{font-family:'Fraunces',serif;font-weight:600;font-size:18.5px;margin:26px 0 8px;color:var(--amber)}
+  p{max-width:76ch;margin-bottom:14px}
+  strong{color:var(--husk);font-weight:600}
+  .dim{color:var(--husk-dim)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 44px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+  table{width:100%;border-collapse:collapse;margin:18px 0 26px;font-size:14.5px}
+  th{text-align:left;color:var(--husk-dim);font-weight:500;font-size:13px;padding:0 14px 10px 0;border-bottom:1px solid var(--shell)}
+  td{padding:12px 14px 12px 0;border-bottom:1px solid var(--shell);vertical-align:top}
+  td:first-child{white-space:nowrap;color:var(--amber);font-weight:500}
+  tr:last-child td{border-bottom:none}
+  .cal{margin:26px 0 18px;border:1px solid var(--shell)}
+  .cal-row{display:grid;grid-template-columns:150px repeat(12,1fr);border-bottom:1px solid var(--shell)}
+  .cal-row:last-child{border-bottom:none}
+  .cal-row>div{padding:9px 6px;font-size:12.5px;text-align:center;border-left:1px solid var(--shell)}
+  .cal-row>div:first-child{text-align:left;padding-left:14px;color:var(--husk-dim);border-left:none;display:flex;align-items:center;font-size:13px}
+  .cal-head>div{background:var(--nib);color:var(--husk);font-weight:600}
+  .on{background:var(--amber);color:var(--cacao);font-weight:600}
+  .on.soft{background:#8a6a33;color:var(--husk)}
+  .on.wet{background:#4d6a8f;color:var(--husk)}
+  .on.dry{background:#a05236;color:var(--husk)}
+  .calnote{color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+  @media(max-width:820px){.cal{overflow-x:auto}.cal-row{min-width:900px}}
+  .panel{background:var(--nib);border:1px solid var(--shell);padding:22px 24px;margin:18px 0}
+  .panel h3{margin-top:0}
+  ul{margin:0 0 14px 20px;max-width:74ch}
+  li{margin-bottom:8px}
+  li::marker{color:var(--amber)}
+  .bb{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.bb{grid-template-columns:1fr}}
+  .bb .panel{margin:0}
+  .bb h3{margin-top:0}
+  .bb .bull h3{color:var(--leaf)}
+  .bb .bear h3{color:var(--ember)}
+  .hl{border-bottom:1px solid var(--shell);padding:26px 0 20px}
+  .hl ul{margin:10px 0 0 0;list-style:none;max-width:none}
+  .hl li{margin-bottom:10px;padding-left:0;display:flex;gap:14px;align-items:baseline}
+  .hl .d{flex:0 0 64px;color:var(--amber);font-size:12.5px;font-weight:600;white-space:nowrap}
+  .hl .t{color:var(--husk);font-size:14.5px;max-width:80ch}
+  .hl .t em{color:var(--husk-dim);font-style:normal}
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card{background:var(--nib);border:1px solid var(--shell);padding:14px 10px 6px}
+  .chart-card svg{width:100%;height:auto;display:block;font-family:'Archivo',sans-serif}
+  footer{padding-top:36px;color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+</style>
+
+<!-- public build 2026-09-10 11:15 — structural strips: 0; prose edits: 2 -->
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Commodity playbook 2 of 5 · cocoa · <span style="color:var(--amber)">coffee</span> · cotton · sugar · grains &amp; oilseeds</div>
+  <h1>Coffee, <em>read like a local</em></h1>
+  <p class="contracts">ICE New York arabica (KC, US¢/lb, 37,500 lb/contract) and ICE London robusta (RM, USD/tonne, 10 t). One country is half the story: Brazil grows roughly 40% of the world's coffee and essentially sets the arabica price. The other half is split between Vietnam (robusta's giant), Colombia, Ethiopia and a long tail of origins — and between two species whose spread is a market of its own.</p>
+  <div class="strip">
+    <div class="cell"><div class="v"><span data-field="KC.price_cents">≈ 293 ¢/lb</span></div><div class="l">NY arabica, 4 Sep 2026 close</div></div>
+    <div class="cell"><div class="v down">−33% / +22%</div><div class="l">from Oct-25 record · from Jun-26 low</div></div>
+    <div class="cell"><div class="v up">Record supply</div><div class="l">26/27: USDA 189.7 M bags, +6%</div></div>
+    <div class="cell"><div class="v warn">El Niño at flowering</div><div class="l">27/28 crop — the live fight, now</div></div>
+    <div class="cell"><div class="v warn"><span data-field="KC.mm_net_prefixed">MM ≈ +25k</span></div><div class="l">modest net long (May COT — stale, refresh)</div></div>
+  </div>
+  <div class="asof">Data as of <span data-field="_generated_at">7 September 2026</span> · auto-refresh every 15 min</div>
+</header>
+
+<!-- ================= HIGHLIGHTS ================= -->
+<div class="hl">
+  <h2 style="font-size:22px">Latest from the ground &amp; the tape<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <ul>
+    <li><span class="d">9 Sep</span><span class="t"><strong>Refresh — harvest chapter closes, two-sided regime sharpens.</strong> Brazil 26/27 harvest 97% done (26 Aug) at a realized RECORD ~75.3–75.9M bags (StoneX/Sucafina/Marex — above USDA's June 71.9M). Warehouses reported full → farmers forced sellers, driving the early-Sep slide to ~$3.00–3.10 (lowest since early Aug). Against it: <strong>certified arabica stocks drawn to reported multi-decade lows</strong>, Rabobank seeing no replenishment before November, Colombia quake logistics — and a bounce on the tightness (latest reports ~$3.2–3.4 area; timing of marks conflicts across sources — <em>read the live Dec quote off Saxo before any order</em>). ICE margin hikes drained liquidity further — the structural-vol regime thesis reconfirmed.</span></li>
+    <li><span class="d">9 Sep</span><span class="t"><strong>First florada-relevant moisture datapoint:</strong> Somar — 8.9mm = <strong>127% of the weekly average</strong> in Minas (week ended 30 Aug), framed by the trade as flowering-friendly (bearish). One week of priming moisture vs Inmet's below-normal September forecast = the live tension; the gauge starts reading with the next fronts.</span></li>
+    <li><span class="d">4 Sep</span><span class="t">Arabica closed 292.9 ¢, −10.4% over 30 days — record-crop math reasserting as Brazil's harvest wraps (~85–90% done by end-August). <em>The current crop's story is nearly told; the market's clock has moved to the florada.</em></span></li>
+    <li><span class="d">Late Aug</span><span class="t">Trade chatter has formally shifted to the flowering window: "September is the key month to watch"; fresh Brazilian crop visible in Europe from late October. <em>All new information between now and November is about 27/28, not 26/27.</em></span></li>
+    <li><span class="d">Mid-Aug</span><span class="t">Arabica made a 6.5-month high then faded. The divergence underneath persists: certified arabica stocks at a 2.5-year low (~243k bags) while robusta certs sit at a 5.25-month high. <em>The tariff-and-quality distortion in one picture — nearby arabica tightness inside a record-supply year.</em></span></li>
+    <li><span class="d">13 Jul</span><span class="t">Producer co-ops (Expocacer, Cooabriel): irrigation build-out since the last El Niño makes trees more resilient, but "heat is the biggest risk for severe crop loss"; Espírito Santo conilon already −15% on its biennial down-year, with dry-spell worry through January's bean-filling. <em>The ground is preparing for El Niño, not panicking about it.</em></span></li>
+    <li><span class="d">8 Jul</span><span class="t">US Climate Prediction Center: the El Niño that formed in June will likely be among the strongest in 75+ years; JMA confirmed the pattern June 10. <em>Same superlative circulating in cocoa — verify against actual rainfall anomalies, not the acronym.</em></span></li>
+    <li><span class="d">6 Jul</span><span class="t">Arabica surged 16% in a single day to 350 ¢ — amplified by fund position adjustments in a thin book. <em>The standing reminder of what this market does to positioning; it then gave most of it back within three weeks.</em></span></li>
+    <li><span class="d">Standing</span><span class="t">The 50% US tariff on Brazilian coffee remains a live, quantifiable cost wedge — about a third of US green coffee was Brazilian, and the rerouting (US buyers substituting other origins, certified stocks draining) is still working through differentials. <em>Any exemption headline reprices certs and diffs instantly.</em></span></li>
+  </ul>
+</div>
+
+<!-- ================= ALERTS ================= -->
+<div class="hl" id="alerts">
+  <h2 style="font-size:22px">Alert triggers — pre-registered</h2>
+  <p class="sub" style="margin-bottom:12px">Material-change conditions defined in advance. Every refresh checks this list first and reports any that fired, before anything else. 🔴 = regime line crossed, 🟠 = material development.</p>
+  <ul>
+    <li><span class="d">🔴</span><span class="t"><strong>Florada failure: no meaningful, widespread rains in Minas Gerais/Cerrado by ~10 October</strong> — the stacked 27/28 bull scenario activates; the single most important trigger on this page.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>Frost alert in Minas during Jun–Aug 2027</strong> — the perennial tail; suppressed by El Niño but never zero.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>US–Brazil tariff exemption or deal headline</strong> — binary repricing of certified stocks, differentials and the KC curve.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Pending gradings spike (esp. at European ports) → then three consecutive weekly certified builds</strong> — the refill sequence: grading turning economic again means the physical bid is finally overwhelmed by the record crop, and the nearby squeeze premium deflates. Pending gradings (published daily by ICE) lead the cert builds by weeks — the true early warning.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>MM net long &gt; ≈50k (crowded) or flips net short (washout)</strong> — either edge of the historical distribution; sizing input.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>CONAB September survey deviating &gt;3 M bags from USDA's 71.9 M</strong> — the record-crop premise itself in question.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Vietnam export pace falling clearly below crop-implied norms Oct–Jan</strong> — farmer hoarding or a robusta crop problem.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Espírito Santo heat-stress reports during Dec–Jan bean-filling</strong> — the second act of the El Niño story arriving on schedule.</span></li>
+  </ul>
+  <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. Each refresh appends a dated line here noting fired alerts and material edits.</p>
+</div>
+
+<!-- ================= PRIMER ================= -->
+<section id="primer">
+  <h2>The market in one page</h2>
+  <p class="sub">The permanent structure. Refresh yearly at most.</p>
+  <div class="cols">
+    <div>
+      <h3>Two species, two exchanges, one spread</h3>
+      <p><strong>Arabica</strong> (NY, ~55–60% of world supply): higher quality, higher altitude, frost- and drought-sensitive. Brazil dominates, then Colombia, Ethiopia, Honduras. <strong>Robusta</strong> (London): hardier, more caffeine, instant-coffee and espresso-blend workhorse. Vietnam is the giant, Brazil's conilon second, then Indonesia and Uganda. Roasters substitute between them at the margin, so the <strong>arabica–robusta spread</strong> is a real economic dial, not just a chart — when arabica gets expensive, blends quietly get more robusta, and vice versa.</p>
+      <h3>The biennial cycle — coffee's master rhythm</h3>
+      <p>Arabica trees alternate <strong>on-years and off-years</strong>: a heavy crop exhausts the tree, the next year yields less. Brazil's whole national output breathes in this two-year rhythm, and every balance forecast starts from which phase Brazil is in. 2026/27 is a record <strong>on-year</strong>; 2027/28 is the biennial <strong>down-leg</strong> — which is why an El Niño arriving exactly now is taken so seriously: it would stack a weather shock on top of a biological down-year.</p>
+      <h3>The weather windows</h3>
+      <p><strong>Flowering (florada), Sep–Nov:</strong> the first spring rains after Brazil's dry winter trigger the blossom; failed or staggered rains mean fewer, uneven cherries — the next crop's ceiling is set in these weeks. <strong>Frost, Jun–Aug:</strong> the classic tail event (July 2021 → the 2022 spike); one cold night can kill years of tree growth. El Niño actually <em>reduces</em> frost risk (warmer winters) while raising heat/drought risk — it trades one tail for another.</p>
+    </div>
+    <div>
+      <h3>Free market, currency-driven</h3>
+      <p>Unlike cocoa's West African boards, Brazil is a <strong>free market</strong>: farmers and co-ops are fully price-exposed, sell when they choose, and hold inventory as a trading position. Consequence one: the <strong>BRL matters enormously</strong> — producers earn dollars and pay costs in reais, so a weak real triggers origin selling and caps rallies. Consequence two: <strong>origin selling behaviour is a live sentiment indicator</strong> — Brazilian farmers hoard into strength and dump into weakness like any trader.</p>
+      <h3>Demand: the steadiest in commodities</h3>
+      <p>Coffee consumption grows ~1.5–2%/yr through almost anything — habit-driven, caffeine-anchored, with China and Asia compounding on top. It did not crack under record 2025 prices the way cocoa demand did; retail pass-through is slow and drinkers grumble but pour another cup. Demand is the boring, reliable line; virtually all the action in coffee balances is supply.</p>
+      <h3>Structurally thin balance</h3>
+      <p>World ending stocks run around <strong>25 M bags against ~165 M of use</strong> — roughly 8 weeks of consumption, versus cocoa's ~15. Coffee lives permanently closer to the edge, which is why single weather events move it 15% in a day and why the frost/florada calendar is traded so hard.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CURRENT STORY ================= -->
+<section id="now">
+  <h2>The current story<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Where we are in the cycle and what the market is arguing about.</p>
+  <p><strong>Same shape as cocoa, faster clock: a comfortable present against a feared future.</strong> The route here: five consecutive underperforming Brazilian arabica crops plus tight stocks drove NY to a record above <strong>437 ¢/lb in October 2025</strong>. Then the record 2026/27 crop came into view — USDA pegs Brazil at <strong>71.9 M bags (+14%)</strong> and world output at a record <strong>189.7 M bags (+6%)</strong> — and the market collapsed ~45% to <strong>~240 ¢ in early June</strong>. What followed was the object lesson in coffee microstructure: a rain-delayed, quality-impaired harvest (64% done mid-July vs 77% a year earlier), El Niño headlines and the tariff-driven certified-stock drain produced a <strong>+16% single-day move on July 6</strong> and a ~46% rally in weeks — most of which has now faded back to ~293 ¢ as the harvest finishes (~85–90% by end-August).</p>
+  <p><strong>The tension is in the stocks, not the crop.</strong> A record harvest is arriving, yet certified arabica stocks sit at a <strong>2.5-year low (~243k bags)</strong> — because the 50% US tariff on Brazilian coffee rerouted flows (US buyers voiding Brazilian contracts and substituting other origins), exporters held back, and the delayed harvest slowed replenishment. Robusta certs are meanwhile at a 5.25-month high with Vietnam shipping a 4-year-high crop. So the two exchanges are telling opposite stories — nearby arabica tightness inside an aggregate surplus — and the arabica–robusta arb plus NY calendar spreads are where that contradiction gets traded.</p>
+  <p><strong>The forward fight is 2027/28, and it's being decided this month.</strong> The bull case stacks three things on the same season: the biennial down-year, an El Niño the CPC calls potentially the strongest in 75+ years hitting the Sep–Oct florada, and Espírito Santo heat risk through January's bean-filling. The bear counterweights: producer irrigation build-out since 2021 has genuinely raised resilience, El Niño suppresses the frost tail, Vietnam's robusta machine is running at full output, and Rabobank sees a <strong>9.5 M bag arabica surplus in 26/27</strong> rebuilding the cushion first. The market's honest position: the record crop is real, the threat to the next one is real, and September's rainfall maps will pick the winner.</p>
+</section>
+
+<!-- ================= BALANCE ================= -->
+<section id="balance">
+  <h2>The balance sheet<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Coffee's cushion is structurally thin — the question is whether one record year can rebuild it before the biennial down-leg spends it.</p>
+  <table>
+    <tr><th>Season</th><th>Picture</th><th>Detail</th></tr>
+    <tr><td>2021–2025</td><td><span style="color:var(--ember)">Five lean years</span></td><td>Frost (2021), droughts, El Niño 23/24 (cut Brazil's 2024 crop from 58.8 to 54.2 M bags). Stocks ground down; record prices Feb &amp; Oct 2025.</td></tr>
+    <tr><td>2026/27</td><td><span style="color:var(--leaf)">Record surplus year</span></td><td>USDA: world output 189.7 M bags (+6%), arabica +12%, robusta −0.7%; Brazil 71.9 M (+14%); ending stocks up +1.9 M to 26.3 M bags (~8 weeks of use). Rabobank: arabica surplus 9.5 M bags.</td></tr>
+    <tr><td>2027/28</td><td><span style="color:var(--amber)">The stacked risk</span></td><td>Biennial down-year + El Niño at flowering + Espírito Santo heat through bean-filling. Too early for numbers — the florada writes them.</td></tr>
+  </table>
+  <h3>The synthesis</h3>
+  <p>Even the record year only lifts ending stocks to ~26 M bags — <strong>one bad season's worth of buffer</strong>. So the scenario tree is compressed: a decent florada means two consecutive rebuild years and a price grind back toward the pre-spike range (the June low at ~240 marks that world); a failed florada means the record crop's surplus gets consumed the moment it exists, and with stocks this thin the market goes back through 350–400+ faster than it came down. Coffee never earns cocoa's "comfortable" zone — the cushion argument that caps cocoa's tail simply doesn't exist here, which is why coffee's convexity is the fattest in softs.</p>
+  <p class="dim">Uncertainty note: USDA, CONAB and private forecasters routinely disagree on Brazil by 5+ M bags (different survey methods), and the tariff makes trade-flow data temporarily unreliable as a demand proxy. CONAB's third 2026 survey (September) and the first 27/28 estimates (January) are the anchors to watch.</p>
+</section>
+
+<!-- ================= WATCH ================= -->
+<section id="florada">
+  <h2>Florada tracker<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">The decisive event of the coffee year, instrumented. Two layers: the rain (quantitative, causal) and the bloom (qualitative, scored). Active Sep–Nov.</p>
+
+  <h3>Layer 1 — the rain</h3>
+  <table>
+    <tr><th>Source</th><th>Cadence</th><th>What to read</th></tr>
+    <tr><td>NOAA CPC</td><td>Weekly</td><td>South America precipitation anomaly maps + week-2 forecast. The free canonical view of whether the coffee belt is getting wet.</td></tr>
+    <tr><td>INMET (Brazil met service)</td><td>Daily</td><td>Station-level rainfall for Minas Gerais/Cerrado/Mogiana — the ground truth the anomaly maps summarize.</td></tr>
+    <tr><td>Climatempo agro</td><td>Daily</td><td>Brazilian ag-weather forecasting in trade language; what Brazilian producers themselves read.</td></tr>
+    <tr><td>World Weather Inc via StoneX daily</td><td>Daily</td><td>The interpretation layer — rain forecasts already translated into crop implications.</td></tr>
+  </table>
+  <p><strong>The threshold that matters:</strong> a widespread soaking event (~20–30 mm+) across the main arabica belt fires the blossom; consistent follow-up moisture over the next weeks holds the set. One event + follow-through = uniform florada. Scattered events with dry gaps = staggered flowerings. Nothing by ~10 October = the 🔴 failure trigger.</p>
+
+  <h3>Layer 2 — the bloom gauge (our construction)</h3>
+  <p class="dim">No public florada index exists — this scale is scored at each refresh from co-op bulletins (Cooxupé, Fundação Procafé), Safras commentary, press-relayed photo-stream density, and the rain data above, weighted by the against-interest rule.</p>
+  <div style="display:flex;gap:2px;margin:14px 0 8px;max-width:640px">
+    <div style="flex:1;background:#cf6349;padding:8px 4px;text-align:center;font-size:11.5px;color:#f0e2cb">0 · failed</div>
+    <div style="flex:1;background:#b85a42;padding:8px 4px;text-align:center;font-size:11.5px;color:#f0e2cb">1 · sparse</div>
+    <div style="flex:1;background:#a05236;padding:8px 4px;text-align:center;font-size:11.5px;color:#f0e2cb">2 · staggered</div>
+    <div style="flex:1;background:#8a6a33;padding:8px 4px;text-align:center;font-size:11.5px;color:#f0e2cb">3 · uneven</div>
+    <div style="flex:1;background:#7d9455;padding:8px 4px;text-align:center;font-size:11.5px;color:#f0e2cb">4 · good</div>
+    <div style="flex:1;background:#8fb069;padding:8px 4px;text-align:center;font-size:11.5px;color:#2b1a10;font-weight:600">5 · uniform</div>
+  </div>
+  <p><strong>Current reading (7 Sep): pre-florada — gauge not yet active, forecast tension on the board.</strong> Inmet month-1 model: above-average September rainfall across most of the Southeast, favorable for bud opening. Inmet seasonal bulletin (Sep 2): 90% probability of a <em>very strong</em> El Niño for Sep–Nov, below-normal quarterly rainfall flagged for Minas Gerais and Espírito Santo, above-average temperatures, delayed rainy-season onset "likely for some areas". Isolated out-of-season early flowerings already reported (unprotected early fruit set). Modal risk shape: decent September bloom, then failed October–November follow-through — the staggered (2–3) scenario, not outright failure. Watch for the market selling the September rains; the seasonal-outlook risk lives in the follow-through weeks.</p>
+  <p class="calnote">Rubric: 0 = no meaningful flowering by mid-Oct · 1 = patchy, irrigated farms only · 2 = multiple weak staggered flowerings · 3 = adequate volume, poor uniformity · 4 = strong main flowering, decent coverage · 5 = single abundant uniform flowering across regions. Score history: —.</p>
+</section>
+
+<!-- ================= WATCH ================= -->
+<section id="watch">
+  <h2>What to watch next<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Dated triggers, most imminent first.</p>
+  <table>
+    <tr><th>When</th><th>What</th><th>Why it moves price</th></tr>
+    <tr><td>Now → Nov</td><td>The florada: rainfall onset in Minas Gerais, Cerrado, Mogiana; producer flowering reports and photos</td><td>The single most important event in the coffee year, and it's now. Timely, uniform rains = 27/28 saved and the bear case wins. Delayed or staggered rains under El Niño = the stacked bull scenario activates.</td></tr>
+    <tr><td>Sep</td><td>CONAB third 2026 survey</td><td>The official Brazilian read on the record crop's final size — sets the base the 27/28 debate starts from.</td></tr>
+    <tr><td>Daily</td><td>Certified stocks, both exchanges</td><td>Arabica draw vs robusta build is the tariff/quality story in real time. A turn in the arabica series (rebuilding) would defuse the nearby tightness.</td></tr>
+    <tr><td>Weekly, Fri</td><td>CFTC COT — arabica &amp; robusta managed money</td><td>Last sourced read is May (+25k arabica net long — modest). Stale: refresh before positioning conclusions. July 6 showed what thin books do to any crowded side.</td></tr>
+    <tr><td>Monthly</td><td>Cecafé (Brazil exports), ICO composite &amp; report, GCA US green stocks, Vietnam GSO exports</td><td>The flow layer. Cecafé reveals whether Brazil's record crop actually ships or gets held; GCA shows the tariff squeeze on US inventories.</td></tr>
+    <tr><td>Ongoing</td><td>US–Brazil tariff politics</td><td>An exemption or deal headline instantly reprices certified stocks, differentials and the KC curve — binary, unschedulable, worth a standing alert.</td></tr>
+    <tr><td>Oct–Jan</td><td>Vietnam harvest pace and farmer selling behaviour</td><td>Robusta's supply reveal. Vietnamese farmers hoard into strength — export pace vs crop estimates shows their hand.</td></tr>
+    <tr><td>Dec–Feb</td><td>Espírito Santo heat during conilon bean-filling; ENSO diagnostics</td><td>The second act of the El Niño story — Cooabriel flagged January as the worry window.</td></tr>
+    <tr><td>Jun–Aug 27</td><td>Frost season (probability reduced by El Niño)</td><td>The perennial tail. Warmer winters cut the risk but never to zero.</td></tr>
+  </table>
+
+  <h3>How the 27/28 crop reveals itself — the sequence</h3>
+  <table>
+    <tr><th>Window</th><th>Reveal</th><th>Read</th></tr>
+    <tr><td>Sep–Nov</td><td>Florada quality: rain timing and uniformity; blossom reports from co-ops and producer social media</td><td>Sets the crop's ceiling. Uniquely visual and crowd-documented — Brazilian producers post flowering photos en masse, a genuine ground-level signal.</td></tr>
+    <tr><td>Nov–Jan</td><td>Pinhead set and cherry fixation; first agronomic surveys</td><td>Whether the blossoms held. Heat spikes here abort cherries silently.</td></tr>
+    <tr><td>Jan 27</td><td>CONAB first 27/28 survey</td><td>The first official number — historically conservative, direction matters more than level.</td></tr>
+    <tr><td>Dec–Apr</td><td>Bean-filling under El Niño heat (arabica and conilon)</td><td>Where "average crop" quietly becomes "small crop" — watch co-op commentary and Safras.</td></tr>
+    <tr><td>May–Jun 27</td><td>USDA FAS annual; early harvest yield reports</td><td>Resolution begins — cup profiles and screen sizes tell the truth about the season.</td></tr>
+  </table>
+</section>
+
+<!-- ================= SEASONS ================= -->
+<section id="seasons">
+  <h2>The year, mapped</h2>
+  <p class="sub">Brazil-centric with Vietnam underneath. Amber = crop flow, blue = the flowering/rain windows, rust = dry/heat/frost risk.</p>
+  <div class="cal">
+    <div class="cal-row cal-head">
+      <div>Cycle</div><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>May</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Oct</div><div>Nov</div><div>Dec</div>
+    </div>
+    <div class="cal-row">
+      <div>Brazil harvest</div><div></div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Florada (flowering)</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on wet">●</div><div class="on wet">●</div><div class="on wet">●</div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Cherry dev. / bean-filling</div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on soft">●</div>
+    </div>
+    <div class="cal-row">
+      <div>Frost risk (Brazil)</div><div></div><div></div><div></div><div></div><div></div><div class="on dry">●</div><div class="on dry">●</div><div class="on dry">●</div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Vietnam harvest</div><div class="on">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div class="on">●</div>
+    </div>
+    <div class="cal-row">
+      <div>CONAB surveys</div><div class="on">●</div><div></div><div></div><div></div><div class="on">●</div><div></div><div></div><div></div><div class="on">●</div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>USDA FAS biannual</div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div>
+    </div>
+  </div>
+  <p class="calnote">Weekly rhythm underneath: Cooxupé harvest-pace updates (in season), Safras &amp; Mercado selling-pace estimates, CFTC COT Fridays, certified stocks daily, Cecafé/ICO/GCA/Vietnam GSO monthly. The two weather trades of the year: florada rains Sep–Nov (next crop's ceiling) and frost watch Jun–Aug (the tail event — one cold night in Minas moved the market 30%+ in 2021).</p>
+</section>
+
+<!-- ================= POLICY ================= -->
+<section id="policy">
+  <h2>Standing policy &amp; structural variables</h2>
+  <p class="sub">Slow variables. Refresh quarterly.</p>
+  <h3>The US–Brazil tariff wedge</h3>
+  <p>The 50% tariff on Brazilian coffee imports (2025, still in force) hit a flow that supplied roughly a third of US green coffee. Effects running through the system: US buyers substituting Colombia and other origins (their differentials firm), Brazilian coffee rerouting to Europe and Asia at discounts, certified stocks draining as an alternative US supply source, and US retail coffee inflation. Any negotiation headline is an instant repricing event across certs, diffs and the KC curve.</p>
+  <h3>EUDR — same wall as cocoa</h3>
+  <p>Coffee is in scope of the EU Deforestation Regulation taking effect for large operators at end-2026: geolocation-verified, deforestation-free sourcing into the EU. Brazil's big co-ops are relatively well prepared; the compliance pain concentrates in smallholder origins — Ethiopia, parts of Vietnam, Uganda — where a two-tier (compliant vs non-compliant) market and diverted flows are the likely outcome.</p>
+  <h3>No boards, but a central bank</h3>
+  <p>Brazil has no cocoa-style marketing board — the state variable is the <strong>BRL</strong>. Real weakness = origin selling pressure on rallies; real strength = farmers hold. Watching USD/BRL alongside KC is not optional; it's half the price action on quiet days.</p>
+  <h3>Vietnam's quiet transformation</h3>
+  <p>Record export revenues are financing replanting, irrigation and a shift of some acreage to durian and other fruit — robusta supply is reliable now but the acreage competition is a slow structural headwind worth an annual check.</p>
+</section>
+
+<!-- ================= CHATTER ================= -->
+<section id="chatter">
+  <h2>Origin &amp; social chatter<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">What the ground-level conversation says, and how to listen.</p>
+  <div class="panel">
+    <h3>Current themes in the chatter</h3>
+    <ul>
+      <li><strong>"September decides everything"</strong> — trade and origin commentary has converged on the florada as the sole topic; the current crop is old news before it's even fully shipped.</li>
+      <li><strong>El Niño superlatives everywhere</strong> ("strongest in 75 years", "super El Niño") — same drumbeat as cocoa, running ahead of verified anomaly data. The co-op voices are notably calmer than the headlines: resilience up via irrigation, heat the real fear, too early to quantify.</li>
+      <li><strong>Quality complaints from the rain-delayed harvest</strong> — chatter about cup quality and screen sizes from the 26/27 crop supports the "record quantity, scarcer quality" nuance behind the certified-stock draw.</li>
+      <li><strong>Tariff workaround talk</strong> — rerouting, triangulation, differential games. When the physical trade discusses logistics tricks, watch differentials rather than flat price.</li>
+    </ul>
+  </div>
+  <h3>How to listen (no accounts needed)</h3>
+  <p><strong>StoneX's free daily coffee report</strong> is the single best listening post — COT detail, spreads, EFP flow, origin-selling colour, in trade language. <strong>Safras &amp; Mercado</strong> and <strong>Cooxupé's</strong> harvest/selling-pace updates give the Brazilian producer's revealed behaviour. Reuters' Brazil coffee dispatches and co-op president quotes (Expocacer, Cooabriel) carry the ground voice. And uniquely to coffee: the <strong>florada is photographed</strong> — Brazilian producers flood social media with flowering images every Sep–Nov, a literal visual crowd-census of the next crop that requires no account to browse via news aggregation.</p>
+  <h3>Bias corrections for this market</h3>
+  <p>Opposite polarity to West Africa: Brazilian producers are <strong>fully price-exposed and hold inventory</strong>, so they have every incentive to talk the crop <em>down</em> — treat producer pessimism like US-farmer crop talk (de-mean it, demand verifiable specifics). The honest tell is <strong>behaviour, not words</strong>: Safras' selling-pace percentages and Cecafé export volumes reveal what farmers actually believe. For florada photos, apply the against-interest rule: a beautiful bloom photo is <em>bearish for the poster's own old-crop inventory</em> — pride posting against the book, hence credible — while flowering complaints align with the book and get discounted. And read the photo <em>stream</em>, not photos: aggregate timing, density and uniformity across regions vs the seasonal baseline is the signal no individual selection bias can fake; individual images inherit all the usual selection and virality contamination. Co-op agronomists sit in between — quotable, informed, mildly long-biased. Vietnamese farmer chatter is thin in English; export pace vs crop estimates is the readable proxy for their hoarding.</p>
+</section>
+
+<!-- ================= TRADING ================= -->
+<section id="trading">
+  <h2>How this market trades</h2>
+  <p class="sub">Microstructure notes for execution and sizing.</p>
+  <p><strong>The most violent market in softs.</strong> July 6's +16% day was not an anomaly — coffee does this every few years (frost 2021, the 2024–25 squeezes). Thin books, high margins, weather binaries and a structurally thin stock cushion make tail risk permanent. Size for 15% days; this is the market where your rule of using listed options for gap scenarios applies most literally.</p>
+  <p><strong>Positioning is currently mid-range, not extreme.</strong> Managed money's last sourced arabica read is ~+25k net long (May) — neither the crowded long of late 2025 (which fueled the Feb–Jun collapse) nor short. The washout already happened; June's low liquidated the old bull consensus. That means the florada verdict lands on relatively clean positioning — moves from here are more likely to be fundamental than positional, unlike cocoa where the short base still frames everything. Refresh the COT before acting on this.</p>
+  <div class="panel">
+    <h3>The structure trades</h3>
+    <ul>
+      <li><strong>Arabica–robusta arb:</strong> the quality-substitution dial — currently stretched by the certified-stock divergence (arabica draining, robusta building).</li>
+      <li><strong>KC calendar spreads:</strong> delivery-pressure games around notice periods are a recurring feature (the Mar/May and Jul/Sep episodes this year); the front spread is where nearby tightness expresses first.</li>
+      <li><strong>KC vs BRL:</strong> half of coffee's quiet-day price action is currency. A short-BRL rally is origin selling waiting to happen.</li>
+      <li><strong>Physical differentials:</strong> Colombia/other-origin diffs firming = the tariff rerouting in real time, often ahead of futures.</li>
+    </ul>
+  </div>
+  <div class="bb">
+    <div class="panel bull">
+      <h3>The bull case, honestly</h3>
+      <ul>
+        <li>27/28 stacks three shocks: biennial down-year + strongest-in-decades El Niño at flowering + heat through bean-filling.</li>
+        <li>Ending stocks ~8 weeks of use even after a record year — no cushion exists to absorb a failed florada.</li>
+        <li>Certified arabica stocks at 2.5-year lows; nearby tightness inside the surplus.</li>
+        <li>Positioning cleaned out — the June washout removed the crowded long; fresh fundamental buying has room.</li>
+        <li>Demand never breaks: ~2%/yr through everything, China compounding.</li>
+      </ul>
+    </div>
+    <div class="panel bear">
+      <h3>The bear case, honestly</h3>
+      <ul>
+        <li>A record 189.7 M bag world crop is arriving now; Rabobank sees a 9.5 M bag arabica surplus rebuilding stocks.</li>
+        <li>Irrigation build-out has genuinely raised El Niño resilience — the 23/24 episode cut Brazil ~8%, not 30%.</li>
+        <li>El Niño kills the frost tail — the classic bull catalyst is off the table for 2027.</li>
+        <li>Vietnam at a 4-year-high crop with surging exports; robusta comfortable.</li>
+        <li>A normal florada makes this a two-year rebuild story: the June ~240 low is the gravity well.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= CHARTS ================= -->
+<!-- ================= FLORADA PLAYBOOK ================= -->
+<section id="playbook">
+  <h2>Florada playbook — decision record<span class="livebadge">v1 · 8 Sep 2026</span></h2>
+  <p class="sub">The standing record of what was studied, concluded and structured for the Sep–Nov 2026 window. Auditable when it resolves.</p>
+  <h3>What 47 years of data established (pack 20260907)</h3>
+  <p><strong>The fade is dead:</strong> unconditional fade hit-rate 57% (not the folkloric 8/10), avg fade-loss 18.0% vs avg gain 12.7% → EV ≈ 0. <strong>ENSO conditioning is suggestive, not significant</strong> (EN mean +3.75% vs −1.23%, Welch t = 0.88; bootstrap CI −4.9/+12.3). <strong>Entry level is the strongest conditioner</strong> (t ≈ 1.8): expensive-tercile entries mean −6.3%, median −8.4%, P(&lt;−15%) = 38% — and 2026 enters at the <strong>88th percentile</strong>. The EN∩expensive cell (the 2026 configuration): 4 of 5 historical losers. Skew flips with level: avg win/loss 22.7/−5.2 in mid years, <strong>13.4/−20.6 in expensive years</strong>. Timing: Sep mean −1.8%, Oct–Nov +2.1%, avg trough Oct 4; in this window <strong>weakness beyond ~8% is information, not opportunity</strong> (deeper dips → worse outcomes, monotonic, robust across 47 years). Short futures rejected on path: median MAE for Sep-1 shorts in expensive years +9.3%, 62% exceed +8% — enter-and-stop conversion would fail even in winning years.</p>
+  <h3>The vol verdict (Saxo chain, 7 Sep)</h3>
+  <p>Dec ATM ≈ 46% — <strong>cheap vs the current regime</strong> (21d realized 60%, 63d 64%; IV/RV ≈ 0.72) but the 87th percentile of 47 years of Sep–Nov realized (median 36%). Surface is <strong>call-skewed ~3 pts</strong> (25Δ put 45.3 vs 25Δ call 47.8) — the put side is the cheap wing. Regime judgment: post-2024 liquidity impairment is structural → weight the regime view; buy, don't sell, this surface.</p>
+  <h3>The structure</h3>
+  <p><strong>Short-biased long puts, March expiry</strong> (Dec expires 12 Nov — before the 1986/1994/1997 trough dates). Primary: outright ~262.5–277.5 puts (the cheap wing + gamma at 60% realized); cost-conscious variant: ~265/225 put spread (~4.5% for ~3:1, breakeven ≈ −14%; the sold 225 wing sits beyond a level this window has never closed through in 47 years). Optional token far-OTM call (1/10 notional) acknowledging the unresolved florada binary. <strong></strong> — the evidence is t≈1.8 plus a regime judgment, not a statistical edge.</p>
+  <h3>Kill-switches (inverted from the long version)</h3>
+  <p>🔴 <strong>Gauge ≤2 by late October</strong> (staggered/failed flowering) = the 2023 branch is live = exit puts early, salvage premium. 🔴 <strong>Scale out into −15/−20%</strong> — the historical trough neighborhood; don't hold for the never-printed −29%. Gauge 4–5 (uniform flowering) = thesis <em>confirmation</em>, hold. No stop needed: premium is the MAE — that was the point.</p>
+  <h3>Refresh addendum — 9 Sep</h3>
+  <p>The two-sided-regime read strengthened on both wings: bear leg (record ~75M+ crop REALIZED, warehouses full, forced farmer selling, first flowering-friendly rains at 127% of average) and bull leg (<strong>certified stocks at reported multi-decade lows with no replenishment expected before November</strong> — Rabobank — plus Colombia disruption). That certified-stocks squeeze is the put structure's named adversary into Oct–Nov: it re-justifies March-over-Dec, the scale-out rule, and the optional token call. Entry-level check before striking: if the bounce to ~$3.2–3.4 is confirmed on the live quote, the Sep-1 88th-percentile reading is now higher still — the expensive-tercile conditioning tightens, not loosens. First gauge datapoint leans toward the uniform-flowering branch (put-friendly) if September fronts follow through.</p>
+  <p class="dim">Epistemic status, for the audit: the negative-drift claim rests on n=16 expensive years (t≈1.8) and an n=5 interaction cell; the vol-cheapness claim on a regime judgment; the put-wing discount on one chain snapshot. Every number is reproducible from florada_study.csv and the pack. If the window resolves against this record, the review starts from these premises, not from the outcome.</p>
+</section>
+
+<section id="gauges">
+  <h2>Historical gauges</h2>
+  <p style="border-left:3px solid var(--amber);padding-left:12px"><strong>Measured update (8 Sep, COT pack):</strong> MM net +26.7k = <strong>62.3rd percentile since 2010</strong> (record +73k Apr-24, min −112k 2018) — mid-range confirmed. Sep-1 price level: <strong>88th percentile of trailing 10y</strong> — the expensive tercile (see florada playbook below).</p>
+  <p class="sub">Live numbers against their history. Anchors marked ≈ are from Claude's historical knowledge — right order of magnitude, verify before sizing. Upgradeable to true percentiles with a CFTC/USDA history upload.</p>
+  <table>
+    <tr><th>Metric</th><th>Current</th><th>Historical anchor</th><th>Read</th></tr>
+    <tr><td>Price</td><td><span data-field="KC.price_cents">≈ 293 ¢/lb</span></td><td>Pre-spike decade ≈ 100–180¢ · records: 437 (Oct-25), ≈300 (2011), frost-era 1977</td><td>Still ~2× the old normal, and sitting almost exactly at the 2011 cycle peak — "middle of the range" only by post-2024 standards.</td></tr>
+    <tr><td>Ending stocks</td><td>26.3 M bags (~8 wks use)</td><td>≈ Comfortable 2010s levels ran 35–40 M</td><td>Thin by any era's standard — even the record crop doesn't restore historical comfort. Coffee's permanent condition.</td></tr>
+    <tr><td>MM net position (arabica)</td><td><span data-field="KC.mm_net">≈ +25k (May, stale)</span></td><td>≈ Historic range roughly −60k (2019 washout) to +70k (2024 peak long)</td><td>Almost dead-center of the historical distribution — genuinely uncrowded, rare for this market.</td></tr>
+    <tr><td>Brazil crop</td><td>71.9 M bags forecast</td><td>≈ Prior records ~69–70 M (USDA basis) · 2024 El Niño year: 54.2 M · biennial amplitude ±10–20%</td><td>A genuine record, but only ~3% above prior peaks — the "record" framing overstates the abundance.</td></tr>
+    <tr><td>El Niño precedent (Brazil coffee)</td><td>Strong event at flowering</td><td>23/24 El Niño cut Brazil −8% (58.8→54.2 M) · 2015/16 strong El Niño did not wreck Brazil coffee</td><td>The base rate says moderate damage (−5 to −10%), not catastrophe — a well-behaved El Niño 27/28 still means down-year + damage, but the historical distribution argues against pricing an extinction event.</td></tr>
+  </table>
+</section>
+
+<!-- ================= CHARTS ================= -->
+<section id="charts">
+  <h2>Charts<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Built from the sourced data points in this brief — sparse reference marks, not continuous series. Pull live curves before trading against a level.</p>
+  <div class="charts-grid">
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NY arabica, key sourced marks (US¢/lb)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">NY arabica, key sourced marks (US¢/lb)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="185.4" x2="506" y2="185.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="189.4" text-anchor="end" font-size="11" fill="#c9b394">150</text><line x1="58" y1="114.8" x2="506" y2="114.8" stroke="#57402a" stroke-width="0.6"/><text x="50" y="118.8" text-anchor="end" font-size="11" fill="#c9b394">300</text><line x1="58" y1="44.1" x2="506" y2="44.1" stroke="#57402a" stroke-width="0.6"/><text x="50" y="48.1" text-anchor="end" font-size="11" fill="#c9b394">450</text><path d="M74.0,50.2 L133.4,95.0 L192.9,114.8 L252.3,143.0 L311.7,91.2 L371.1,110.5 L430.6,100.6 L490.0,118.0" fill="none" stroke="#e39a3b" stroke-width="2.4" stroke-linejoin="round"/><circle cx="74.0" cy="50.2" r="4" fill="#e39a3b"/><text x="74.0" y="272" text-anchor="middle" font-size="10" fill="#c9b394">Oct 25</text><circle cx="133.4" cy="95.0" r="4" fill="#e39a3b"/><text x="133.4" y="272" text-anchor="middle" font-size="10" fill="#c9b394">Dec 25</text><circle cx="192.9" cy="114.8" r="4" fill="#e39a3b"/><text x="192.9" y="272" text-anchor="middle" font-size="10" fill="#c9b394">Feb 26</text><circle cx="252.3" cy="143.0" r="4" fill="#e39a3b"/><text x="252.3" y="272" text-anchor="middle" font-size="10" fill="#c9b394">Jun 26</text><circle cx="311.7" cy="91.2" r="4" fill="#e39a3b"/><text x="311.7" y="272" text-anchor="middle" font-size="10" fill="#c9b394">6 Jul</text><circle cx="371.1" cy="110.5" r="4" fill="#e39a3b"/><text x="371.1" y="272" text-anchor="middle" font-size="10" fill="#c9b394">23 Jul</text><circle cx="430.6" cy="100.6" r="4" fill="#e39a3b"/><text x="430.6" y="272" text-anchor="middle" font-size="10" fill="#c9b394">Aug 26</text><circle cx="490.0" cy="118.0" r="4" fill="#e39a3b"/><text x="490.0" y="272" text-anchor="middle" font-size="10" fill="#c9b394">4 Sep</text><text x="74.0" y="40.2" text-anchor="start" font-size="11" fill="#f0e2cb">437 record</text><text x="252.3" y="161.0" text-anchor="middle" font-size="11" fill="#f0e2cb">240 low</text><text x="311.7" y="81.2" text-anchor="middle" font-size="11" fill="#f0e2cb">+16% day</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="World production &amp; ending stocks, M bags (USDA)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">World production &amp; ending stocks, M bags (USDA)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="199.5" x2="506" y2="199.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="203.5" text-anchor="end" font-size="11" fill="#c9b394">50</text><line x1="58" y1="143.0" x2="506" y2="143.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="147.0" text-anchor="end" font-size="11" fill="#c9b394">100</text><line x1="58" y1="86.5" x2="506" y2="86.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="90.5" text-anchor="end" font-size="11" fill="#c9b394">150</text><line x1="58" y1="30.0" x2="506" y2="30.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="34.0" text-anchor="end" font-size="11" fill="#c9b394">200</text><rect x="124.0" y="53.8" width="40" height="202.2" fill="#e39a3b"/><text x="144.0" y="47.8" text-anchor="middle" font-size="11" fill="#f0e2cb">178.9</text><rect x="176.0" y="228.4" width="40" height="27.6" fill="#8fb069"/><text x="196.0" y="222.4" text-anchor="middle" font-size="11" fill="#f0e2cb">24.4</text><text x="170.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26</text><rect x="348.0" y="41.6" width="40" height="214.4" fill="#e39a3b"/><text x="368.0" y="35.6" text-anchor="middle" font-size="11" fill="#f0e2cb">189.7</text><rect x="400.0" y="226.3" width="40" height="29.7" fill="#8fb069"/><text x="420.0" y="220.3" text-anchor="middle" font-size="11" fill="#f0e2cb">26.3</text><text x="394.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text><rect x="306" y="30" width="10" height="10" fill="#e39a3b"/><text x="320" y="39" font-size="10.5" fill="#c9b394">production</text><rect x="401" y="30" width="10" height="10" fill="#8fb069"/><text x="415" y="39" font-size="10.5" fill="#c9b394">ending stocks</text><text x="62" y="42" font-size="10.5" fill="#c9b394">stocks ≈ 8 weeks of world use — the thin cushion</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Certified stocks, indexed (first sourced mark = 100)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Certified stocks, indexed (first sourced mark = 100)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="204.6" x2="506" y2="204.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="208.6" text-anchor="end" font-size="11" fill="#c9b394">25</text><line x1="58" y1="153.3" x2="506" y2="153.3" stroke="#57402a" stroke-width="0.6"/><text x="50" y="157.3" text-anchor="end" font-size="11" fill="#c9b394">50</text><line x1="58" y1="101.9" x2="506" y2="101.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="105.9" text-anchor="end" font-size="11" fill="#c9b394">75</text><line x1="58" y1="50.5" x2="506" y2="50.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="54.5" text-anchor="end" font-size="11" fill="#c9b394">100</text><path d="M98.0,50.5 L272.0,124.5 L446.0,200.5" fill="none" stroke="#cf6349" stroke-width="2.4"/><path d="M98.0,50.5 L214.0,110.1 L330.0,120.4 L446.0,110.1" fill="none" stroke="#8fb069" stroke-width="2.4" stroke-dasharray="6 4"/><circle cx="98.0" cy="50.5" r="4.5" fill="#cf6349"/><text x="98.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">May 25</text><circle cx="272.0" cy="124.5" r="4.5" fill="#cf6349"/><text x="272.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 25</text><circle cx="446.0" cy="200.5" r="4.5" fill="#cf6349"/><text x="446.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Aug 26</text><circle cx="98.0" cy="50.5" r="4.5" fill="#8fb069"/><circle cx="214.0" cy="110.1" r="4.5" fill="#8fb069"/><circle cx="330.0" cy="120.4" r="4.5" fill="#8fb069"/><circle cx="446.0" cy="110.1" r="4.5" fill="#8fb069"/><text x="446.0" y="220.5" text-anchor="end" font-size="11" fill="#cf6349">arabica: 892k → 243k bags (2.5-yr low)</text><text x="446.0" y="100.1" text-anchor="end" font-size="11" fill="#8fb069">robusta: building (5.25-mo high)</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Managed money net, NY arabica (contracts) — STALE: May"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Managed money net, NY arabica (contracts) — STALE: May</text><line x1="58" y1="223.7" x2="506" y2="223.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="227.7" text-anchor="end" font-size="11" fill="#c9b394">0k</text><line x1="58" y1="159.1" x2="506" y2="159.1" stroke="#57402a" stroke-width="0.6"/><text x="50" y="163.1" text-anchor="end" font-size="11" fill="#c9b394">20k</text><line x1="58" y1="94.6" x2="506" y2="94.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="98.6" text-anchor="end" font-size="11" fill="#c9b394">40k</text><line x1="58" y1="30.0" x2="506" y2="30.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="34.0" text-anchor="end" font-size="11" fill="#c9b394">60k</text><line x1="58" y1="223.7" x2="506" y2="223.7" stroke="#f0e2cb" stroke-width="1"/><path d="M108.0,72.0 L272.0,146.6 L436.0,142.9" fill="none" stroke="#e39a3b" stroke-width="2.4" stroke-dasharray="2 3"/><circle cx="108.0" cy="72.0" r="4.5" fill="#e39a3b" opacity="0.45"/><text x="108.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Dec 25</text><text x="108.0" y="61.0" text-anchor="middle" font-size="10.5" fill="#f0e2cb">~sizable long (est.)</text><circle cx="272.0" cy="146.6" r="4.5" fill="#e39a3b" /><text x="272.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">3 Feb</text><text x="272.0" y="135.6" text-anchor="middle" font-size="10.5" fill="#f0e2cb">23.9k after −11.3k washout</text><circle cx="436.0" cy="142.9" r="4.5" fill="#e39a3b" /><text x="436.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">12 May</text><text x="436.0" y="131.9" text-anchor="middle" font-size="10.5" fill="#f0e2cb">25.0k · modest, uncrowded</text><text x="506" y="248" text-anchor="end" font-size="10.5" fill="#cf6349">no fresh Jun–Sep read sourced — refresh COT before use</text></svg></div>
+  </div>
+  <p class="calnote">Reading them together: price has round-tripped to the middle of its range while the record crop rebuilds a cushion that remains structurally thin (chart 2), the certified-stock divergence (chart 3) carries the tariff distortion, and positioning (chart 4) is mid-range and stale — the florada verdict lands on clean books. Coffee's regime line isn't in stocks or positioning; it's on the rainfall maps of Minas Gerais over the next eight weeks.</p>
+</section>
+
+
+<footer>
+  <p><strong>Refreshing this dashboard:</strong> highlights weekly; the live sections (current story, balance, watch, chatter, positioning) monthly or before trading; primer, calendar and policy are durable. Sources behind the live sections: USDA FAS, CONAB, Cecafé, ICO, Cooxupé/Safras &amp; Mercado harvest data, ICE certified stocks, CFTC COT via StoneX daily reports, CPC/JMA ENSO diagnostics, Reuters origin dispatches and co-op commentary — retrieved 7 Sep 2026. Figures are as-reported; re-verify before trading against them. Note: the positioning figure is May-vintage — the known-stale item in this brief.</p>
+</footer>
+
+</div>
+
+<!-- marketdata dashboard live-data hooks (auto-refreshing) -->
+<script src="dashboard_data.js"></script>
+<script src="dashboard_populate.js"></script>
+</body>
+</html>
