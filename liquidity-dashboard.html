@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="refresh" content="300">
+<meta http-equiv="cache-control" content="no-store">
+<title>Liquidity Playbook — The Bridge Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#101619; --panel:#17211f; --line:#223230;
+    --ink:#e9e5da; --mut:#8fa19a; --dim:#5f6f6a;
+    --red:#e4572e; --amb:#d9a441; --ok:#5fa8a0; --vio:#8d7bd8; --live:#7cc98f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.55;font-size:15px}
+  .wrap{max-width:1060px;margin:0 auto;padding:36px 22px 80px}
+  header h1{font-size:29px;font-weight:800;letter-spacing:-.01em}
+  header .sub{color:var(--mut);margin-top:6px;max-width:76ch}
+  .stamp{display:inline-block;margin-top:12px;padding:4px 10px;border:1px solid #2b3a38;border-radius:4px;color:var(--amb);font-size:12.5px}
+  section{margin-top:44px}
+  h2{font-size:19px;font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  h3{font-size:15px;font-weight:700;margin-bottom:6px}
+  .tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px}
+  .tag.live{background:#1d2f26;color:var(--live)}
+  .asof{color:var(--dim);font-size:12px;font-weight:500}
+  p{color:#c9c4b8;margin-top:8px;max-width:80ch}
+  p b, li b, td b{color:var(--ink)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-top:14px}
+  ul{margin:8px 0 0 18px;color:#c9c4b8}
+  li{margin-top:6px;max-width:78ch}
+  li::marker{color:var(--dim)}
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px}
+  th{text-align:left;color:var(--mut);font-weight:600;padding:7px 10px 7px 0;border-bottom:1px solid #2a3937}
+  td{padding:8px 10px 8px 0;border-bottom:1px solid #1e2b29;color:#c9c4b8;vertical-align:top}
+  .alert{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #1f2c2a;align-items:baseline}
+  .alert:last-child{border-bottom:none}
+  .alert .sev{flex:0 0 26px;font-size:15px}
+  .alert .txt{color:#c9c4b8;font-size:14px;max-width:82ch}
+  .alert .txt b{color:var(--ink)}
+  .dial{border-top:3px solid var(--vio);background:var(--panel);border-radius:0 0 8px 8px;padding:14px 16px}
+  .grid{display:grid;gap:14px;margin-top:14px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g2,.g4{grid-template-columns:1fr}}
+  .dial .lbl{color:var(--mut);font-size:12px}
+  .dial .val{font-size:19px;font-weight:800;margin-top:2px}
+  .dial p{font-size:12.5px;margin-top:6px}
+  .quiet{color:var(--dim);font-size:12.5px;margin-top:10px}
+  .book{border:1px solid #3a2c22;background:#1c1a15;border-radius:8px;padding:18px 20px;margin-top:14px}
+</style>
+
+<!-- public build 2026-09-10 10:20 — book sections stripped (1); see marketdata repo for full version -->
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Liquidity Playbook — The Bridge Watch</h1>
+  <div class="sub">Eighth playbook. The object under watch: the <b>net funding gap</b> — ~$1.9–2.2tn/yr of paper that private balance sheets must absorb with every official buffer spent. The question the dashboard answers daily: <b>is the bridge holding, creaking, or failing?</b> Two tiers of instruments: leading indicators load the spring; symptoms mean it is releasing.</div>
+  <div class="stamp">Marks &amp; thresholds set 9 Sep 2026 · data cadence: NY Fed rates daily · H.4.1 Thursdays · CFTC Fridays · auctions per Treasury calendar · verify vs terminal</div>
+</header>
+
+<!-- ============ THE GAP & THE BRIDGES ============ -->
+<section>
+  <h2>The gap and its bridges <span class="tag live">LIVE</span> <span class="asof">as of 9 Sep 2026</span></h2>
+  <div class="panel">
+    <table>
+      <tr><th>Bridge (current)</th><th>Size / state</th><th>Buys because</th><th>Breaks on</th></tr>
+      <tr><td><b>Basis trade (levered funds)</b></td><td>~$1–1.5tn notional; Cayman a top-5 "holder"; 20–50x repo leverage</td><td>Arbitrage — cash vs futures spread</td><td><b>Volatility</b>: haircut widening → forced unwind → buyer becomes seller in days (Mar-2020 rehearsal, trade 2–3x bigger now)</td></tr>
+      <tr><td><b>MMFs + households</b></td><td>MMF AUM ~$7tn+; RRP buffer spent (~$0)</td><td><b>Yield</b> — 4–5% front end</td><td>Rate cuts: yield tourists leave when the yield does</td></tr>
+      <tr><td><b>Foreign private</b></td><td>Large, FX-hedge-sensitive</td><td>Hedged carry math</td><td>Rate-differential flips; dollar-trust events</td></tr>
+      <tr><td><b>Stablecoins</b></td><td>~$300bn, legislated bill buyers; Treasury eyes $2tn</td><td>Reserve mandate (GENIUS-era)</td><td>Depegs / crypto drawdowns / redemption runs</td></tr>
+      <tr><td><b>Banks</b></td><td>Constrained; SLR relief pending</td><td>Regulation + spread</td><td>AOCI losses, capital rules (until relief lands)</td></tr>
+      <tr><td style="color:var(--dim)">Departed: foreign officials</td><td style="color:var(--dim)">Peaked ~2013</td><td style="color:var(--dim)">Mercantilism</td><td style="color:var(--dim)">Rotated to gold ~1,000t/yr — the sovereign floor under the gold book</td></tr>
+    </table>
+    <p><b>The structural read:</b> the marginal buyer has migrated mandate → yield → leverage. The modern bridge amplifies stress instead of absorbing it: the entities that close the gap in calm are forced to widen it in volatility. That asymmetry is what the meltdown puts are pricing, and why the defense is listed options (gap risk) — never stopped shorts.</p>
+  </div>
+</section>
+
+<!-- ============ LIQUIDITY GAUGE ============ -->
+<section>
+  <h2>Liquidity gauge — today <span class="tag live">LIVE</span> <span class="asof">component scores set 9 Sep 2026 — re-score weekly, changelog any rubric change</span></h2>
+  <div class="panel">
+    <div style="display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:center">
+      <div>
+        <svg id="gaugeSvg" viewBox="0 0 300 190" width="100%">
+          <path d="M 30 160 A 120 120 0 0 1 88 57" fill="none" stroke="#5fa8a0" stroke-width="16"/>
+          <path d="M 88 57 A 120 120 0 0 1 212 57" fill="none" stroke="#d9a441" stroke-width="16"/>
+          <path d="M 212 57 A 120 120 0 0 1 270 160" fill="none" stroke="#e4572e" stroke-width="16"/>
+          <text x="38" y="185" fill="#5fa8a0" font-size="11">flush</text>
+          <text x="128" y="34" fill="#d9a441" font-size="11">loaded</text>
+          <text x="228" y="185" fill="#e4572e" font-size="11">releasing</text>
+          <line id="needle" x1="150" y1="160" x2="150" y2="58" stroke="#e9e5da" stroke-width="3.5" stroke-linecap="round" transform="rotate(0 150 160)"/>
+          <circle cx="150" cy="160" r="7" fill="#e9e5da"/>
+          <text id="gaugeVal" x="150" y="140" text-anchor="middle" fill="#e9e5da" font-size="26" font-weight="800">–</text>
+        </svg>
+        <div id="gaugeLabel" style="text-align:center;color:var(--amb);font-weight:700;font-size:14px;margin-top:4px">–</div>
+      </div>
+      <div>
+        <table style="margin-top:0" id="scoreTable">
+          <tr><th>Component (weight)</th><th style="width:210px">Stress 0–100</th><th>Score</th></tr>
+        </table>
+        <p class="quiet">Rubric: 0–25 flush · 25–50 normal · 50–75 <b>loaded</b> (Tier-1 accumulating — build hedges, cheapen entries) · 75–100 <b>releasing</b> (Tier-2 firing — execute ladders, halve sleeve size, fair venues only). Scores are judgment against the Tier-1/Tier-2 tables above; the gauge mechanizes the summary, not the thinking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIQUIDITY HISTORY ============ -->
+<section>
+  <h2>Net liquidity since 2000 <span class="tag live">LIVE</span> <span class="asof">quarterly, interpolated between anchor prints — wire FRED WALCL − WTREGEN − RRPONTSYD for exact series</span></h2>
+  <div class="panel">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+      <button class="zbtn" data-from="2000">Full</button>
+      <button class="zbtn" data-from="2008">2008 →</button>
+      <button class="zbtn" data-from="2020">2020 →</button>
+      <button class="zbtn" data-from="2024">24m</button>
+      <button id="zreset">Reset zoom</button>
+    </div>
+    <div style="position:relative;width:100%;height:340px"><canvas id="liqHist"></canvas></div>
+    <p class="quiet">Net liquidity = Fed balance sheet − TGA − ON RRP ($tn). Drag to zoom, wheel/pinch to zoom, shift-drag to pan. Eras: 2008 QE1 · 2010 QE2 · 2012 QE3 · 2018 QT1 · Sep-2019 repo break · 2020 COVID QE · 2022 QT2 + RRP build · 2023–24 RRP release (the hidden easing) · 2025–26 buffers spent, plateau ~$5.6tn while nominal GDP grows — the squeeze is the flat line against a rising economy, not a falling one.</p>
+  </div>
+</section>
+
+<!-- ============ FOUR DIALS ============ -->
+<section>
+  <h2>The four dials — check first, daily/weekly</h2>
+  <div class="grid g4">
+    <div class="dial"><div class="lbl">Repo stress</div><div class="val">SOFR − IORB · SRF use</div><p>The basis trade's vital signs. Drift = leading; spikes ex-dates = symptom. SRF got tax-day use 15 Sep 2025 — the first tremor.</p></div>
+    <div class="dial"><div class="lbl">Yield-tourist bid</div><div class="val">MMF flows · RRP</div><p>ICI weekly flows once cuts run. RRP ≈ 0 means no buffer behind this bid — outflows now transmit straight to bills.</p></div>
+    <div class="dial"><div class="lbl">Leverage gauge</div><div class="val">CFTC lev-fund UST shorts</div><p>Record futures shorts = basis at max size. Read in the Friday Norgate COT pack next to the ag cluster — same correlated-crowding rule.</p></div>
+    <div class="dial"><div class="lbl">New structural bid</div><div class="val">Stablecoin supply</div><p>Aggregate cap, weekly. Growth = incremental bill demand; a −5% month = a bridge segment failing while retail watches something else.</p></div>
+  </div>
+</section>
+
+<!-- ============ TIER 1: LEADING ============ -->
+<section>
+  <h2>Tier 1 — leading indicators (the spring loading, weeks–months)</h2>
+  <div class="panel">
+    <table>
+      <tr><th>Indicator</th><th>Watch for</th><th>Why it leads</th></tr>
+      <tr><td><b>Reserves vs ample floor</b></td><td>Reserves grinding toward/below ~$2.8tn; NY Fed reserve-demand elasticity indicator turning</td><td>2019 repo blow-up was this dial, ignored. QT ended here for a reason.</td></tr>
+      <tr><td><b>SOFR−IORB drift</b></td><td>Persistent upward drift; month-end prints structurally higher; EFFR creeping in its band</td><td>Collateral outgrowing cash — the slow version of the symptom</td></tr>
+      <tr><td><b>Auction microstructure trend</b></td><td>Dealer take-up share rising across consecutive coupon auctions; indirects fading; recurring small tails</td><td>Real bidders retreating before they strike — deterioration precedes failure</td></tr>
+      <tr><td><b>Swap spreads (30y)</b></td><td>Grinding more negative</td><td>Prices balance-sheet scarcity: the market bidding for someone to warehouse duration</td></tr>
+      <tr><td><b>Term premium (ACM 10y)</b></td><td>+50bp in a quarter without a macro story</td><td>The absorption fee rising = private bid demanding pay</td></tr>
+      <tr><td><b>Refunding mix</b></td><td>Coupon-share rising vs bills; QRA surprises (next QRA dates on calendar)</td><td>Coupons go to price-sensitive hands; bills go to MMFs. Mix = stress routing</td></tr>
+      <tr><td><b>FX-hedged carry</b></td><td>10y UST hedged into JPY/EUR flipping negative</td><td>Foreign private bid's on/off switch, visible in advance</td></tr>
+      <tr><td><b>Basis-trade size</b></td><td>Lev-fund TY/FV/TU shorts at records; sponsored repo growth; Cayman custody prints</td><td>Bigger bridge = bigger forced seller later. Size is the risk</td></tr>
+      <tr><td><b>Issuance congestion</b></td><td>Corporate calendar (AI wave, $945bn net 2026E) colliding with heavy coupon months; new-issue concessions trending up; hyperscaler CDS widening</td><td>Two absorbers asked to work the same weeks</td></tr>
+      <tr><td><b>Buyback bid withdrawal</b></td><td>Hyperscaler buyback run-rate (−64% y/y Q1-26); blackout windows on the calendar</td><td>The equity market's structural bid thinning at peak concentration</td></tr>
+      <tr><td><b>MOVE/VIX complacency + crowding</b></td><td>Low vol ∩ record leverage ∩ wide gap</td><td>The compressed-spring configuration itself</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ TIER 2: SYMPTOMS ============ -->
+<section>
+  <h2>Tier 2 — symptoms (it is happening, hours–days)</h2>
+  <div class="panel">
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Auction failure signature:</b> coupon auction tails ≥2.5–3bp on 10s/30s <i>with</i> dealer take ≥20–25% and bid-to-cover breaking range. One is noise; the combination is the private bid visibly refusing at these prices.</div></div>
+      <div class="alert"><div class="sev">🔴</div><div class="txt"><b>The correlation flip — the single cleanest tell:</b> equities down <i>and</i> long bonds down (yields up) on the same risk-off days, especially with the dollar softening and <b>gold up</b>. The absorber has become the seller; the hedge asset has become the exit. Three such days in two weeks = regime, not noise.</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Repo eruption:</b> SOFR ≥ IORB +15bp for 3+ days away from quarter/tax dates; SOFR 99th-percentile blowing out; <b>SRF usage &gt;$25bn sustained on non-dates</b> — the fire extinguisher in actual use.</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Basis unwind in motion:</b> swap spreads gapping more negative (−10bp+ in days) <i>with</i> Treasury futures OI collapsing and off-the-run/on-the-run spreads widening — forced deleveraging's exact fingerprint (Mar-2020 pattern).</div></div>
+    <div class="alert"><div class="sev">🔴</div><div class="txt"><b>Funding-market contagion:</b> FRA-OIS / SOFR-OIS widening, cross-currency basis blowing out (offshore dollar shortage), fails-to-deliver spiking (DTCC weekly).</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>Market-depth collapse:</b> top-of-book depth in 10y futures at percentile lows; bid-ask on off-the-runs widening. Liquidity leaves before price does.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>Primary market shutting:</b> IG deals pulled or postponed; concessions spiking; a hyperscaler jumbo delayed = the AI funding loop's weak link showing.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>New-era runs:</b> a major stablecoin depeg or aggregate supply −5% in a month; prime MMF outflow acceleration.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>Policy tells (confirmation, not prediction):</b> ad-hoc bill purchases, emergency SLR tweaks, auction-size cuts, "temporary" facilities with new acronyms. Each one confirms which bridge cracked.</div></div>
+  </div>
+</section>
+
+<!-- ============ POLICY WATCHLIST ============ -->
+<section>
+  <h2>Policy-response watchlist — the bridges being built</h2>
+  <div class="panel">
+    <ul>
+      <li><b>SLR relief</b> (re-enables bank absorption): rulemaking progress = bullish duration, bearish vol — the one genuine new absorber on the horizon.</li>
+      <li><b>Bill-tilted issuance</b> ("activist issuance" = stealth easing): watch each QRA's coupon/bill split — the Treasury managing the gap's routing in plain sight.</li>
+      <li><b>Standing Repo Facility</b>: capacity and stigma. Its <i>use</i> is a symptom; its <i>expansion</i> is a leading policy tell.</li>
+      <li><b>Fed reserve-management purchases</b> (post-QT bill buying, later 2026): the balance sheet quietly resuming growth — QE that must not be called QE.</li>
+      <li><b>Stablecoin legislation/adoption</b>: every $100bn of new supply is $100bn of conscripted bill demand.</li>
+      <li><b>Treasury buybacks</b>: off-the-run support operations — liquidity provision at the long end, size per quarter.</li>
+    </ul>
+  </div>
+</section>
+
+
+
+<!-- ============ CADENCE ============ -->
+<section>
+  <h2>Cadence &amp; sources</h2>
+  <div class="panel">
+    <table>
+      <tr><th>Frequency</th><th>Check</th></tr>
+      <tr><td><b>Daily (2 min)</b></td><td>SOFR vs IORB, EFFR (NY Fed) · SRF usage · MOVE · any auction results (tail, dealer take, cover)</td></tr>
+      <tr><td><b>Weekly</b></td><td>H.4.1 Thursday (reserves, SRF, discount window) · ICI MMF flows · DTCC fails · stablecoin aggregate cap · CFTC lev-fund UST positioning (Friday, into the Norgate pack) · swap spreads &amp; ACM term premium levels</td></tr>
+      <tr><td><b>Quarterly</b></td><td>QRA (issuance mix — calendar the dates) · SLR rulemaking status · Fed SOMA plans · this page's changelog review with falsification check on thresholds</td></tr>
+    </table>
+    <p class="quiet">Threshold discipline as everywhere in the family: pre-registered above, moved only via changelog with a reason — never on the day a signal fires.</p>
+  </div>
+</section>
+
+<!-- ============ CHANGELOG ============ -->
+<section>
+  <h2>Changelog</h2>
+  <div class="panel">
+    <table>
+      <tr><td style="white-space:nowrap"><b>v2 · 9 Sep 2026</b></td><td>Added composite liquidity gauge (7 weighted components, self-scoring sliders, opening read 58/100 "loaded") and zoomable net-liquidity history 2000–2026 (Fed BS − TGA − RRP, quarterly interpolated anchors; drag/wheel/pinch zoom, era range buttons). Pending: replace interpolated series with FRED pulls (WALCL, WTREGEN, RRPONTSYD) in the Saturday pack; add %-of-GDP toggle.</td></tr>
+      <tr><td style="white-space:nowrap"><b>v1 · 9 Sep 2026</b></td><td>Initial build from the funding-gap analysis (net gap ≈ $2.2tn 2025, ~$1.9tn 2026–27E after buyback correction). Bridge inventory: basis trade, MMF/households, foreign private, stablecoins, banks-pending-SLR; foreign officials logged as departed-to-gold. Two-tier indicator architecture with pre-registered thresholds. First tremor on record: SRF tax-day usage 15 Sep 2025. Pending: wire SOFR-IORB, MOVE, and lev-fund COT into the Saturday pack; add QRA dates to calendar; historical percentile bands for each dial.</td></tr>
+    </table>
+  </div>
+</section>
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
+<script id="liq-data">window.LIQ_DATA={"asof":"2026-09-10 09:47","asof_utc":"2026-09-10T07:47:51Z","rubric_version":"v1 2026-09-10","raw":{"srf_max_10sess_bn":0.675,"srf_max_when":"2026-09-04","srf_on_non_date":true,"auction_tail_bp_avg6":5.3,"auction_dealer_pct_avg6":9.22,"auction_count":10,"auction_latest_tail_bp":6.49999999999995,"auction_latest_dealer_pct":4.2999955897481135,"stables_supply_bn":310.2,"stable_supply_delta_30d_pct":1.66,"composite":53.15,"sofr_iorb_over_15_streak_d":null,"srf_gt_25_recent_flag":0,"auction_bad_flag":0,"composite_60_rising_flag":null},"scores":[null,null,63.0,null,38.38,null,null],"series":[],"partial":true,"generated_by":"liquidity_pull.py"};</script>
+<script>
+/* ---------- GAUGE ---------- */
+const LD = window.LIQ_DATA || null;
+const components = [
+  {name:"Reserves vs ample floor", w:0.20, v:62},
+  {name:"SOFR−IORB drift / SRF", w:0.20, v:55},
+  {name:"Auction microstructure", w:0.15, v:42},
+  {name:"Basis-trade size (COT)", w:0.15, v:72},
+  {name:"MMF / stablecoin bid", w:0.10, v:25},
+  {name:"Term premium & 30y swap spread", w:0.10, v:58},
+  {name:"Funding gap vs buffers", w:0.10, v:78}
+];
+if(LD && LD.scores){ components.forEach((c,i)=>{ if(LD.scores[i]!=null) c.v=LD.scores[i]; }); }
+if(LD && LD.asof){ document.querySelectorAll('.asof').forEach(el=>{ if(el.dataset.auto!==undefined) el.textContent='auto-updated '+LD.asof; }); }
+const tbl = document.getElementById('scoreTable');
+function renderGauge(){
+  let comp = 0;
+  components.forEach(c => comp += c.w * c.v);
+  comp = Math.round(comp);
+  const ang = -90 + (comp/100)*180;
+  document.getElementById('needle').setAttribute('transform','rotate('+ang+' 150 160)');
+  document.getElementById('gaugeVal').textContent = comp;
+  const lbl = document.getElementById('gaugeLabel');
+  if(comp<25){lbl.textContent='FLUSH';lbl.style.color='#5fa8a0';}
+  else if(comp<50){lbl.textContent='NORMAL';lbl.style.color='#8fa19a';}
+  else if(comp<75){lbl.textContent='LOADED — build hedges, cheapen entries';lbl.style.color='#d9a441';}
+  else {lbl.textContent='RELEASING — execute ladders';lbl.style.color='#e4572e';}
+}
+components.forEach((c,i)=>{
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td>'+c.name+' <span style="color:#5f6f6a">('+Math.round(c.w*100)+'%)</span></td>'+
+    '<td><input type="range" min="0" max="100" step="1" value="'+c.v+'" data-i="'+i+'" style="width:100%"></td>'+
+    '<td class="num" id="sc'+i+'" style="font-weight:700">'+c.v+'</td>';
+  tbl.appendChild(tr);
+});
+tbl.addEventListener('input',e=>{
+  if(e.target.type==='range'){
+    const i=+e.target.dataset.i; components[i].v=+e.target.value;
+    document.getElementById('sc'+i).textContent=e.target.value;
+    renderGauge();
+  }
+});
+renderGauge();
+
+/* ---------- HISTORY CHART ---------- */
+/* anchors: [year, Fed BS, TGA, RRP] in $tn, year-end unless noted */
+const anchors = [
+ [2000,0.61,0.05,0],[2002,0.68,0.05,0],[2004,0.75,0.05,0],[2006,0.85,0.05,0],[2007.5,0.89,0.05,0],
+ [2008.7,0.95,0.3,0],[2008.95,2.24,0.3,0],[2009.9,2.24,0.15,0],[2010.9,2.41,0.1,0],[2011.9,2.92,0.09,0],
+ [2012.9,2.91,0.09,0],[2013.9,4.03,0.16,0],[2014.9,4.50,0.22,0],[2015.9,4.49,0.33,0],[2016.9,4.45,0.39,0],
+ [2017.9,4.45,0.23,0],[2018.9,4.08,0.4,0],[2019.7,3.78,0.18,0],[2019.9,4.17,0.4,0],
+ [2020.3,6.6,1.0,0],[2020.9,7.36,1.7,0],[2021.5,8.1,0.7,0.9],[2021.9,8.76,0.4,1.7],
+ [2022.4,8.97,0.9,1.9],[2022.9,8.55,0.6,2.3],[2023.4,8.5,0.06,2.2],[2023.9,7.68,0.75,1.0],
+ [2024.5,7.2,0.75,0.4],[2024.9,6.85,0.7,0.2],[2025.4,6.7,0.45,0.15],[2025.7,6.62,0.55,0.05],
+ [2025.9,6.57,0.85,0.02],[2026.3,6.52,0.55,0.01],[2026.55,6.50,0.75,0.005],[2026.7,6.50,0.89,0.005]
+];
+const pts=[];
+if(LD && LD.series && LD.series.length){
+  LD.series.forEach(r=>pts.push({x:r[0], y:r[1]}));
+} else {
+for(let q=2000;q<=2026.7;q+=0.25){
+  let j=0; while(j<anchors.length-1 && anchors[j+1][0]<q) j++;
+  const a=anchors[j], b=anchors[Math.min(j+1,anchors.length-1)];
+  const t=(b[0]===a[0])?0:(q-a[0])/(b[0]-a[0]);
+  const bs=a[1]+(b[1]-a[1])*Math.max(0,Math.min(1,t));
+  const tga=a[2]+(b[2]-a[2])*Math.max(0,Math.min(1,t));
+  const rrp=a[3]+(b[3]-a[3])*Math.max(0,Math.min(1,t));
+  pts.push({x:q, y:+(bs-tga-rrp).toFixed(2)});
+}
+}
+const muted=getComputedStyle(document.documentElement).getPropertyValue('--mut').trim()||'#8fa19a';
+const hist=new Chart(document.getElementById('liqHist'),{
+ type:'line',
+ data:{datasets:[{label:'Net liquidity ($tn)',data:pts,borderColor:'#8d7bd8',backgroundColor:'rgba(141,123,216,0.10)',fill:true,borderWidth:2,pointRadius:0,tension:0.2}]},
+ options:{responsive:true,maintainAspectRatio:false,parsing:false,
+  interaction:{mode:'nearest',axis:'x',intersect:false},
+  plugins:{legend:{display:false},
+   tooltip:{callbacks:{title:i=>{const x=i[0].parsed.x;const yr=Math.floor(x);const qq=Math.round((x-yr)/0.25)+1;return yr+' Q'+Math.min(qq,4);},label:c=>'Net liquidity: $'+c.parsed.y.toFixed(2)+'tn'}},
+   zoom:{zoom:{drag:{enabled:true,backgroundColor:'rgba(141,123,216,0.15)'},wheel:{enabled:true},pinch:{enabled:true},mode:'x'},pan:{enabled:true,mode:'x',modifierKey:'shift'}}
+  },
+  scales:{
+   x:{type:'linear',min:2000,max:2027,ticks:{color:muted,stepSize:2,callback:v=>Math.floor(v)},grid:{display:false}},
+   y:{ticks:{color:muted,callback:v=>'$'+v+'tn'},grid:{color:'rgba(137,135,129,0.15)'}}
+  }
+ }
+});
+document.querySelectorAll('.zbtn').forEach(b=>b.addEventListener('click',()=>{
+  hist.options.scales.x.min=+b.dataset.from==='24'?2024:+b.dataset.from;
+  hist.options.scales.x.min=+b.dataset.from; hist.options.scales.x.max=2027; hist.update();
+}));
+document.getElementById('zreset').addEventListener('click',()=>{hist.resetZoom();hist.options.scales.x.min=2000;hist.options.scales.x.max=2027;hist.update();});
+</script>
+
+<!-- marketdata dashboard live-data hooks (auto-refreshing, shared across all dashboards) -->
+<script src="dashboard_data.js"></script>
+<script src="dashboard_populate.js"></script>
+</body>
+</html>
