@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sugar — Market Playbook &amp; Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cacao:#2b1a10;      /* page ground — dark roast */
+    --nib:#3a2718;        /* raised panels */
+    --shell:#57402a;      /* borders, rules */
+    --husk:#f0e2cb;       /* primary text — parchment */
+    --husk-dim:#c9b394;   /* secondary text */
+    --amber:#e39a3b;      /* accent — pod gold */
+    --leaf:#8fb069;       /* positive / supportive */
+    --ember:#cf6349;      /* negative / risk */
+    --live:#e39a3b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{
+    background:var(--cacao);
+    color:var(--husk);
+    font-family:'Archivo',system-ui,sans-serif;
+    font-size:15.5px;
+    line-height:1.6;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 28px 90px}
+  a{color:var(--amber)}
+
+  /* ---------- header ---------- */
+  header{padding:56px 0 34px;border-bottom:1px solid var(--shell)}
+  .kicker{color:var(--husk-dim);font-size:14px;margin-bottom:10px}
+  h1{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(40px,6vw,64px);line-height:1.02;letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic;color:var(--amber)}
+  .contracts{margin-top:14px;color:var(--husk-dim);font-size:14.5px;max-width:62ch}
+
+  /* ---------- situation strip ---------- */
+  .strip{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:1px;background:var(--shell);border:1px solid var(--shell);
+    margin:34px 0 0;
+  }
+  .cell{background:var(--nib);padding:16px 18px}
+  .cell .v{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1.15}
+  .cell .l{color:var(--husk-dim);font-size:13px;margin-top:4px}
+  .v.up{color:var(--leaf)} .v.down{color:var(--ember)} .v.warn{color:var(--amber)}
+
+  .asof{
+    display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+    color:var(--amber);font-size:13px;
+  }
+  .asof::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live)}
+
+  /* ---------- sections ---------- */
+  section{padding:44px 0 8px;border-bottom:1px solid var(--shell)}
+  h2{
+    font-family:'Fraunces',serif;font-weight:500;font-size:30px;
+    letter-spacing:-.005em;margin-bottom:6px;
+  }
+  .sub{color:var(--husk-dim);margin-bottom:24px;max-width:72ch}
+  .livebadge{
+    display:inline-block;margin-left:10px;vertical-align:middle;
+    font-family:'Archivo';font-size:12px;font-weight:600;color:var(--cacao);
+    background:var(--amber);padding:2px 9px;border-radius:2px;
+  }
+  h3{font-family:'Fraunces',serif;font-weight:600;font-size:18.5px;margin:26px 0 8px;color:var(--amber)}
+  p{max-width:76ch;margin-bottom:14px}
+  strong{color:var(--husk);font-weight:600}
+  .dim{color:var(--husk-dim)}
+
+  /* two-col primer */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 44px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+
+  /* watch table */
+  table{width:100%;border-collapse:collapse;margin:18px 0 26px;font-size:14.5px}
+  th{
+    text-align:left;color:var(--husk-dim);font-weight:500;font-size:13px;
+    padding:0 14px 10px 0;border-bottom:1px solid var(--shell);
+  }
+  td{padding:12px 14px 12px 0;border-bottom:1px solid var(--shell);vertical-align:top}
+  td:first-child{white-space:nowrap;color:var(--amber);font-weight:500}
+  tr:last-child td{border-bottom:none}
+
+  /* seasonal calendar — the centerpiece */
+  .cal{margin:26px 0 18px;border:1px solid var(--shell)}
+  .cal-row{display:grid;grid-template-columns:150px repeat(12,1fr);border-bottom:1px solid var(--shell)}
+  .cal-row:last-child{border-bottom:none}
+  .cal-row>div{padding:9px 6px;font-size:12.5px;text-align:center;border-left:1px solid var(--shell)}
+  .cal-row>div:first-child{
+    text-align:left;padding-left:14px;color:var(--husk-dim);border-left:none;
+    display:flex;align-items:center;font-size:13px;
+  }
+  .cal-head>div{background:var(--nib);color:var(--husk);font-weight:600}
+  .on{background:var(--amber);color:var(--cacao);font-weight:600}
+  .on.soft{background:#8a6a33;color:var(--husk)}
+  .on.wet{background:#4d6a8f;color:var(--husk)}
+  .on.dry{background:#a05236;color:var(--husk)}
+  .calnote{color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+  @media(max-width:820px){
+    .cal{overflow-x:auto}
+    .cal-row{min-width:900px}
+  }
+
+  /* chatter panel */
+  .panel{background:var(--nib);border:1px solid var(--shell);padding:22px 24px;margin:18px 0}
+  .panel h3{margin-top:0}
+  ul{margin:0 0 14px 20px;max-width:74ch}
+  li{margin-bottom:8px}
+  li::marker{color:var(--amber)}
+
+  /* bull/bear */
+  .bb{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.bb{grid-template-columns:1fr}}
+  .bb .panel{margin:0}
+  .bb h3{margin-top:0}
+  .bb .bull h3{color:var(--leaf)}
+  .bb .bear h3{color:var(--ember)}
+
+
+  /* charts */
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card{background:var(--nib);border:1px solid var(--shell);padding:14px 10px 6px}
+  .chart-card svg{width:100%;height:auto;display:block;font-family:'Archivo',sans-serif}
+
+  /* highlights */
+  .hl{border-bottom:1px solid var(--shell);padding:26px 0 20px}
+  .hl ul{margin:10px 0 0 0;list-style:none;max-width:none}
+  .hl li{margin-bottom:10px;padding-left:0;display:flex;gap:14px;align-items:baseline}
+  .hl .d{flex:0 0 64px;color:var(--amber);font-size:12.5px;font-weight:600;white-space:nowrap}
+  .hl .t{color:var(--husk);font-size:14.5px;max-width:80ch}
+  .hl .t em{color:var(--husk-dim);font-style:normal}
+
+  footer{padding-top:36px;color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+</style>
+
+<!-- public build 2026-09-11 09:15 — structural strips: 0; prose edits: 1 -->
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Commodity playbook 3 of 5 · cocoa · coffee · <span style="color:var(--amber)">sugar</span> · cotton · grains &amp; oilseeds</div>
+  <h1>Sugar, <em>read like a local</em></h1>
+  <p class="contracts">ICE No.11 raw sugar (SB, US¢/lb, 112,000 lb/contract) and ICE No.5 white sugar, London (USD/t). Three exporters — Brazil, Thailand, India — ship ~70% of world trade, and one mechanism makes sugar unlike every other soft: Brazilian cane is a dual-use crop, flexed between sugar and ethanol mill by mill, fortnight by fortnight. Sugar is half a food market and half an energy market.</p>
+  <div class="strip">
+    <div class="cell"><div class="v"><span data-field="SB.price_cents">≈ 18 ¢/lb</span></div><div class="l">No.11, early Sep 2026 — 16-month high</div></div>
+    <div class="cell"><div class="v up">+~20% YTD</div><div class="l">biggest monthly gain since 2010 in August</div></div>
+    <div class="cell"><div class="v warn">Deficit forming</div><div class="l">26/27 forecasts: −0.3 to −3.2 MMT, all widening</div></div>
+    <div class="cell"><div class="v warn">El Niño premium built</div><div class="l">90%+ probability of a very strong event</div></div>
+    <div class="cell"><div class="v down">Crowded long</div><div class="l">funds at multi-year positioning highs</div></div>
+  </div>
+  <div class="asof">Data as of <span data-field="_generated_at">7 September 2026</span> · auto-refresh every 15 min</div>
+</header>
+
+<!-- ================= HIGHLIGHTS ================= -->
+<div class="hl">
+  <h2 style="font-size:22px">Latest from the ground &amp; the tape<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <ul>
+    <li><span class="d">Early Sep</span><span class="t">No.11 above 18 ¢, highest since April 2025, after August delivered the strongest monthly gain since October 2010 — sugar is now beating the S&amp;P year-to-date. <em>The deficit narrative has gone mainstream; that is itself information.</em></span></li>
+    <li><span class="d">Late Aug</span><span class="t">Deficit forecasts widening in unison: ISO −0.26 MMT, StoneX −0.55, Citi −1.3, Green Pool −3.2 for 26/27 — "they're all increasing the deficit." <em>Direction unanimous, magnitude wide open — a ±3 MMT dispersion, same epistemic state as cocoa's balance.</em></span></li>
+    <li><span class="d">Aug</span><span class="t">India surprised the market with import speculation — the world's #2 producer potentially buying — while the monsoon's final weeks under El Niño decide the 26/27 crush. <em>Indian policy headlines are sugar's CCC-forward-sales equivalent: the state revealing its crop view through behaviour.</em></span></li>
+    <li><span class="d">Aug</span><span class="t">EU capitulation: 26/27 output pegged at 13.4 MMT, −19% y/y, on a ~7.5% beet-area contraction after two loss-making years; new-crop EU whites indicated 500–550 EUR/t; IPR import-suspension vote pending. <em>The quiet structural leg of the deficit — beet farmers voting with their fields.</em></span></li>
+    <li><span class="d">Season</span><span class="t">Brazil's mix shift: mills cut the sugar mix sharply in favour of ethanol early in the crush (April fortnight: 32.9% vs 44.7% a year earlier) with Conab seeing 26/27 sugar −0.5 to −2.9% and ethanol +7–10%. <em>Watch UNICA fortnightlies — the mix is the swing supply of the world market.</em></span></li>
+    <li><span class="d">25 Aug wk</span><span class="t">Funds bought ag at the fastest pace on record, with sugar at multi-year net-long highs. <em>The anti-cocoa: here the crowding warning runs against the bull case, not for it.</em></span></li>
+  </ul>
+</div>
+
+<!-- ================= ALERTS ================= -->
+<div class="hl" id="alerts">
+  <h2 style="font-size:22px">Alert triggers — pre-registered</h2>
+  <p class="sub" style="margin-bottom:12px">Checked first at every refresh. 🔴 = regime line, 🟠 = material development.</p>
+  <ul>
+    <li><span class="d">🔴</span><span class="t"><strong>Indian export/import policy announcement</strong> (export quota, ban, or confirmed import program) — the single biggest discrete repricer in this market.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>Fund long liquidation: three consecutive weeks of net-long reduction from the multi-year high</strong> — the crowded side unwinding; with positioning this stretched, the air pocket is below.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>Any major forecaster revising 26/27 back toward surplus</strong> — the unanimous-direction consensus cracking.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>UNICA fortnightly shows the sugar mix turning back up</strong> — mills re-maximizing sugar means the ethanol diversion (a pillar of the deficit) is reversing; usually crude-driven.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Crude/gasoline breakdown</strong> — collapses ethanol parity, pushes Brazilian mix toward sugar, adds supply with a lag.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Final monsoon deficit &gt;10% of long-period average</strong> in the cane states (Maharashtra, UP, Karnataka) — India's 26/27 crush shrinks and the import scenario hardens.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>EU IPR suspension decision</strong> — ~70% of early-season EU raw imports ran through IPR; suspension tightens the white premium.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>White premium (No.5 − No.11) blowout or collapse</strong> — the refining-margin stress gauge.</span></li>
+  </ul>
+  <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. · v1.1 — 9 Sep 2026: added Brazil-ethanol parity cross-link pointer under "The ethanol hinge" — reciprocal to grains-dashboard.html v1.2 <a href="grains-dashboard.html#ethanol">Ethanol complex</a> (crush-margin panel, D6 RIN, parity-flip alert). Same driver, two books; keep exits synchronized.</p>
+</div>
+
+<!-- ================= PRIMER ================= -->
+<section id="primer">
+  <h2>The market in one page</h2>
+  <p class="sub">The permanent structure. Refresh yearly.</p>
+  <div class="cols">
+    <div>
+      <h3>The ethanol hinge — sugar's defining mechanism</h3>
+      <p>Brazilian mills crush cane into sugar <em>or</em> ethanol, and can swing the mix roughly 5–10 percentage points season to season — several million tonnes of world supply — based on the relative price of sugar vs ethanol (itself driven by gasoline, crude and Brazilian fuel policy). Consequence: <strong>sugar has a crude-oil beta no other soft has.</strong> A crude rally is sugar-bullish (cane diverts to ethanol); a crude collapse is sugar-bearish with a lag. The UNICA fortnightly mix number is the world's swing supply, published every two weeks.</p>
+      <p style="border-left:3px solid var(--amber);padding-left:12px;margin-top:8px"><strong>Cross-book pointer (v1.1 · 9 Sep 2026):</strong> the parity mechanism is analyzed from the corn side in <a href="grains-dashboard.html#ethanol">grains-dashboard.html — Ethanol complex</a>, where the crush margin, D6 RIN policy layer and pre-registered <em>Brazil-parity-flip alert (hydrous vs sugar, sustained 2+ weeks)</em> live. Same driver family — keep exits synchronized in review.</p>
+      <h3>Three exporters, one swing state</h3>
+      <p><strong>Brazil</strong> (~21% of production, ~45% of exports) sets the world price at the margin. <strong>India</strong> is the #2 producer but trades as a policy variable, not a market: export bans/quotas, minimum prices, and an aggressive ethanol-blending program that structurally diverts cane. <strong>Thailand</strong> is the #2 exporter, monsoon-dependent. The EU beet complex, China and the protected US market matter regionally; the world price is made by the tropical three.</p>
+      <h3>Demand</h3>
+      <p>Steady ~1–2%/yr growth, EM-driven and price-inelastic in the short run. The GLP-1/anti-sugar narrative is a real long-horizon question for Western demand but has not yet dented world consumption growth — Asia and Africa dominate the increments.</p>
+    </div>
+    <div>
+      <h3>Two crushes, two calendars</h3>
+      <p><strong>Center-South Brazil crushes April–December</strong> — UNICA reports crush, mix and cane quality (ATR) every fortnight, making Brazil the best-instrumented crop in softs. <strong>India and Thailand crush November–April</strong>, their cane made or broken by the <strong>June–September monsoon</strong>. So the market's attention rotates: monsoon watch (Jun–Sep) → Asian crush reveal (Nov–Apr) → Brazilian crush and mix (Apr–Dec) → repeat.</p>
+      <h3>El Niño's split personality here</h3>
+      <p>Unlike cocoa and coffee, El Niño cuts <em>both ways</em> in sugar: it typically means <strong>drought risk in India and Thailand</strong> (bullish) but <strong>excess rain in Center-South Brazil</strong> — which disrupts the current harvest and dilutes cane quality (bullish short-term) while recharging soil moisture for the <em>next</em> cane cycle (bearish 27/28). Sugar's El Niño trade is a spread across origins and seasons, not a single direction.</p>
+      <h3>Two contracts, one margin</h3>
+      <p>No.11 (raw, FOB Brazil-centric) vs No.5 (white, London): the <strong>white premium</strong> is the world refining margin and a stress gauge for the destination markets. Raws are the macro trade; whites carry the EU/logistics stories.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CURRENT STORY ================= -->
+<section id="now">
+  <h2>The current story<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Where we are in the cycle and what the market is arguing about.</p>
+  <p><strong>Sugar is running the same "this year fine, next year feared" script as cocoa and coffee — but it's the furthest along in pricing it.</strong> 2025/26 closed as the second-highest production year on record (~182 MMT, a 2+ MMT surplus after 2024/25's −3.5 MMT deficit), and prices spent the first half of 2026 grinding down toward ~15 ¢ under the weight of it. Then the 26/27 revisions began: every major forecaster now sees a deficit — ISO −0.26 MMT (production 180.1 vs consumption 180.4), StoneX −0.55, Citi −1.3, Green Pool −3.2 — and each revision has been in the same direction. August delivered the biggest monthly rally since 2010; No.11 sits above 18 ¢ at 16-month highs.</p>
+  <p><strong>The deficit has three legs.</strong> One: <strong>Brazil's ethanol diversion</strong> — mills opened the crush with the sugar mix slashed (32.9% vs 44.7% in the April fortnight) as ethanol paid better; Conab sees 26/27 sugar output down and ethanol up 7–10%. Two: <strong>the EU's structural retreat</strong> — beet area down ~7.5% after loss-making years, output forecast −19% to 13.4 MMT, with the IPR import-suspension vote threatening the inflow that plugged the gap. Three: <strong>El Niño over Asia</strong> — a 90%+ probability of a very strong event spanning the Indian monsoon's tail and Thailand's cane development, with India's crush already down to ~28 MMT in 25/26 and import speculation circulating for the first time in years.</p>
+  <p><strong>What makes this market different from the other two dashboards right now is the tape: the fear is already owned.</strong> Funds sit at multi-year net-long highs after buying ag at the fastest pace on record in late August. The premium-vs-forecast question that coffee answers with "premium missing" gets the opposite answer here: sugar's price carries a full El Niño-deficit premium, held with leverage, before the monsoon's final numbers, the Asian crush, or a single UNICA fortnight of the peak season has confirmed it. The asymmetry has migrated: upside needs the deficit to *widen* beyond −1 MMT consensus; downside needs only a normal-ish outcome plus a crowded exit.</p>
+</section>
+
+<!-- ================= BALANCE ================= -->
+<section id="balance">
+  <h2>The balance sheet<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <table>
+    <tr><th>Season</th><th>Balance</th><th>Detail</th></tr>
+    <tr><td>2024/25</td><td><span style="color:var(--ember)">−3.46 MMT deficit</span></td><td>The deficit that powered the 2023–24 price era (peaks ~28 ¢).</td></tr>
+    <tr><td>2025/26</td><td><span style="color:var(--leaf)">≈ +2 MMT surplus</span></td><td>Second-highest crop on record (~182 MMT, +3.5%); ISO later trimmed the surplus to marginal. The comfortable present.</td></tr>
+    <tr><td>2026/27f</td><td><span style="color:var(--amber)">−0.26 to −3.2 MMT</span></td><td>ISO −0.26 · StoneX −0.55 · Citi −1.3 · Green Pool −3.2. Unanimous direction, ±3 MMT dispersion — production ~180 MMT vs consumption ~180.4.</td></tr>
+  </table>
+  <h3>The synthesis</h3>
+  <p>The forecast deficit range spans an order of magnitude, and the swing variables are legible: the Brazilian mix (a crude-price function), the Indian monsoon's final tally and the policy response to it, Thai cane under El Niño, and the EU's beet retreat (locked in). At the small end (−0.3 MMT) the market has over-rallied into a rounding error; at the large end (−3.2 MMT) this looks like 2023/24's setup, which took prices to 28 ¢. The honest read: the <em>direction</em> is well-supported — three independent legs all point tighter — but the current price already pays for roughly the consensus middle, held by a record long. The trade from here is about the tails and the sequencing, not the sign.</p>
+  <p class="dim">Note the epistemic rhyme with cocoa: unanimous direction, dispersion wider than the central estimate. In both markets, the forecaster spread — not the average — is the real information.</p>
+</section>
+
+<!-- ================= WATCH ================= -->
+<section id="watch">
+  <h2>What to watch next<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <table>
+    <tr><th>When</th><th>What</th><th>Why it moves price</th></tr>
+    <tr><td>Now → end Sep</td><td>Monsoon finale: IMD weekly rainfall vs long-period average in Maharashtra, UP, Karnataka</td><td>The last weeks decide India's 26/27 cane. A late surge rescues the crop; a dry finish under El Niño hardens the import scenario.</td></tr>
+    <tr><td>Fortnightly</td><td>UNICA Center-South report: crush, sugar/ethanol mix, ATR (cane quality)</td><td>The world's swing supply in one release. Mix turning back toward sugar = the deficit's Brazilian leg shrinking in real time.</td></tr>
+    <tr><td>Ongoing</td><td>Indian policy wire: export quota, import duty changes, ethanol blending targets, MSP</td><td>Discrete, binary, unschedulable — the market's biggest single-headline risk in both directions.</td></tr>
+    <tr><td>Weekly, Fri</td><td>CFTC COT — net long vs the multi-year high</td><td>The crowding gauge. This is a market where the positioning warning runs against the trend-follower consensus.</td></tr>
+    <tr><td>Daily</td><td>Crude &amp; Brazilian gasoline (ethanol parity)</td><td>Sugar's energy beta. A crude break is a delayed sugar-supply increase via the mix.</td></tr>
+    <tr><td>Coming days</td><td>EU IPR import-suspension vote; Mercosur quota flows</td><td>White-premium and EU-balance repricer.</td></tr>
+    <tr><td>Nov →</td><td>Indian and Thai crush openings: mill counts, early recovery rates</td><td>The Asian reveal — where El Niño's damage (or absence) becomes measurable.</td></tr>
+    <tr><td>Quarterly</td><td>ISO market report; Czarnikow/Green Pool/StoneX balance revisions</td><td>Watch the dispersion converge or crack.</td></tr>
+  </table>
+
+  <h3>How the 26/27 balance reveals itself — the sequence</h3>
+  <table>
+    <tr><th>Window</th><th>Reveal</th><th>Read</th></tr>
+    <tr><td>Sep</td><td>Monsoon final tally + reservoir levels</td><td>India's crop ceiling set. Reservoirs matter for the <em>following</em> year too — El Niño's shadow is two seasons long.</td></tr>
+    <tr><td>Sep–Dec</td><td>UNICA fortnightlies through the crush peak and tail</td><td>Whether Brazil's mix stays ethanol-heavy to season's end; El Niño rains disrupting the harvest tail would cut both crush volume and ATR.</td></tr>
+    <tr><td>Oct–Nov</td><td>Indian government's first 26/27 production estimate + policy stance</td><td>The state's behaviour (quota granted or not, imports allowed or not) reveals its internal crop view — same logic as the CCC's forward sales.</td></tr>
+    <tr><td>Nov–Jan</td><td>Asian crush openings: Thai and Indian early recovery rates and mill starts</td><td>The first hard data on El Niño damage; recovery rates lead final tonnage.</td></tr>
+    <tr><td>Feb–Apr 27</td><td>Crush closures and final tallies</td><td>Resolution — by spring the deficit has a number and the market trades 27/28 (where Brazilian soil moisture from El Niño rains turns bearish).</td></tr>
+  </table>
+</section>
+
+<!-- ================= SEASONS ================= -->
+<section id="seasons">
+  <h2>The year, mapped</h2>
+  <p class="sub">Amber = crush/crop flow, blue = monsoon/rain windows, rust = El Niño dry risk.</p>
+  <div class="cal">
+    <div class="cal-row cal-head">
+      <div>Cycle</div><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>May</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Oct</div><div>Nov</div><div>Dec</div>
+    </div>
+    <div class="cal-row">
+      <div>CS Brazil crush</div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on soft">●</div>
+    </div>
+    <div class="cal-row">
+      <div>India crush</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on soft">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div>
+    </div>
+    <div class="cal-row">
+      <div>Thailand crush</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div>
+    </div>
+    <div class="cal-row">
+      <div>Indian monsoon</div><div></div><div></div><div></div><div></div><div></div><div class="on wet">●</div><div class="on wet">●</div><div class="on wet">●</div><div class="on wet">●</div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>El Niño dry risk (Asia)</div><div class="on dry">●</div><div class="on dry">●</div><div></div><div></div><div></div><div></div><div></div><div class="on dry">●</div><div class="on dry">●</div><div class="on dry">●</div><div class="on dry">●</div><div class="on dry">●</div>
+    </div>
+    <div class="cal-row">
+      <div>UNICA fortnightlies</div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div class="on">●</div>
+    </div>
+    <div class="cal-row">
+      <div>ISO quarterly</div><div></div><div class="on">●</div><div></div><div></div><div class="on">●</div><div></div><div></div><div class="on">●</div><div></div><div></div><div class="on">●</div><div></div>
+    </div>
+  </div>
+  <p class="calnote">The attention rotation: monsoon watch Jun–Sep → Indian policy season Oct–Nov → Asian crush reveal Nov–Apr → Brazilian crush and mix Apr–Dec, with UNICA's fortnightly the steadiest drumbeat in softs. CFTC COT Fridays and the crude tape run underneath all year.</p>
+</section>
+
+<!-- ================= POLICY ================= -->
+<section id="policy">
+  <h2>Standing policy &amp; structural variables</h2>
+  <h3>India: the state is the market</h3>
+  <p>Export quotas and bans, minimum support prices, and the ethanol blending program (structurally diverting cane toward E20+ targets) make Indian supply a political output. The policy logic is consistent: domestic food-price stability first, exports only from proven surplus. Read the state's behaviour, not its statements — an export quota granted is a bullish-crop signal; import-duty cuts are the confession of a short one.</p>
+  <h3>Brazil: fuel policy is sugar policy</h3>
+  <p>Ethanol demand — hence the mix — depends on gasoline pricing, blend mandates and tax treatment. Any Petrobras pricing shift or federal fuel-tax change is a sugar-supply event in disguise.</p>
+  <h3>The EU's structural retreat</h3>
+  <p>Two loss-making beet years, regulatory pressure on neonicotinoids and inputs, and a ~7.5% area contraction have turned the EU from swing producer to structural importer — the IPR suspension vote and Mercosur quotas now govern how the gap gets filled. Slow-moving, but it's a permanent leg under the world balance.</p>
+  <h3>Demand's long shadow</h3>
+  <p>GLP-1 drugs and sugar taxes are the decade-scale bear thesis on Western consumption. Nothing in world aggregates yet — EM growth dominates — but it's the standing question under every multi-year bull case, worth an annual check rather than a weekly one.</p>
+</section>
+
+<!-- ================= CHATTER ================= -->
+<section id="chatter">
+  <h2>Origin &amp; social chatter<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <div class="panel">
+    <h3>Current themes</h3>
+    <ul>
+      <li><strong>"Everyone raises their deficit"</strong> — the forecaster one-upmanship is itself the story; trade commentary notes the direction is unanimous even as magnitudes diverge by 10x.</li>
+      <li><strong>India import speculation</strong> — the market's favourite parlor game: timing and size of possible Indian buying, read from duty rumours and mill-association noises.</li>
+      <li><strong>Monsoon accounting</strong> — weekly IMD tallies parsed district by district; El Niño superlatives (Niño-3.4 &gt;3°C talk) running ahead of verified data, as in cocoa and coffee.</li>
+      <li><strong>Brazilian harvest-tail weather</strong> — early chatter about El Niño rains disrupting the Oct–Dec crush tail and diluting ATR.</li>
+    </ul>
+  </div>
+  <h3>How to listen</h3>
+  <p><strong>Czapp (Czarnikow)</strong> publishes genuinely deep, free trade-house analysis — the best single sugar listening post. <strong>UNICA's</strong> fortnightly release and commentary is the Brazilian ground truth. <strong>ChiniMandi</strong> is the Indian industry's own news portal — where mill-association lobbying, state-level cane politics and policy leaks surface first, in English. ISO quarterlies anchor the official view. Broker dailies (StoneX) relay the flow colour.</p>
+  <h3>Bias corrections for this market</h3>
+  <p>The loudest voice is neither farmers nor officials but <strong>Indian mill associations (ISMA and state bodies)</strong> — and their bias is structural: they lobby for export permission, so they systematically talk the crop <em>up</em> (a big crop justifies quotas). The government's bias runs the other way (food-price caution). The truth usually sits between ISMA's optimism and the government's conservatism — and is best read from <em>behaviour</em>: actual quota decisions, duty changes, and mill payment arrears. Brazilian mills barely need decoding — the UNICA mix number *is* their revealed preference, published fortnightly. The against-interest rule from the other dashboards applies unchanged.</p>
+</section>
+
+<!-- ================= TRADING ================= -->
+<section id="trading">
+  <h2>How this market trades</h2>
+  <p><strong>The crowding warning is the headline.</strong> Funds hold multi-year net-long highs into a deficit story that is forecast, not yet measured. That's the inverse of cocoa's clean-short setup: here, good news is partly spent, and a merely-normal monsoon finish or a mix reversal meets a leveraged long with an air pocket underneath. If you take the bull side, you're late to the positioning even if right on the fundamentals — structure and timing matter more than the view. The contrarian setup (fading the premium) has the positioning tailwind but fights three genuinely deteriorating supply legs — it wants a trigger (a fired 🔴), not anticipation.</p>
+  <p><strong>Liquidity is the best in softs</strong> — sugar's open interest and depth dwarf cocoa's, tail risk is lower, and spreads are tight. This is the soft where enter-and-stop campaigns execute cleanest and where futures (not dealer products) are unambiguously the venue.</p>
+  <div class="panel">
+    <h3>The structure trades</h3>
+    <ul>
+      <li><strong>Crude-sugar relationship:</strong> the ethanol parity gives sugar an energy leg — a crude view can be expressed or hedged through the mix mechanism.</li>
+      <li><strong>White premium (No.5 − No.11):</strong> the refining margin; EU retreat and IPR politics live here.</li>
+      <li><strong>Calendar spreads (Oct/Mar, Mar/May):</strong> the Brazilian harvest-tail and Asian-crush timing stories express in the front spreads before flat price.</li>
+      <li><strong>Cross-soft relative value:</strong> sugar (crowded long, premium built) vs coffee (clean positioning, premium missing) on the <em>same</em> El Niño driver is the season's most interesting relative-value observation — one weather event, two opposite pricings.</li>
+    </ul>
+  </div>
+  <div class="bb">
+    <div class="panel bull">
+      <h3>The bull case, honestly</h3>
+      <ul>
+        <li>Three independent deficit legs: Brazilian ethanol diversion, EU −19%, El Niño over the Asian crushers.</li>
+        <li>Forecast revisions unanimous in direction; Green Pool's −3.2 MMT tail would rhyme with 2023/24 (28 ¢).</li>
+        <li>India importing would be the regime confirmation — the #2 producer turning buyer.</li>
+        <li>Low world stocks after the 24/25 deficit; limited buffer if the tail lands.</li>
+      </ul>
+    </div>
+    <div class="panel bear">
+      <h3>The bear case, honestly</h3>
+      <ul>
+        <li>Record fund long into an unconfirmed deficit — the fear is owned, with leverage.</li>
+        <li>ISO's own number (−0.26 MMT) is a rounding error on a 180 MMT market.</li>
+        <li>Crude weakness flips the Brazilian mix back toward sugar within a season.</li>
+        <li>El Niño is <em>good</em> for Brazil's next cane cycle — the 27/28 supply response is already germinating.</li>
+        <li>A normal monsoon finish deflates the Indian scare entirely.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GAUGES ================= -->
+<section id="gauges">
+  <h2>Historical gauges</h2>
+  <p style="border-left:3px solid var(--amber);padding-left:12px"><strong>Measured update (8 Sep, COT pack):</strong> MM net +233.8k = <strong>95.3rd percentile since 2010</strong> (record +268k Aug-21) — "multi-year high" quantified; the crowding warning stands on measured legs.</p>
+  <p class="sub">Anchors marked ≈ are from Claude's historical knowledge — verify before sizing. Upgradeable to percentiles with the data pack.</p>
+  <table>
+    <tr><th>Metric</th><th>Current</th><th>Historical anchor</th><th>Read</th></tr>
+    <tr><td>Price</td><td><span data-field="SB.price_cents">≈ 18 ¢/lb</span></td><td>2023/24 deficit-era peaks ≈ 28 ¢ · 2011 spike ≈ 36 ¢ · pre-2020 range ≈ 10–15 ¢</td><td>Mid-high historically: well above the old normal, ~35% below the last deficit era's peak — room in both directions.</td></tr>
+    <tr><td>Positioning</td><td>Multi-year net-long high</td><td>≈ Record sugar longs historically ~250–300k contracts territory</td><td>Near the crowded end of the distribution — the defining feature of the current setup. Exact percentile needs the COT pack.</td></tr>
+    <tr><td>26/27 balance forecasts</td><td>−0.3 to −3.2 MMT</td><td>24/25 actual: −3.46 MMT → 28 ¢ era · 25/26: +2 MMT → 15 ¢</td><td>The forecast range spans "non-event" to "repeat of the last bull market" — the dispersion is the trade.</td></tr>
+    <tr><td>El Niño precedent (sugar)</td><td>Very strong event forming</td><td>≈ 2015/16 strong El Niño: Indian &amp; Thai crops fell over the following two seasons; Brazilian CS cane recovered on rains</td><td>The base rate supports the Asian-damage leg with a lag — and the Brazilian-recovery offset with a longer one. Both legs, different clocks.</td></tr>
+  </table>
+</section>
+
+
+<!-- ================= CHARTS ================= -->
+<section id="charts">
+  <h2>Charts<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Sparse sourced marks, not continuous series — pull live curves before trading a level.</p>
+  <div class="charts-grid">
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No.11 raw sugar, key marks (US¢/lb)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">No.11 raw sugar, key marks (US¢/lb)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="185.4" x2="506" y2="185.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="189.4" text-anchor="end" font-size="11" fill="#c9b394">10</text><line x1="58" y1="114.8" x2="506" y2="114.8" stroke="#57402a" stroke-width="0.6"/><text x="50" y="118.8" text-anchor="end" font-size="11" fill="#c9b394">20</text><line x1="58" y1="44.1" x2="506" y2="44.1" stroke="#57402a" stroke-width="0.6"/><text x="50" y="48.1" text-anchor="end" font-size="11" fill="#c9b394">30</text><path d="M78.0,58.2 L214.0,128.9 L350.0,150.1 L486.0,128.2" fill="none" stroke="#e39a3b" stroke-width="2.4"/><circle cx="78.0" cy="58.2" r="4.5" fill="#e39a3b" opacity="0.45"/><text x="78.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">2023-24 ≈</text><circle cx="214.0" cy="128.9" r="4.5" fill="#e39a3b" /><text x="214.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Apr 25</text><circle cx="350.0" cy="150.1" r="4.5" fill="#e39a3b" /><text x="350.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Aug 5</text><circle cx="486.0" cy="128.2" r="4.5" fill="#e39a3b" /><text x="486.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 26</text><text x="78.0" y="48.2" text-anchor="start" font-size="11" fill="#f0e2cb">deficit-era peak ≈28</text><text x="350.0" y="168.1" text-anchor="middle" font-size="11" fill="#f0e2cb">15.0 low</text><text x="486.0" y="118.2" text-anchor="end" font-size="11" fill="#f0e2cb">18+ · 16-mo high</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Global balance, MMT"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Global balance, MMT</text><line x1="58" y1="223.7" x2="506" y2="223.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="227.7" text-anchor="end" font-size="11" fill="#c9b394">-3.0</text><line x1="58" y1="175.3" x2="506" y2="175.3" stroke="#57402a" stroke-width="0.6"/><text x="50" y="179.3" text-anchor="end" font-size="11" fill="#c9b394">-1.5</text><line x1="58" y1="126.9" x2="506" y2="126.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="130.9" text-anchor="end" font-size="11" fill="#c9b394">+0.0</text><line x1="58" y1="78.4" x2="506" y2="78.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="82.4" text-anchor="end" font-size="11" fill="#c9b394">+1.5</text><line x1="58" y1="30.0" x2="506" y2="30.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="34.0" text-anchor="end" font-size="11" fill="#c9b394">+3.0</text><rect x="117.7" y="126.9" width="30.0" height="111.7" fill="#cf6349"/><text x="132.7" y="272" text-anchor="middle" font-size="11" fill="#c9b394">24/25</text><rect x="267.0" y="62.3" width="30.0" height="64.6" fill="#8fb069"/><text x="282.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26</text><rect x="363.8" y="126.9" width="30.0" height="8.4" fill="#e39a3b"/><rect x="398.8" y="126.9" width="30.0" height="17.8" fill="#e39a3b"/><rect x="433.8" y="126.9" width="30.0" height="42.0" fill="#e39a3b"/><rect x="468.8" y="126.9" width="30.0" height="103.3" fill="#cf6349"/><text x="431.3" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text><line x1="58" y1="126.9" x2="506" y2="126.9" stroke="#f0e2cb" stroke-width="1"/><text x="506" y="42" text-anchor="end" font-size="10.5" fill="#c9b394">26/27: four forecasters, one direction, 10x dispersion</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The structural legs: EU output &amp; Brazil sugar mix"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">The structural legs: EU output &amp; Brazil sugar mix</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="199.5" x2="506" y2="199.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="203.5" text-anchor="end" font-size="11" fill="#c9b394">5</text><line x1="58" y1="143.0" x2="506" y2="143.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="147.0" text-anchor="end" font-size="11" fill="#c9b394">10</text><line x1="58" y1="86.5" x2="506" y2="86.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="90.5" text-anchor="end" font-size="11" fill="#c9b394">15</text><line x1="58" y1="30.0" x2="506" y2="30.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="34.0" text-anchor="end" font-size="11" fill="#c9b394">20</text><rect x="98" y="68.4" width="56" height="187.6" fill="#8fb069"/><text x="126" y="62.4" text-anchor="middle" font-size="11" fill="#f0e2cb">16.6</text><text x="126" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">EU 25/26</text><rect x="188" y="104.6" width="56" height="151.4" fill="#cf6349"/><text x="216" y="98.6" text-anchor="middle" font-size="11" fill="#f0e2cb">13.4</text><text x="216" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">EU 26/27f</text><text x="98" y="44" font-size="10.5" fill="#c9b394">EU output, MMT (−19%)</text><rect x="318" y="54.0" width="56" height="202.0" fill="#8fb069"/><text x="346" y="48.0" text-anchor="middle" font-size="11" fill="#f0e2cb">44.7%</text><text x="346" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">mix Apr 25</text><rect x="408" y="107.3" width="56" height="148.7" fill="#cf6349"/><text x="436" y="101.3" text-anchor="middle" font-size="11" fill="#f0e2cb">32.9%</text><text x="436" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">mix Apr 26</text><text x="318" y="44" font-size="10.5" fill="#c9b394">CS sugar mix, % of cane (Apr fortnight)</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Positioning — qualitative until COT pack upload"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Positioning — qualitative until COT pack upload</text><rect x="58" y="134.0" width="448" height="32" fill="#57402a"/><rect x="58.0" y="134.0" width="147.8" height="32" fill="#8fb069" opacity="0.55"/><text x="131.9" y="202.0" text-anchor="middle" font-size="11" fill="#c9b394">short/clean</text><rect x="205.8" y="134.0" width="147.8" height="32" fill="#e39a3b" opacity="0.55"/><text x="279.8" y="202.0" text-anchor="middle" font-size="11" fill="#c9b394">mid-range</text><rect x="353.7" y="134.0" width="152.3" height="32" fill="#cf6349" opacity="0.55"/><text x="429.8" y="202.0" text-anchor="middle" font-size="11" fill="#c9b394">crowded long</text><line x1="474.6" y1="120.0" x2="474.6" y2="166.0" stroke="#cf6349" stroke-width="2.5"/><text x="474.6" y="112.0" text-anchor="middle" font-size="11" fill="#cf6349" font-weight="600">SUGAR</text><line x1="282.0" y1="120.0" x2="282.0" y2="166.0" stroke="#c9b394" stroke-width="2.5"/><text x="282.0" y="112.0" text-anchor="middle" font-size="11" fill="#c9b394" font-weight="600">coffee</text><line x1="192.4" y1="120.0" x2="192.4" y2="166.0" stroke="#c9b394" stroke-width="2.5"/><text x="192.4" y="112.0" text-anchor="middle" font-size="11" fill="#c9b394" font-weight="600">cocoa</text><text x="58" y="284" font-size="10.5" fill="#c9b394">One El Niño, three pricings: sugar owns the fear, coffee ignores it, cocoa shorts it.</text></svg></div>
+  </div>
+  <p class="calnote">Reading them together: price mid-high and rising into a deficit whose forecast dispersion spans 10x (chart 2), driven by two measurable structural legs (chart 3) — while positioning (chart 4) sits at the crowded end, the exact opposite of cocoa. The regime line here isn't in the crops: it's whether the record long survives the first disappointing data point.</p>
+</section>
+
+
+<footer>
+  <p><strong>Refreshing:</strong> highlights weekly (UNICA fortnight + monsoon tally + COT); live sections monthly or before trading. Sources behind the live sections: ISO, Conab, UNICA, IMD, Czarnikow/czapp, Green Pool, StoneX, Citi via trade press, CFTC COT, EU Commission balance sheets — retrieved 7 Sep 2026. Figures as-reported; re-verify before trading. Known limitation: no fresh exact COT net-long figure sourced — "multi-year high" is from the late-August flow reports; refresh before positioning conclusions.</p>
+</footer>
+
+</div>
+
+<!-- marketdata dashboard live-data hooks (auto-refreshing) -->
+<script src="dashboard_data.js"></script>
+<script src="dashboard_populate.js"></script>
+</body>
+</html>
