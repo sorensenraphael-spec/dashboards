@@ -83,20 +83,20 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 <header>
   <h1>Gasoil Arb — USGC → ARA Distillate</h1>
   <div class="sub">Physical arb margin for a distillate cargo leaving the US Gulf today, arriving Europe after the shipping lag, sold into ICE Gasoil at the arrival-month contract. The forward curve is what makes this real: prompt spot is the wrong hedge.</div>
-  <div class="stamp">Snapshot generated 2026-09-12 12:43 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
+  <div class="stamp">Snapshot generated 2026-09-12 12:55 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
 </header>
 
 <h2>Current arb snapshot</h2>
 <div class="snap">
   <div>
     <div class="lbl">Arb margin ($/mt)</div>
-    <div class="val n/a">no data</div>
+    <div class="val closed">-51.90</div>
     <div class="side">Cargo arrives <b>03 Oct 2026</b> · sells <b>Oct-26</b> ICE Gasoil</div>
   </div>
-  <div class="badge n/a">N/A</div>
+  <div class="badge closed">CLOSED</div>
   <div style="text-align:right">
     <div class="lbl">ARA received</div>
-    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">no data</div>
+    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1479.25</div>
   </div>
   <div style="text-align:right">
     <div class="lbl">USGC all-in</div>
@@ -107,19 +107,19 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 <h2>Contango impact — arb margin across Q4 delivery months</h2>
 <table>
   <tr><th>Delivery</th><th>ICE Gasoil fwd ($/mt)</th><th>Arb margin ($/mt)</th><th>Status</th><th>Notes</th></tr>
-  <tr><td>Sep-26</td><td>$1479.25</td><td>-51.90</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
-<tr class="arrival"><td>Oct-26</td><td class="na">not entered</td><td class="na">—</td><td><span class="pill na">N/A</span></td><td class="na">populate <code>arb_config.json</code></td></tr>
-<tr><td>Nov-26</td><td class="na">not entered</td><td class="na">—</td><td><span class="pill na">N/A</span></td><td class="na">populate <code>arb_config.json</code></td></tr>
-<tr><td>Dec-26</td><td class="na">not entered</td><td class="na">—</td><td><span class="pill na">N/A</span></td><td class="na">populate <code>arb_config.json</code></td></tr>
-<tr><td>Jan-27</td><td class="na">not entered</td><td class="na">—</td><td><span class="pill na">N/A</span></td><td class="na">populate <code>arb_config.json</code></td></tr>
+  <tr><td>Sep-26</td><td>$1472.75</td><td>-58.40</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+<tr class="arrival"><td>Oct-26</td><td>$1479.25</td><td>-51.90</td><td><span class="pill closed">CLOSED</span></td><td>arrival month</td></tr>
+<tr><td>Nov-26</td><td>$1395.50</td><td>-135.65</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+<tr><td>Dec-26</td><td>$1320.50</td><td>-210.65</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+<tr><td>Jan-27</td><td>$1265.00</td><td>-266.15</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
 </table>
 
 <h2>Break-even</h2>
 <div class="be">
   ICE Gasoil forward needs to reach <span class="num">$1531.15/mt</span>
   (<b>Oct-26</b> contract) to open the arb at current USGC spot and freight.
-  <br>Currently the Oct-26 mark is <span class="num">$—/mt</span> —
-  gap <span class="gap ">$n/a/mt</span> .
+  <br>Currently the Oct-26 mark is <span class="num">$1479.25/mt</span> —
+  gap <span class="gap ">$-51.90/mt</span> (arb needs ARA gain / USGC drop).
 </div>
 
 <h2>Sensitivity — freight & shipping lag</h2>
@@ -163,7 +163,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <script>
 // Config baked in at build time so the sliders can recompute locally.
-const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1479.25, "Oct-26": null, "Nov-26": null, "Dec-26": null, "Jan-27": null}, "last_updated": "2026-09-12"};
+const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1479.25, "Nov-26": 1395.5, "Dec-26": 1320.5, "Jan-27": 1265.0}, "last_updated": "2026-09-12", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "usgc_ulsd_spot": "config (fallback)", "spot_note": "USGC ULSD spot not in Norgate \u2014 only NYMEX HO (&HO) available and that's NYH-priced, not USGC. Keeping the manual config value; update usgc_ulsd_spot_usd_per_gal in arb_config.json from your terminal."}};
 const GAL_PER_MT = 312.9;
 const ARRIVAL_MONTH_KEY = "Oct-26";
 const OPEN_MIN = 5, CLOSED_MAX = -5;
