@@ -90,7 +90,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 <header>
   <h1>Gasoil Arb — USGC → ARA Distillate</h1>
   <div class="sub">Physical arb margin for a distillate cargo leaving the US Gulf today, arriving Europe after the shipping lag, sold into ICE Gasoil at the arrival-month contract. The forward curve is what makes this real: prompt spot is the wrong hedge.</div>
-  <div class="stamp">Snapshot generated 2026-09-12 21:09 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
+  <div class="stamp">Snapshot generated 2026-09-12 21:29 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
 </header>
 
 <h2>Current arb snapshot</h2>
@@ -113,18 +113,18 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <h2>ICE Gasoil forward curve <span class="context-tag">market context — NOT the arb</span></h2>
 <div class="curve-shape"><b>Curve shape:</b> Backwardation · $1472.75 (front) → $1265.00 (back) = -207.75 $/mt over 5 months</div>
-
+<div class="curve-note" style="margin-top:0"><b>ULSD leg:</b> NYMEX HO front-month <code>&amp;HO</code> = <b>$4.9593/gal</b> (asof 2026-09-11). ULSD forward curve unavailable from Norgate — per-month HO series can't be compared across observation dates cleanly (real NYMEX HO curve is nearly flat in $/gal terms anyway). Enter a manual Saxo curve into <code>arb_config.json</code> if you need per-month ULSD pricing.</div>
 <table>
-  <tr><th>Delivery</th><th>ICE Gasoil fwd ($/mt)</th><th>NYMEX HO fwd ($/gal)</th><th>Note</th></tr>
-  <tr><td>Sep-26</td><td>$1472.75</td><td>$4.4953</td><td></td></tr>
-<tr class="arrival"><td>Oct-26</td><td>$1479.25</td><td>$4.9593</td><td><span class="pill info">arrival — feeds snapshot</span></td></tr>
-<tr><td>Nov-26</td><td>$1395.50</td><td>$4.7683</td><td></td></tr>
-<tr><td>Dec-26</td><td>$1320.50</td><td>$4.5584</td><td></td></tr>
-<tr><td>Jan-27</td><td>$1265.00</td><td>$4.4213</td><td></td></tr>
+  <tr><th>Delivery</th><th>ICE Gasoil fwd ($/mt)</th><th>Note</th></tr>
+  <tr><td>Sep-26</td><td>$1472.75</td><td></td></tr>
+<tr class="arrival"><td>Oct-26</td><td>$1479.25</td><td><span class="pill info">arrival — feeds snapshot</span></td></tr>
+<tr><td>Nov-26</td><td>$1395.50</td><td></td></tr>
+<tr><td>Dec-26</td><td>$1320.50</td><td></td></tr>
+<tr><td>Jan-27</td><td>$1265.00</td><td></td></tr>
 </table>
 <div class="curve-note">
-  <b>Why only one arb number above?</b> A physical cargo leaving USGC today buys ULSD at <em>today's</em> spot and sells the arrival-month Gasoil future. That's a single tradeable arb — the one in the snapshot.<br>
-  Forward-month arbs would require <em>future</em> USGC spot prices that don't yet exist (nobody knows what USGC spot will be in November when the November cargo actually loads). The curve above shows only what markets are pricing today for delivery in each month — <b>curve shape, not arb-openness</b>. Use it to read the market's view of relative winter tightness across delivery periods.
+  <b>Why only one arb number above?</b> A physical cargo leaving USGC today buys ULSD at <em>today's</em> front-month HO price and sells the arrival-month Gasoil future. That's a single tradeable arb — the one in the snapshot.<br>
+  Forward-month arbs would additionally require <em>future</em> USGC spot prices that don't yet exist (nobody knows what USGC spot will be in November when the November cargo actually loads). The curve above shows only what markets are pricing today for delivery in each Gasoil month — <b>curve shape, not arb-openness</b>. Use it to read the market's view of relative winter tightness across delivery periods.
 </div>
 
 <h2>Break-even</h2>
@@ -176,7 +176,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <script>
 // Config baked in at build time so the sliders can recompute locally.
-const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1479.25, "Nov-26": 1395.5, "Dec-26": 1320.5, "Jan-27": 1265.0}, "last_updated": "2026-09-12", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "nymex_ho": {"Sep-26": "HO-2026U", "Oct-26": "HO-2026V", "Nov-26": "HO-2026X", "Dec-26": "HO-2026Z", "Jan-27": "HO-2027F"}, "usgc_ulsd_spot": "config (fallback)", "spot_note": "USGC ULSD spot not in Norgate \u2014 only NYMEX HO (&HO) available and that's NYH-priced, not USGC. Keeping the manual config value; update usgc_ulsd_spot_usd_per_gal in arb_config.json from your terminal.", "location_basis_note": "NYMEX HO is New York Harbor ULSD, NOT USGC. The NYH\u2194USGC basis is embedded in the arb and documented on the dashboard."}, "nymex_ho_curve": {"Sep-26": 4.495299816131592, "Oct-26": 4.9593000411987305, "Nov-26": 4.7683000564575195, "Dec-26": 4.5584001541137695, "Jan-27": 4.421299934387207}};
+const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1479.25, "Nov-26": 1395.5, "Dec-26": 1320.5, "Jan-27": 1265.0}, "last_updated": "2026-09-12", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "nymex_ho_front": "&HO", "usgc_ulsd_spot": "config (fallback)", "spot_note": "USGC ULSD spot not in Norgate \u2014 only NYMEX HO (&HO) available and that's NYH-priced, not USGC. Keeping the manual config value; update usgc_ulsd_spot_usd_per_gal in arb_config.json from your terminal.", "ho_note": "NYMEX HO uses front-month continuous &HO only. Per-month HO forward series on Norgate can't be compared across observation dates (individual contracts report their latest close on different sessions); real NYMEX HO curve is nearly flat in $/gal. If a fuller ULSD curve is needed, enter it manually from Saxo.", "location_basis_note": "NYMEX HO is New York Harbor ULSD, NOT USGC. The NYH\u2194USGC basis is embedded in the arb and documented on the dashboard."}, "nymex_ho_front_usd_per_gal": 4.9593000411987305, "nymex_ho_front_asof": "2026-09-11"};
 const GAL_PER_MT = 312.9;
 const ARRIVAL_MONTH_KEY = "Oct-26";
 const OPEN_MIN = 5, CLOSED_MAX = -5;
@@ -200,13 +200,14 @@ function recompute() {
   const monthAbbr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const arrKey = monthAbbr[arr.getMonth()] + '-' + String(arr.getFullYear() % 100).padStart(2, '0');
   const gasoil = CFG.ice_gasoil_curve[arrKey];
-  // Prefer matched-month HO fwd; fall back to config spot if missing.
-  const ho_fwd = (CFG.nymex_ho_curve || {})[arrKey];
-  const ulsd_gal = ho_fwd != null ? ho_fwd : CFG.usgc_ulsd_spot_usd_per_gal;
-  const ulsd_leg = ho_fwd != null ? ('HO ' + arrKey + ' fwd') : 'spot fallback';
+  // ULSD leg = NYMEX HO front-month ONLY (per-month HO forward series
+  // unreliable on Norgate). Fall back to config spot if HO front missing.
+  const ho_front = CFG.nymex_ho_front_usd_per_gal;
+  const ulsd_gal = ho_front != null ? ho_front : CFG.usgc_ulsd_spot_usd_per_gal;
+  const ulsd_leg = ho_front != null ? '&HO front-month' : 'spot fallback';
 
   const usgc_mt = ulsd_gal * GAL_PER_MT + fr + CFG.port_handling_usd_per_mt;
-  document.getElementById('usgc_mt_val').textContent = (CFG.usgc_ulsd_spot_usd_per_gal * GAL_PER_MT).toFixed(2);
+  document.getElementById('usgc_mt_val').textContent = (ulsd_gal * GAL_PER_MT).toFixed(2);
   const arb = gasoil == null ? null : gasoil - usgc_mt;
   const st = statusFor(arb);
   const n = document.getElementById('live_n');
