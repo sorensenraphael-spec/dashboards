@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cocoa — Market Playbook &amp; Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cacao:#2b1a10;      /* page ground — dark roast */
+    --nib:#3a2718;        /* raised panels */
+    --shell:#57402a;      /* borders, rules */
+    --husk:#f0e2cb;       /* primary text — parchment */
+    --husk-dim:#c9b394;   /* secondary text */
+    --amber:#e39a3b;      /* accent — pod gold */
+    --leaf:#8fb069;       /* positive / supportive */
+    --ember:#cf6349;      /* negative / risk */
+    --live:#e39a3b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{
+    background:var(--cacao);
+    color:var(--husk);
+    font-family:'Archivo',system-ui,sans-serif;
+    font-size:15.5px;
+    line-height:1.6;
+  }
+  .wrap{max-width:1060px;margin:0 auto;padding:0 28px 90px}
+  a{color:var(--amber)}
+
+  /* ---------- header ---------- */
+  header{padding:56px 0 34px;border-bottom:1px solid var(--shell)}
+  .kicker{color:var(--husk-dim);font-size:14px;margin-bottom:10px}
+  h1{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(40px,6vw,64px);line-height:1.02;letter-spacing:-.01em;
+  }
+  h1 em{font-style:italic;color:var(--amber)}
+  .contracts{margin-top:14px;color:var(--husk-dim);font-size:14.5px;max-width:62ch}
+
+  /* ---------- situation strip ---------- */
+  .strip{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:1px;background:var(--shell);border:1px solid var(--shell);
+    margin:34px 0 0;
+  }
+  .cell{background:var(--nib);padding:16px 18px}
+  .cell .v{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1.15}
+  .cell .l{color:var(--husk-dim);font-size:13px;margin-top:4px}
+  .v.up{color:var(--leaf)} .v.down{color:var(--ember)} .v.warn{color:var(--amber)}
+
+  .asof{
+    display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+    color:var(--amber);font-size:13px;
+  }
+  .asof::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--live)}
+
+  /* ---------- sections ---------- */
+  section{padding:44px 0 8px;border-bottom:1px solid var(--shell)}
+  h2{
+    font-family:'Fraunces',serif;font-weight:500;font-size:30px;
+    letter-spacing:-.005em;margin-bottom:6px;
+  }
+  .sub{color:var(--husk-dim);margin-bottom:24px;max-width:72ch}
+  .livebadge{
+    display:inline-block;margin-left:10px;vertical-align:middle;
+    font-family:'Archivo';font-size:12px;font-weight:600;color:var(--cacao);
+    background:var(--amber);padding:2px 9px;border-radius:2px;
+  }
+  h3{font-family:'Fraunces',serif;font-weight:600;font-size:18.5px;margin:26px 0 8px;color:var(--amber)}
+  p{max-width:76ch;margin-bottom:14px}
+  strong{color:var(--husk);font-weight:600}
+  .dim{color:var(--husk-dim)}
+
+  /* two-col primer */
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 44px}
+  @media(max-width:820px){.cols{grid-template-columns:1fr}}
+
+  /* watch table */
+  table{width:100%;border-collapse:collapse;margin:18px 0 26px;font-size:14.5px}
+  th{
+    text-align:left;color:var(--husk-dim);font-weight:500;font-size:13px;
+    padding:0 14px 10px 0;border-bottom:1px solid var(--shell);
+  }
+  td{padding:12px 14px 12px 0;border-bottom:1px solid var(--shell);vertical-align:top}
+  td:first-child{white-space:nowrap;color:var(--amber);font-weight:500}
+  tr:last-child td{border-bottom:none}
+
+  /* seasonal calendar — the centerpiece */
+  .cal{margin:26px 0 18px;border:1px solid var(--shell)}
+  .cal-row{display:grid;grid-template-columns:150px repeat(12,1fr);border-bottom:1px solid var(--shell)}
+  .cal-row:last-child{border-bottom:none}
+  .cal-row>div{padding:9px 6px;font-size:12.5px;text-align:center;border-left:1px solid var(--shell)}
+  .cal-row>div:first-child{
+    text-align:left;padding-left:14px;color:var(--husk-dim);border-left:none;
+    display:flex;align-items:center;font-size:13px;
+  }
+  .cal-head>div{background:var(--nib);color:var(--husk);font-weight:600}
+  .on{background:var(--amber);color:var(--cacao);font-weight:600}
+  .on.soft{background:#8a6a33;color:var(--husk)}
+  .on.wet{background:#4d6a8f;color:var(--husk)}
+  .on.dry{background:#a05236;color:var(--husk)}
+  .calnote{color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+  @media(max-width:820px){
+    .cal{overflow-x:auto}
+    .cal-row{min-width:900px}
+  }
+
+  /* chatter panel */
+  .panel{background:var(--nib);border:1px solid var(--shell);padding:22px 24px;margin:18px 0}
+  .panel h3{margin-top:0}
+  ul{margin:0 0 14px 20px;max-width:74ch}
+  li{margin-bottom:8px}
+  li::marker{color:var(--amber)}
+
+  /* bull/bear */
+  .bb{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.bb{grid-template-columns:1fr}}
+  .bb .panel{margin:0}
+  .bb h3{margin-top:0}
+  .bb .bull h3{color:var(--leaf)}
+  .bb .bear h3{color:var(--ember)}
+
+
+  /* charts */
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
+  @media(max-width:820px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card{background:var(--nib);border:1px solid var(--shell);padding:14px 10px 6px}
+  .chart-card svg{width:100%;height:auto;display:block;font-family:'Archivo',sans-serif}
+
+  /* highlights */
+  .hl{border-bottom:1px solid var(--shell);padding:26px 0 20px}
+  .hl ul{margin:10px 0 0 0;list-style:none;max-width:none}
+  .hl li{margin-bottom:10px;padding-left:0;display:flex;gap:14px;align-items:baseline}
+  .hl .d{flex:0 0 64px;color:var(--amber);font-size:12.5px;font-weight:600;white-space:nowrap}
+  .hl .t{color:var(--husk);font-size:14.5px;max-width:80ch}
+  .hl .t em{color:var(--husk-dim);font-style:normal}
+
+  footer{padding-top:36px;color:var(--husk-dim);font-size:13.5px;max-width:76ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Commodity playbook 1 of 5 · cocoa · coffee · cotton · sugar · grains &amp; oilseeds</div>
+  <h1>Cocoa, <em>read like a local</em></h1>
+  <p class="contracts">ICE New York cocoa (CC, USD/tonne, 10 t/contract) and ICE London cocoa (C, GBP/tonne). Two origins are the whole story: Côte d'Ivoire and Ghana grow roughly 60% of the world's beans, and everything in this market — price, policy, weather, gossip — radiates out from about 400 km of West African forest belt.</p>
+  <div class="strip">
+    <div class="cell"><div class="v"><span data-field="CC.price">≈ $6,300</span></div><div class="l">NY front month, early Sep 2026</div></div>
+    <div class="cell"><div class="v down">−51% / +120%</div><div class="l">from Dec-24 peak · from Apr-26 low</div></div>
+    <div class="cell"><div class="v up">Surplus</div><div class="l">2025/26 balance — supply recovered</div></div>
+    <div class="cell"><div class="v warn">Deteriorating</div><div class="l">2026/27 outlook — the live fight</div></div>
+    <div class="cell"><div class="v warn"><span data-field="CC.mm_net_prefixed">MM −6.7k</span></div><div class="l">funds net short, vs record −19.9k in April</div></div>
+  </div>
+  <div class="asof">Data as of <span data-field="_generated_at">7 September 2026</span> · auto-refresh every 15 min</div>
+</header>
+
+<!-- ================= HIGHLIGHTS ================= -->
+<div class="hl">
+  <h2 style="font-size:22px">Latest from the ground &amp; the tape<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <ul>
+    <li><span class="d">2 Sep</span><span class="t">Sharp profit-taking, NY −3.4% intraday after a +8% seven-day run past $6,500 — thin books amplifying both directions. <em>Tape, not fundamentals.</em></span></li>
+    <li><span class="d">1 Sep</span><span class="t">2026/27 season officially open. Ivorian farmer dispatches: alternating rain and sun supporting pod development, but drying now needed to contain moisture-borne disease. <em>Cautiously constructive on-the-ground tone vs. the bearish official delay warning — the gap is the trade.</em></span></li>
+    <li><span class="d">26 Aug</span><span class="t">CCC warns the Ivorian main crop could open 8–10 weeks late; trade chatter has pivoted from crops to logistics — port congestion, EUDR paperwork, warehouse capacity at Abidjan/San Pedro. <em>When physical players talk logistics, watch the Dec–Mar spreads.</em></span></li>
+    <li><span class="d">Late Aug</span><span class="t">Ghana ground chatter is dark and specific: six-month payment arrears, galamsey encroachment, swollen shoot — structural despair, not weather complaints. COCOBOD's own pod survey pegs 26/27 at 650 kt (−13%), against a July worst case of 450–550 kt. <em>A board forecasting its own decline speaks against interest — weight it.</em></span></li>
+    <li><span class="d">25 Aug wk</span><span class="t">Funds bought grains &amp; softs at the fastest pace on record (sugar, cotton at multi-year positioning highs) — cocoa the conspicuous laggard, managed money still net short −6.7k. <em>Fuel above; correlated washout risk below.</em></span></li>
+    <li><span class="d">Season-wide</span><span class="t">"El Niño" is the phrase in nearly every origin report and trade note. The chatter runs ahead of verified diagnostics — mispricing risk in both directions until the Dec–Feb harmattan settles it.</span></li>
+  </ul>
+</div>
+
+<!-- ================= ALERTS ================= -->
+<div class="hl" id="alerts">
+  <h2 style="font-size:22px">Alert triggers — pre-registered</h2>
+  <p class="sub" style="margin-bottom:12px">Material-change conditions defined in advance. Every refresh checks this list first and reports any that fired, before anything else. 🔴 = regime line crossed, 🟠 = material development.</p>
+  <ul>
+    <li><span class="d">🔴</span><span class="t"><strong>Managed money flips net long</strong> — the positioning regime change; new-money sponsorship the rally hasn't had.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>ICCO Nov bulletin shows a 26/27 deficit</strong> — the sign of the balance settled against consensus; the fan's lower branches activate.</span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>CCC slows or halts forward sales</strong> — the best-informed actor signalling a short crop through behaviour.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Cumulative arrivals &gt;15% behind the 5-yr average by mid-November</strong> — the point where "late" starts being indistinguishable from "small" even accounting for the announced delay.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Sustained ICE certified stock drawdown</strong> (−10% from the peak, multi-week) — the bears' best fact eroding.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Dec–Mar spread tightening toward backwardation</strong> — the Q4 congestion/EUDR story expressing where it should.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Farmgate price announcements</strong> (CI &amp; Ghana) — supply-behaviour setter; also tests whether harmonization holds.</span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Any EUDR delay/modification headline</strong> — instantly reprices the Q4 compression scenario.</span></li>
+  </ul>
+  <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. Each refresh appends a dated line here noting fired alerts and material edits.</p>
+</div>
+
+<!-- ================= PRIMER ================= -->
+<section id="primer">
+  <h2>The market in one page</h2>
+  <p class="sub">The permanent structure. This section shouldn't need refreshing more than once a year.</p>
+  <div class="cols">
+    <div>
+      <h3>Supply is a duopoly with a slow clock</h3>
+      <p>Côte d'Ivoire produces roughly 2.0–2.2 Mt in a normal year (~40–45% of world supply), Ghana historically 700–900 kt (~12–15%). Behind them: Ecuador (the fast-growing #3, high-yield CCN-51 hybrid, plantation-style), Cameroon, Nigeria, Indonesia (declining), Brazil. World crop ≈ 4.5–5 Mt.</p>
+      <p>Cocoa trees take <strong>3–5 years</strong> from planting to meaningful yield. That single fact explains the market's multi-year cycles: a price spike cannot summon supply for half a decade, and a price collapse doesn't remove trees already in the ground. Supply responds to prices from years ago, not today's.</p>
+      <p>West African production is <strong>smallholder</strong> — millions of 2–5 hectare farms, aging trees, minimal irrigation or inputs. There is no US-style "planting decision" each spring; the supply variable is how existing trees respond to weather, disease and farmgate incentives.</p>
+      <h3>Two harvests per season</h3>
+      <p>The season runs Oct–Sep (2026/27 exceptionally opened 1 Sep). The <strong>main crop (Oct–Mar)</strong> is ~75–80% of output; the <strong>mid-crop (Apr–Aug/Sep)</strong> is smaller and lower grade. The critical biological window is <strong>cherelle formation</strong> (baby pods) roughly May–Aug for the following main crop — weather then determines the harvest six months later. That's why markets trade August rainfall so hard.</p>
+    </div>
+    <div>
+      <h3>Prices are set by boards, not just markets</h3>
+      <p>Neither Ivorian nor Ghanaian farmers see world prices directly. Côte d'Ivoire's <strong>Conseil du Café-Cacao (CCC)</strong> and Ghana's <strong>COCOBOD</strong> forward-sell most of the crop and fix a guaranteed <strong>farmgate price</strong> each season (plus a $400/t "living income differential" premium since 2019). Consequences: farmgate incentives lag world prices badly, smuggling flows across borders when the two countries' prices diverge, and board finances (especially COCOBOD's chronic funding strain) are a genuine supply variable.</p>
+      <h3>Demand = grindings</h3>
+      <p>Nobody measures chocolate bars; demand is proxied by <strong>quarterly grinding volumes</strong> — beans processed into butter/liquor/powder — reported for Europe (ECA), North America (NCA) and Asia (CAA). Grind is slow-moving (habit-driven consumption) but it did visibly crack after the 2024 price explosion: reformulation, shrinkflation, substitution. Origin grinding (Côte d'Ivoire now vies with the Netherlands as world #1 processor) is structurally taking share from Europe.</p>
+      <h3>Two contracts, one arb</h3>
+      <p>NY (USD) and London (GBP) differ in deliverable growths and quality premia; the NY–London spread widens when the market discriminates between fine/mainstream and bulk supply, and it's a standing structured-relationship trade of exactly the kind you run elsewhere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CURRENT STORY ================= -->
+<section id="now">
+  <h2>The current story<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Where we are in the cycle and what the market is actually arguing about.</p>
+  <p><strong>You are entering this market mid-whiplash.</strong> The 2023–24 super-spike (disease + failed harvests + harmattan damage) took NY cocoa to a record near <strong>$12,900/t in December 2024</strong>. Recovery supply then crushed it: prices collapsed roughly 75% to a low around <strong>$2,846 in April 2026</strong>. Since April the market has rallied more than 100% off the bottom, trading around <strong>$6,200–6,500 in early September</strong> — a violent recovery driven as much by positioning as by fundamentals.</p>
+  <p><strong>The argument is present-vs-future.</strong> The present is comfortable: 2025/26 closed as a recovery year — Ivorian port arrivals reached ~<strong>2.0 Mt, +21% year-on-year</strong> and the highest since 2022/23; Ghana harvested <strong>750 kt, +25.6%</strong>; ICE certified stocks sit at two-year highs; ICCO's revised 2024/25 balance showed a modest surplus (production 4.72 Mt vs grind 4.63 Mt, surplus cut from 75 kt to 48 kt on strong grind). The future is what's bid: <strong>2026/27 is deteriorating on nearly every front</strong> — COCOBOD's pod-count survey points to <strong>~650 kt for Ghana (−13%)</strong> after a July warning that flagged as low as 450–550 kt (swollen shoot virus, aging farms, illegal mining); the CCC warned on 26 Aug the Ivorian main crop could open <strong>8–10 weeks late</strong>; and an emerging <strong>El Niño</strong> — which historically means drier West Africa — hangs over cherelle development.</p>
+  <p><strong>Positioning did the amplifying.</strong> Funds built a record net short (~19,900 contracts NY) into late April on the surplus narrative — then the crop news turned and the spring/summer rally was substantially <strong>short-covering</strong>: rallies on falling open interest, forced exits, thin books. Open interest (~200–230k contracts) remains well below the pre-2024 era, and high exchange margins keep depth poor — moves overshoot in both directions.</p>
+  <p><strong>Demand is the quiet bear case.</strong> European Q2 2026 grindings printed <strong>316,366 t, −4.6% y/y</strong> — demand has not recovered from the price shock even with beans 50% off the highs, partly because manufacturers are still working through high-cost inventory and reformulated recipes. Origin grind is the exception: Côte d'Ivoire's cumulative grind is +7.5% (July alone +53%), consistent with the deliberate policy shift toward processing at origin.</p>
+  <p><strong>The Q4 logistics squeeze is the special situation.</strong> A delayed main crop plus the EU Deforestation Regulation taking effect at year-end means exporters are compressing shipments into a narrow Q4 window — the CCC itself flags port-congestion risk at Abidjan and San Pedro, with something like 900 kt of arrivals potentially landing in a condensed period. Ghana adds its own stress: reported six-month payment arrears and ~330 kt of delayed shipments. Logistics stories like this move nearby spreads before they move flat price.</p>
+</section>
+
+<!-- ================= BALANCE SHEET ================= -->
+<section id="balance">
+  <h2>The 2026/27 balance sheet<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Combining the accumulated surplus with next season's crop problems: the question is not "surplus or deficit" but "how big is the cushion, and does the trajectory flip."</p>
+
+  <table>
+    <tr><th>Season</th><th>Balance</th><th>Stocks / stocks-to-grind</th><th>Source &amp; status</th></tr>
+    <tr><td>2023/24</td><td><span style="color:var(--ember)">−490 kt deficit</span></td><td>S/G ≈ 27% — a 46-year low</td><td>ICCO, final. The scarcity engine behind the $12,900 spike.</td></tr>
+    <tr><td>2024/25</td><td><span style="color:var(--leaf)">+37 kt surplus</span></td><td>End stocks 1.309 Mt · S/G 28.2%</td><td>ICCO Aug-26 bulletin (revised repeatedly: 49→75→48→37 kt — treat as ±40 kt).</td></tr>
+    <tr><td>2025/26e</td><td><span style="color:var(--leaf)">+247 to +442 kt</span></td><td>Implied end stocks ~1.55–1.75 Mt · S/G roughly low-to-mid 30s%</td><td>Private range: StoneX +247, Hedgepoint +325, BMI +442. ICCO has temporarily withheld its own 25/26 estimate — the official balance is genuinely unsettled.</td></tr>
+    <tr><td>2026/27f</td><td><span style="color:var(--amber)">+150 → deficit</span></td><td>Implied S/G: ~36% consensus · ~32% modest deficit · ~28% tail</td><td>StoneX +149 (April, stale), Hedgepoint +111, BMI +82 (CI −17.5% to 1.7 Mt, Ghana −9.1% to 627 kt)… while Guan Chong, a major Asian grinder, forecasts an outright deficit. Note: the entire projected surplus fits inside Ghana's own forecast range (450–650 kt) — the sign of the balance is genuinely undetermined.</td></tr>
+  </table>
+
+  <h3>The synthesis</h3>
+  <p>One recovery year rebuilt the cushion only <strong>partially</strong>: from the 27% crisis low to roughly 28% at end-24/25, heading toward the low-to-mid 30s after 2025/26's surplus — still below the ~35–40% historically associated with a comfortable market. So the combined picture is: <strong>a half-rebuilt buffer meeting a shrinking flow</strong>. Three regimes fall out of it:</p>
+  <ul>
+    <li><strong>Consensus lands (+80–150 kt):</strong> stocks build a little further, S/G reaches the mid-30s, the market stays structurally comfortable. Rallies driven by crop scares fade; the $5–6k range holds or erodes. This is what BMI's forecast profile implies (Q4-26 avg ~$6,175, 2027 avg ~$5,670).</li>
+    <li><strong>Modest deficit (−50 to −150 kt):</strong> the cushion absorbs it arithmetically — this is <em>not</em> 2024, which required years of cumulative drawdown. But markets price trajectory, not levels: the first deficit year restarts the depletion clock and shifts the regime from sell-rallies to buy-dips, because everyone can count forward to 2027/28.</li>
+    <li><strong>Tail (−200 kt or worse):</strong> Ghana at its 450–550 kt warning level, CI's −17.5% realized, El Niño delivers, and demand keeps recovering. S/G heads back below 30% within a single season and the 2024 playbook is live again — with a market that is structurally less liquid than it was then.</li>
+  </ul>
+  <p><strong>The underpriced variable is demand, not supply.</strong> Every surplus forecast assumes demand stays broken. But combined Q2-2026 grindings across Europe, Asia and North America printed <strong>+6.1% y/y</strong> (650,671 t) — Europe alone was −4.6%, meaning Asia and North America grew hard (caveats: the NA reporting panel changed, and Asian grind partly reflects processing relocation rather than final demand). If cheap beans are genuinely reviving consumption at ~2–3%/yr while West African supply contracts ~2%, the projected surplus disappears on the demand line alone. The bear case needs demand to stay dead at half the old price; Q2 is the first evidence it might not.</p>
+  <p class="dim">Honest uncertainty note: BMI and Hedgepoint disagree on the <em>current</em> season's surplus by 117 kt, ICCO is withholding its estimate, and one credible commercial forecaster sees a deficit where others see +150 kt. The dispersion — roughly ±300 kt on a 4.7 Mt market — is itself the signal: nobody actually knows, which is why weekly arrivals and quarterly grindings will keep repricing the curve violently in both directions.</p>
+</section>
+
+<!-- ================= WATCH LIST ================= -->
+<section id="watch">
+  <h2>What to watch next<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Dated triggers, most imminent first. This is the section to re-run before touching the market.</p>
+  <table>
+    <tr><th>When</th><th>What</th><th>Why it moves price</th></tr>
+    <tr><td>Now → Oct</td><td>Weekly Ivorian port arrivals (exporter estimates, Mondays) at the 2026/27 season open</td><td>The direct test of the CCC's 8–10 week delay warning. Weak early arrivals confirm the delay and the Q4 congestion scenario; a normal ramp kills the story.</td></tr>
+    <tr><td>Sep–Oct</td><td>Farmgate price announcements, Côte d'Ivoire &amp; Ghana — first harmonized season</td><td>Sets farmer incentive to harvest, ferment properly and not smuggle. A low price with world prices at $6k+ is a slow-burn supply negative.</td></tr>
+    <tr><td>Mid-Oct</td><td>Q3 grindings: ECA (Europe), NCA (N. America), CAA (Asia)</td><td>The demand referendum. Another −4/−5% Europe print emboldens the surplus camp; a positive surprise removes the main bear leg.</td></tr>
+    <tr><td>Sep–Nov</td><td>El Niño updates (NOAA/BOM) + West Africa rainfall vs. normal</td><td>Drier-than-normal Oct–Dec would hit the late-developing main crop exactly when it's most fragile. The market currently prices meaningful El Niño risk — verify it's real.</td></tr>
+    <tr><td>Q4</td><td>EUDR go-live mechanics: Abidjan/San Pedro congestion, vessel queues, warehouse stress; Ghana's arrears &amp; delayed 330 kt</td><td>Compression of ~900 kt into a short shipping window is a nearby-contract event: watch Dec/Mar spreads and London–NY, not just flat price.</td></tr>
+    <tr><td>Weekly, Fri</td><td>CFTC COT — managed money net position, NY cocoa</td><td>The amplifier. Residual shorts = fuel above the market; a flipped, crowded long = air pocket below. Position sizing input, not a directional signal.</td></tr>
+    <tr><td>Daily</td><td>ICE certified stocks (both exchanges)</td><td>Two-year highs are the bears' best fact. A sustained drawdown while 26/27 fears build would validate the bull repricing.</td></tr>
+    <tr><td>Late Nov</td><td>ICCO quarterly bulletin — first proper 2026/27 balance estimate</td><td>Anchors consensus. The gap between ICCO and private forecasters (StoneX et al.) is itself information.</td></tr>
+    <tr><td>Ongoing</td><td>Corporate demand tells: pack-resize announcements, "chocolate" label reclassifications, CBE trade flows (palm mid-fraction imports)</td><td>The leading indicators of future grindings are now corporate, not agricultural — reformulation shows up here quarters before it shows in ECA data.</td></tr>
+  </table>
+
+  <h3>Production monitoring — the data points and their cadence</h3>
+  <p>Ranked by frequency. The general rule: high-frequency series are proxies with traps; the direct measurements are rare and move the market most.</p>
+  <table>
+    <tr><th>Cadence</th><th>Data point</th><th>What it tells you — and the trap</th></tr>
+    <tr><td>Daily</td><td>ICE certified stocks (NY &amp; London)</td><td>Not production — but the place where every production story eventually becomes verifiable or dies. Drawdown = the bull case getting confirmed.</td></tr>
+    <tr><td>Daily / weekly</td><td>Rainfall &amp; temperature anomalies, West Africa (NOAA CPC maps free; World Weather Inc commentary via broker dailies)</td><td>The input to everything 3–6 months forward — but only meaningful through the crop windows: cherelle formation May–Aug, black pod in the rains, harmattan Dec–Feb. Rain data without the window map is noise.</td></tr>
+    <tr><td>Weekly (Mon)</td><td>Côte d'Ivoire port arrivals (exporter estimates via Reuters)</td><td>The market's workhorse crop model: cumulative pace vs the 5-year average. Traps: it measures <em>selling</em>, not growing (farmgate incentives and hoarding distort it); smuggled Ghanaian beans inflate it; and this season the 8–10 week delayed start breaks pace-extrapolation entirely — expect scary-looking Sep–Oct prints that mean timing, not tonnage.</td></tr>
+    <tr><td>Weekly</td><td>Reuters farmer dispatch from Ivorian growing regions</td><td>Ground truth on rain, sunshine, pod condition and disease — the origin-social gauge, pre-verified. Qualitative: read deviations from the seasonal baseline, not levels.</td></tr>
+    <tr><td>Irregular (≈ biweekly)</td><td>Ghana COCOBOD graded-&amp;-sealed purchases</td><td>Ghana's arrivals equivalent. Trap: payment arrears push beans across borders unrecorded, so reported purchases understate the true crop when COCOBOD can't pay.</td></tr>
+    <tr><td>Biweekly / monthly</td><td>ENSO diagnostics (BOM every 2 weeks, NOAA/IRI monthly)</td><td>The macro-weather overlay behind 26/27 fears. El Niño → dry West Africa is a tendency, not a law — verify the anomaly maps, don't trade the acronym.</td></tr>
+    <tr><td>Monthly</td><td>Secondary origins: Nigeria exports, Ecuador (Anecacao), Cameroon; GEPEX origin grind</td><td>The structural offset — Ecuador's relentless growth is what keeps surplus forecasts alive despite West Africa. GEPEX also signals bean availability/quality at origin.</td></tr>
+    <tr><td>≈ Monthly–quarterly</td><td>Private balance forecasts: StoneX, Hedgepoint, BMI, Marex, plus commercial voices (Guan Chong)</td><td>Treat the dispersion, not the average, as the signal — ±300 kt spread means the sign of the balance is open.</td></tr>
+    <tr><td>Quarterly</td><td>ICCO Quarterly Bulletin (Feb / May / Aug / Nov)</td><td>The official anchor — but heavily revised (24/25: 49→75→48→37 kt) and lagging. Moves consensus more than it moves reality.</td></tr>
+    <tr><td>1–2× / year</td><td>Pod counts &amp; crop surveys (COCOBOD ~Jul–Aug, CCC statements, private trade surveys)</td><td>The only direct pre-harvest measurement of the crop — lowest frequency, highest impact. This year's COCOBOD survey moved the market more than any weekly series.</td></tr>
+    <tr><td>Annual / structural</td><td>Swollen shoot prevalence, tree-age studies, galamsey encroachment reports</td><td>Sets the ceiling on Ghana's recovery capacity. Ratchets, not cycles — update the structural view once a year.</td></tr>
+  </table>
+
+  <h3>How the 26/27 crop reveals itself — the sequence</h3>
+  <p>The crop that matters is the one on the trees. Its size gets revealed in a fixed order; the underwatched channels are marked. Note: since the season opened 1 Sep, the weekly arrivals above <em>are</em> the 26/27 crop arriving — pods set May–Aug 2026.</p>
+  <table>
+    <tr><th>Window</th><th>Reveal</th><th>Read</th></tr>
+    <tr><td>Done (Jul–Aug)</td><td>Pod counts — the only direct forward measurement (pods visible ~5–6 months pre-harvest)</td><td>COCOBOD: 650 kt, worst case 450–550. Public, traded, partly priced. CI-side equivalents leak via private crop tours through Sep–Oct.</td></tr>
+    <tr><td>Now → Nov</td><td>Survival phase: black pod pressure vs the forecast drying</td><td>Potential was set in the cherelle window; the question is now "how many rot", not "how many grew". Tracker: the weekly farmer dispatches. Ashanti at +47% rainfall is the classic disease setup.</td></tr>
+    <tr><td>Sep–Oct</td><td>Farmgate price announcements (first harmonized CI–Ghana season)</td><td>Same trees, different output: the price sets harvest effort, fermentation care and smuggling direction. Stingy price at $6k world = real recorded-tonnage loss.</td></tr>
+    <tr><td>Continuous — underwatched</td><td>CCC forward-sales pace (export contract auctions)</td><td>The regulator pre-sells against its own internal crop estimate and slows or halts sales when it fears a short crop (as in 23/24). The best-informed actor's crop view, revealed through behaviour rather than statements.</td></tr>
+    <tr><td>Continuous — underwatched</td><td>Physical origin differentials &amp; the futures curve shape into 2027</td><td>Firming forward differentials = the physical trade bidding for scarce supply ahead of futures. Backwardation creeping into 2027 maturities = the market's aggregated crop forecast, updated daily.</td></tr>
+    <tr><td>Oct–Jan</td><td>Cumulative arrivals ramp — the crop physically walking through the door (or not)</td><td>The squeeze window if there is one: delayed-start prints look catastrophic vs seasonal norms while funds are short. Timing and tonnage are indistinguishable until deep in the ramp.</td></tr>
+    <tr><td>Dec–Feb</td><td>Harmattan severity — where the El Niño fear either materializes or expires</td><td>Hits the main-crop tail and pre-conditions the 2027 mid-crop. Verify on actual dry-wind anomalies, not the acronym.</td></tr>
+    <tr><td>Nov–Feb</td><td>Flowering reports for the 2027 mid-crop</td><td>First biology of the season's second act.</td></tr>
+    <tr><td>Feb–Mar 2027</td><td>Resolution</td><td>By late Q1 cumulative arrivals settle the late-vs-small debate; the trade dies or pays here. Information is front-loaded on the fear side, back-loaded on resolution.</td></tr>
+  </table>
+</section>
+
+<!-- ================= SEASONAL MAP ================= -->
+<section id="seasons">
+  <h2>The year, mapped</h2>
+  <p class="sub">West African crop biology, weather windows and the recurring data calendar on one grid. Amber = crop flow, blue = wet-season risk, rust = dry-season risk.</p>
+
+  <div class="cal">
+    <div class="cal-row cal-head">
+      <div>Cycle</div><div>Jan</div><div>Feb</div><div>Mar</div><div>Apr</div><div>May</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Oct</div><div>Nov</div><div>Dec</div>
+    </div>
+    <div class="cal-row">
+      <div>Main crop (75–80%)</div><div class="on">●</div><div class="on">●</div><div class="on">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div class="on">●</div>
+    </div>
+    <div class="cal-row">
+      <div>Mid-crop</div><div></div><div></div><div></div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Cherelle window → next main crop</div><div></div><div></div><div></div><div></div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div class="on soft">●</div><div></div><div></div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Harmattan (dry, dusty)</div><div class="on dry">●</div><div class="on dry">●</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class="on dry">●</div>
+    </div>
+    <div class="cal-row">
+      <div>Rains / black pod risk</div><div></div><div></div><div></div><div></div><div class="on wet">●</div><div class="on wet">●</div><div class="on wet">●</div><div></div><div class="on wet">●</div><div class="on wet">●</div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Grindings (ECA/NCA/CAA)</div><div class="on">Q4</div><div></div><div></div><div class="on">Q1</div><div></div><div></div><div class="on">Q2</div><div></div><div></div><div class="on">Q3</div><div></div><div></div>
+    </div>
+    <div class="cal-row">
+      <div>Farmgate price set</div><div></div><div></div><div></div><div class="on soft">mid</div><div></div><div></div><div></div><div></div><div class="on">●</div><div class="on">●</div><div></div><div></div>
+    </div>
+  </div>
+  <p class="calnote">Weekly rhythm underneath: Ivorian port-arrival estimates every Monday, CFTC COT every Friday, ICE certified stocks daily, GEPEX (Ivorian grind) monthly, ICCO bulletin roughly Feb / May / Aug / Nov. The two weather trades of the year: harmattan severity Dec–Feb (dry winds off the Sahara scorching the main crop) and rainfall quality May–Aug (too little starves cherelles; too much breeds black pod fungus).</p>
+</section>
+
+<!-- ================= POLICY ================= -->
+<section id="policy">
+  <h2>Standing policy &amp; structural variables</h2>
+  <p class="sub">Slow variables that set the stage. Refresh quarterly.</p>
+  <h3>EUDR — the 2026 wildcard</h3>
+  <p>The EU Deforestation Regulation requires geolocation-verified, deforestation-free sourcing for cocoa entering the EU — the destination for the bulk of West African beans. After repeated delays it takes effect for large operators at <strong>end-2026</strong>, and it's already distorting physical flows (the Q4 shipping compression above). Structural effects to expect: a compliance premium on traceable beans, smallholder exclusion risk, and a possible two-tier market — EU-compliant vs. rest-of-world cocoa.</p>
+  <h3>Origin power is rising</h3>
+  <p>In July 2026 Côte d'Ivoire, Ghana, Nigeria and Cameroon jointly declared intent to <strong>restrict raw bean exports and expand local processing</strong>. Take the direction seriously even if timelines slip: origin grind capacity keeps growing (CI ~750 kt capacity, vying with the Netherlands for #1), which gradually shifts what "exports" even means and supports the countries' pricing leverage.</p>
+  <h3>Ghana's structural decay</h3>
+  <p>The bear case on Ghana is not one bad season: <strong>swollen shoot virus</strong> (incurable — infected trees must be uprooted), decades-old tree stock, and <strong>galamsey</strong> (illegal gold mining physically consuming farmland) are ratchets, not cycles. Add COCOBOD's chronic financing strain (currently: reported six-month farmer payment arrears) and Ghana's capacity to surprise on the upside shrinks every year. The gap left is being filled by Ecuador — the structural share-shift trade of the decade in this market.</p>
+  <h3>The farmgate wedge</h3>
+  <p>Whenever the fixed farmgate price diverges from world prices or from the neighbour's price, beans move: cross-border smuggling (Ghana↔CI↔Togo/Guinea), under-declared volumes, quality shortcuts. The new harmonized-price arrangement between CI and Ghana is an attempt to close that wedge — whether it holds is itself worth watching.</p>
+</section>
+
+<!-- ================= CHATTER ================= -->
+<section id="chatter">
+  <h2>Origin &amp; social chatter<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">What the ground-level conversation is saying, and how to listen without an account anywhere.</p>
+
+  <div class="panel">
+    <h3>Current themes in the chatter</h3>
+    <ul>
+      <li><strong>Farmer weather reports from CI are cautiously constructive short-term:</strong> the weekly Reuters-relayed dispatches from growing regions describe alternating rain and sun supporting pod development — but note the drying trend needed to contain moisture-related disease after heavy rains.</li>
+      <li><strong>Ghana talk is dark and specific:</strong> the conversation has moved past weather to structural despair — swollen shoot spread, galamsey encroachment, and above all <em>unpaid farmers</em>. Payment-arrears chatter matters because unpaid farmers stop investing in their trees and sell across borders.</li>
+      <li><strong>El Niño is the phrase of the season</strong> — appearing in nearly every origin report and trade note. Treat superlatives ("strongest in decades") skeptically until NOAA/BOM data confirms; the chatter is ahead of the verified science, which is exactly when mispricing happens in either direction.</li>
+      <li><strong>Trade-side chatter is about logistics, not crops:</strong> port congestion, EUDR paperwork readiness, warehouse capacity at Abidjan/San Pedro. When physical players talk logistics, watch calendar spreads.</li>
+    </ul>
+  </div>
+
+  <h3>How to listen (no accounts needed)</h3>
+  <p><strong>The Reuters farmer dispatch</strong> — a weekly report built from actual farmer interviews across Ivorian growing regions — is the closest thing cocoa has to AgTwitter, pre-verified and in English. Free via Reuters commodity news and reproduced widely. <strong>ADM Investor Services and similar broker dailies</strong> aggregate arrivals, grind and positioning with trade-level commentary. <strong>CocoaIntel</strong> and comparable specialist sites track futures microstructure (open interest, EFPs, certified stocks) daily. The genuinely early stuff — pod counts from specific départements, disease photos, cooperative-level payment complaints — circulates in French on Facebook groups and WhatsApp/Telegram among Ivorian farmers and pisteurs; it is real but effectively inaccessible systematically, which is precisely why the cocoa-2023 style edge existed for the handful of origin-connected accounts that surfaced it.</p>
+  <h3>Bias corrections for this market</h3>
+  <p>Same de-meaning logic as US farmers, different biases: origin <em>officials</em> talk their book upward before farmgate price negotiations (a big crop weakens the case for higher farmgate prices — so boards often lowball early estimates); <em>exporters</em> exaggerate logistics problems they want the regulator to solve; <em>farmers</em> have less price incentive to spin than US farmers (they get the fixed farmgate price regardless) — which actually makes West African farmer weather reports <strong>more</strong> trustworthy than Iowa crop talk. The COCOBOD pod-count revisions are the exception to official optimism: a board forecasting its own 40% decline is speaking against interest, which is why the market took the July warning seriously.</p>
+</section>
+
+<!-- ================= TRADING ================= -->
+<section id="trading">
+  <h2>How this market trades</h2>
+  <p class="sub">Microstructure notes that matter for execution and sizing.</p>
+  <p><strong>Liquidity is structurally impaired post-2024.</strong> The price explosion forced margin requirements up and drove commercial hedgers and funds out; open interest never recovered. Thin books + high margins = exaggerated moves, stop-runs, and gap risk. Size accordingly — cocoa at ~$6,000 with today's volatility is a different animal per contract than the pre-2024 market at $2,500.</p>
+  <p><strong>Positioning is the primary short-horizon driver.</strong> The April→August round trip was a positioning event wearing a fundamentals costume: record shorts met deteriorating crop news. The COT is therefore your single most useful weekly read — the same crowding logic as the silver monitor, and cocoa is arguably even more squeeze-prone than silver right now given the depth problem.</p>
+
+  <div class="panel">
+    <h3>Positioning snapshot<span class="livebadge">live · 7 Sep 2026</span></h3>
+    <ul>
+      <li><strong>Managed money: net short −6,667 contracts</strong> (22,955 long vs 29,622 short, COT week to 11 Aug) — roughly two-thirds of the record −19,885 April short has been covered, but funds have <em>not</em> flipped long; they were still adding shorts into the August rally.</li>
+      <li><strong>Commercials: net short ~−20,500</strong>, narrowing — physical players trimming short hedges is quietly constructive.</li>
+      <li><strong>Open interest keeps falling</strong> (~200k area): the rallies have been position <em>liquidation</em>, not new-money accumulation. A genuine flip of managed money to net long would mark a regime change — that's the line to watch, not the day-to-day wiggle.</li>
+      <li><strong>Context — the ag complex is running hot:</strong> in the week to 25 Aug, funds added to grains and softs at the fastest pace on record (combined net long above 1.1 M contracts, a 4-year high; sugar and cotton at multi-year positioning highs). Cocoa is the conspicuous laggard in that rotation — which is both why it still has fuel above it and why a broad ag washout would hit it with the rest.</li>
+      <li><strong>Recurring source:</strong> CFTC COT (Fridays); Saxo's weekly "COT on forex and commodities" note covers cocoa alongside the rest of the complex — already inside your broker's research.</li>
+    </ul>
+  </div>
+  <p><strong>The structure trades:</strong> NY–London spread (quality/origin discrimination, currency), calendar spreads (the Q4 congestion story lives in Dec–Mar, not flat price), and options — cocoa vol is rich but the gap risk is real, which fits your rule of using listed options specifically for gap scenarios.</p>
+  <div class="bb">
+    <div class="panel bull">
+      <h3>The bull case, honestly</h3>
+      <ul>
+        <li>2026/27 supply deteriorating: Ghana −13% (or worse), Ivorian main crop late, El Niño overhead.</li>
+        <li>Structural: swollen shoot + aging trees + galamsey = Ghana's decline is a ratchet.</li>
+        <li>EUDR compresses and complicates physical supply into Q4.</li>
+        <li>Funds still carry shorts — fuel above the market.</li>
+        <li>Tree clock: no meaningful new supply (ex-Ecuador) until late decade.</li>
+      </ul>
+    </div>
+    <div class="panel bear">
+      <h3>The bear case, honestly</h3>
+      <ul>
+        <li>Demand is broken: Europe grind −4.6% even after a 50% price collapse; reformulation is sticky.</li>
+        <li>ICE stocks at two-year highs; 2025/26 delivered a surplus and arrivals beat the 5-yr average.</li>
+        <li>Ecuador and other origins are the supply response, arriving now, every year, compounding.</li>
+        <li>El Niño and the pod-count fears are already partly in the price after a +100% rally.</li>
+        <li>The delay story may be timing, not tonnage — beans arriving late still arrive.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= CHARTS ================= -->
+<section id="gauges">
+  <h2>Historical gauges</h2>
+  <p style="border-left:3px solid var(--amber);padding-left:12px"><strong>Measured update (8 Sep, COT pack):</strong> MM net −4.8k = <strong>25.6th percentile since 2010</strong> (range +85k / −57k) — "low but not extreme short" confirmed quantitatively; the long-skew history is real (2010s longs peaked +85k).</p>
+  <p class="sub">Every live number placed against its history — the de-meaning layer. Anchors marked ≈ are from Claude's historical knowledge: right order of magnitude, verify before sizing against them. Upgradeable to true percentiles with one upload of CFTC/ICCO historical files.</p>
+  <table>
+    <tr><th>Metric</th><th>Current</th><th>Historical anchor</th><th>Read</th></tr>
+    <tr><td>Price</td><td><span data-field="CC.price">≈ $6,300/t</span></td><td>Pre-2024 decade norm ≈ $2,000–3,000; record 12,906</td><td>Still 2–3× the old normal. The core structural debate: new regime (structural West African decline) or unfinished mean reversion.</td></tr>
+    <tr><td>Stocks-to-grind</td><td>28.2% → ~34%e</td><td>46-yr low 27% · comfort 35–40% · fat-surplus eras 45%+</td><td>Half-rebuilt. Nowhere near the levels that historically capped prices for years.</td></tr>
+    <tr><td>MM net position</td><td><span data-field="CC.mm_net">−6.7k</span></td><td>Record short −19.9k (Apr 26) · pre-2024 longs peaked ≈ +60k</td><td>Cocoa was historically a long-skewed market. Today's near-flat book is the anomaly — enormous room on the long side if conviction ever returns.</td></tr>
+    <tr><td>ICE certified stocks</td><td>"2-year highs"</td><td>The 2-year window starts at crisis lows</td><td>High vs the crisis, modest vs the pre-2024 era — the framing flatters the bear case. Verify the 5-yr comparison before leaning on it.</td></tr>
+    <tr><td>CI arrivals</td><td>2.0 Mt</td><td>5-yr average 1.96 Mt</td><td>Recovered exactly to trend — no more, no less.</td></tr>
+    <tr><td>El Niño precedent</td><td>Emerging, "strongest in 75 yrs" claimed</td><td>≈ Strong episodes (1997/98, 2015/16, 2023/24) each coincided with West African shortfalls</td><td>The base rate supports the fear directionally; magnitude varied widely. The superlative is unverified — trade the anomaly maps.</td></tr>
+  </table>
+</section>
+
+<!-- ================= CHARTS ================= -->
+<section id="charts">
+  <h2>Charts<span class="livebadge">live · 7 Sep 2026</span></h2>
+  <p class="sub">Built from the sourced data points in this brief — sparse reference marks, not continuous series. They show the shape of the cycle; pull live curves from ICE/Barchart/Saxo before trading against a level.</p>
+  <div class="charts-grid">
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NY cocoa, key sourced marks (USD/t)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">NY cocoa, key sourced marks (USD/t)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="191.4" x2="506" y2="191.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="195.4" text-anchor="end" font-size="11" fill="#c9b394">4,000</text><line x1="58" y1="126.9" x2="506" y2="126.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="130.9" text-anchor="end" font-size="11" fill="#c9b394">8,000</text><line x1="58" y1="62.3" x2="506" y2="62.3" stroke="#57402a" stroke-width="0.6"/><text x="50" y="66.3" text-anchor="end" font-size="11" fill="#c9b394">12,000</text><path d="M76.0,47.7 L144.7,139.8 L213.3,209.3 L282.0,210.1 L350.7,163.6 L419.3,151.1 L488.0,154.5" fill="none" stroke="#e39a3b" stroke-width="2.4" stroke-linejoin="round"/><circle cx="76.0" cy="47.7" r="4" fill="#e39a3b"/><text x="76.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Dec 24</text><circle cx="144.7" cy="139.8" r="4" fill="#e39a3b"/><text x="144.7" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 25</text><circle cx="213.3" cy="209.3" r="4" fill="#e39a3b"/><text x="213.3" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Feb 26</text><circle cx="282.0" cy="210.1" r="4" fill="#e39a3b"/><text x="282.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Apr 26</text><circle cx="350.7" cy="163.6" r="4" fill="#e39a3b"/><text x="350.7" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Jul 26</text><circle cx="419.3" cy="151.1" r="4" fill="#e39a3b"/><text x="419.3" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Aug 26</text><circle cx="488.0" cy="154.5" r="4" fill="#e39a3b"/><text x="488.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 26</text><text x="76.0" y="37.7" text-anchor="start" font-size="11" fill="#f0e2cb">12,906 record</text><text x="282.0" y="228.1" text-anchor="middle" font-size="11" fill="#f0e2cb">2,846 low</text><text x="488.0" y="144.5" text-anchor="end" font-size="11" fill="#f0e2cb">≈6,300</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Global balance, kt (production − grindings)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Global balance, kt (production − grindings)</text><line x1="58" y1="223.7" x2="506" y2="223.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="227.7" text-anchor="end" font-size="11" fill="#c9b394">-400</text><line x1="58" y1="180.7" x2="506" y2="180.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="184.7" text-anchor="end" font-size="11" fill="#c9b394">-200</text><line x1="58" y1="137.6" x2="506" y2="137.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="141.6" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="94.6" x2="506" y2="94.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="98.6" text-anchor="end" font-size="11" fill="#c9b394">200</text><line x1="58" y1="51.5" x2="506" y2="51.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="55.5" text-anchor="end" font-size="11" fill="#c9b394">400</text><rect x="101.0" y="137.6" width="26.0" height="105.5" fill="#cf6349"/><text x="114.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">23/24</text><rect x="213.0" y="129.7" width="26.0" height="8.0" fill="#8fb069"/><text x="226.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">24/25</text><rect x="295.0" y="84.5" width="26.0" height="53.2" fill="#8fb069"/><rect x="325.0" y="67.7" width="26.0" height="70.0" fill="#8fb069"/><rect x="355.0" y="42.5" width="26.0" height="95.1" fill="#8fb069"/><text x="338.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26e</text><rect x="407.0" y="120.0" width="26.0" height="17.6" fill="#e39a3b"/><rect x="437.0" y="113.7" width="26.0" height="23.9" fill="#e39a3b"/><rect x="467.0" y="105.5" width="26.0" height="32.1" fill="#e39a3b"/><text x="450.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text><line x1="58" y1="137.6" x2="506" y2="137.6" stroke="#f0e2cb" stroke-width="1"/><text x="506" y="42" text-anchor="end" font-size="10.5" fill="#c9b394">25/26 &amp; 26/27: three forecasters each (Guan Chong deficit call not plottable — no figure published)</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stocks-to-grindings ratio with 26/27 scenarios"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Stocks-to-grindings, % — with implied 26/27 scenarios</text><line x1="58" y1="243.4" x2="506" y2="243.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="247.4" text-anchor="end" font-size="11" fill="#c9b394">25%</text><line x1="58" y1="180.7" x2="506" y2="180.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="184.7" text-anchor="end" font-size="11" fill="#c9b394">30%</text><line x1="58" y1="117.9" x2="506" y2="117.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="121.9" text-anchor="end" font-size="11" fill="#c9b394">35%</text><line x1="58" y1="55.1" x2="506" y2="55.1" stroke="#57402a" stroke-width="0.6"/><text x="50" y="59.1" text-anchor="end" font-size="11" fill="#c9b394">40%</text><rect x="58" y="55.1" width="448" height="62.8" fill="#8fb069" opacity="0.16"/><text x="64" y="90.5" text-anchor="start" font-size="11" fill="#8fb069">comfortable ≈35–40%</text><path d="M98.0,218.3 L204.0,203.3 L310.0,130.4" fill="none" stroke="#e39a3b" stroke-width="2.4"/><circle cx="98.0" cy="218.3" r="4.5" fill="#e39a3b"/><text x="98.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">23/24</text><text x="98.0" y="207.3" text-anchor="middle" font-size="11" fill="#f0e2cb">27% · 46-yr low</text><circle cx="204.0" cy="203.3" r="4.5" fill="#e39a3b"/><text x="204.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">24/25</text><text x="204.0" y="192.3" text-anchor="middle" font-size="11" fill="#f0e2cb">28.2% (ICCO)</text><circle cx="310.0" cy="130.4" r="4.5" fill="#e39a3b"/><text x="310.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26e</text><text x="310.0" y="119.4" text-anchor="middle" font-size="11" fill="#f0e2cb">~34% implied</text><path d="M310.0,130.4 L416.0,105.3" fill="none" stroke="#8fb069" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="105.3" r="4.5" fill="#8fb069"/><text x="424.0" y="109.3" text-anchor="start" font-size="10.5" fill="#8fb069">consensus surplus → ~36%</text><path d="M310.0,130.4 L416.0,155.6" fill="none" stroke="#e39a3b" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="155.6" r="4.5" fill="#e39a3b"/><text x="424.0" y="159.6" text-anchor="start" font-size="10.5" fill="#e39a3b">modest deficit → ~32%</text><path d="M310.0,130.4 L416.0,205.8" fill="none" stroke="#cf6349" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="205.8" r="4.5" fill="#cf6349"/><text x="424.0" y="209.8" text-anchor="start" font-size="10.5" fill="#cf6349">tail (−300kt) → ~28%</text><text x="416.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text></svg></div>
+    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Managed money net position, NY cocoa (contracts)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Managed money net position, NY cocoa (contracts)</text><line x1="58" y1="225.9" x2="506" y2="225.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="229.9" text-anchor="end" font-size="11" fill="#c9b394">-20k</text><line x1="58" y1="150.5" x2="506" y2="150.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="154.5" text-anchor="end" font-size="11" fill="#c9b394">-10k</text><line x1="58" y1="75.2" x2="506" y2="75.2" stroke="#57402a" stroke-width="0.6"/><text x="50" y="79.2" text-anchor="end" font-size="11" fill="#c9b394">0k</text><line x1="58" y1="75.2" x2="506" y2="75.2" stroke="#f0e2cb" stroke-width="1"/><text x="506" y="68.2" text-anchor="end" font-size="11" fill="#c9b394">net long above / net short below</text><path d="M108.0,198.5 L272.0,225.0 L436.0,125.4" fill="none" stroke="#cf6349" stroke-width="2.4"/><circle cx="108.0" cy="198.5" r="4.5" fill="#cf6349"/><text x="108.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">7 Apr 26</text><text x="108.0" y="218.5" text-anchor="middle" font-size="11" fill="#f0e2cb">−16.4k</text><circle cx="272.0" cy="225.0" r="4.5" fill="#cf6349"/><text x="272.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">28 Apr 26</text><text x="272.0" y="245.0" text-anchor="middle" font-size="11" fill="#f0e2cb">−19.9k · record short</text><circle cx="436.0" cy="125.4" r="4.5" fill="#cf6349"/><text x="436.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">11 Aug 26</text><text x="436.0" y="145.4" text-anchor="middle" font-size="11" fill="#f0e2cb">−6.7k · ⅔ covered, not flipped</text></svg></div>
+  </div>
+  <p class="calnote">Reading them together: price has retraced to the middle of the two-year range while the balance (chart 2) shrinks toward zero from above, the stock cushion (chart 3) sits just below the comfort band, and positioning (chart 4) is still short. All four point the same direction — a market repricing from surplus-comfort toward 2026/27 risk — but none has crossed its regime line yet: no deficit printed, S/G not yet comfortable <em>or</em> critical, funds not yet flipped long.</p>
+</section>
+
+<footer>
+  <p><strong>Refreshing this dashboard:</strong> the three sections tagged "live" (current story, watch list, chatter) go stale in weeks; ask Claude to re-run the live pass and update them. The primer, seasonal map and policy sections are durable. Sources behind the live sections: ICCO bulletins, ECA/NCA/CAA grindings, CCC and COCOBOD statements, exporter port-arrival estimates, GEPEX, CFTC COT, ICE certified stocks, Reuters origin dispatches, and trade commentary (ADMIS, CocoaIntel, Barchart) — retrieved 7 Sep 2026. Figures are as-reported and should be re-verified before trading against them.</p>
+</footer>
+
+</div>
+
+<!-- marketdata dashboard live-data hooks (auto-refreshing) -->
+<script src="dashboard_data.js"></script>
+<script src="dashboard_populate.js"></script>
+</body>
+</html>
