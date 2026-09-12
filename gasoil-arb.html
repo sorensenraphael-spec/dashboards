@@ -41,7 +41,10 @@ th{text-align:left;color:var(--dim);font-weight:500;font-size:11.5px;letter-spac
 td{padding:10px 12px 10px 0;border-bottom:1px solid #1e2b29;font-variant-numeric:tabular-nums}
 tr.arrival td{background:rgba(140,123,216,0.06);font-weight:600}
 tr.arrival td:first-child::before{content:"→ ";color:var(--violet);font-weight:700}
-td.na{color:var(--dim);font-style:italic}
+td.na, .na{color:var(--dim);font-style:italic}
+.curve-shape{background:var(--tile);border-left:3px solid var(--info);padding:10px 16px;margin:10px 0 0;font-size:13px;color:var(--fg)}
+.warn-banner{background:rgba(207,99,73,0.14);border:1px solid var(--ember);color:var(--fg);padding:10px 16px;border-radius:6px;margin:12px 0;font-size:13px}
+.warn-banner.soft{background:rgba(227,154,59,0.10);border-color:var(--amber);color:var(--fg)}
 .pill{padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600}
 .pill.open{background:rgba(143,176,105,0.18);color:var(--leaf)}
 .pill.closed{background:rgba(207,99,73,0.18);color:var(--ember)}
@@ -83,14 +86,14 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 <header>
   <h1>Gasoil Arb — USGC → ARA Distillate</h1>
   <div class="sub">Physical arb margin for a distillate cargo leaving the US Gulf today, arriving Europe after the shipping lag, sold into ICE Gasoil at the arrival-month contract. The forward curve is what makes this real: prompt spot is the wrong hedge.</div>
-  <div class="stamp">Snapshot generated 2026-09-12 12:55 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
+  <div class="stamp">Snapshot generated 2026-09-12 18:47 · config last updated 2026-09-12 · update ICE Gasoil curve daily from Saxo</div>
 </header>
 
 <h2>Current arb snapshot</h2>
 <div class="snap">
   <div>
     <div class="lbl">Arb margin ($/mt)</div>
-    <div class="val closed">-51.90</div>
+    <div class="val closed">-120.51</div>
     <div class="side">Cargo arrives <b>03 Oct 2026</b> · sells <b>Oct-26</b> ICE Gasoil</div>
   </div>
   <div class="badge closed">CLOSED</div>
@@ -100,26 +103,28 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
   </div>
   <div style="text-align:right">
     <div class="lbl">USGC all-in</div>
-    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1531.15</div>
+    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1599.76</div>
   </div>
 </div>
 
-<h2>Contango impact — arb margin across Q4 delivery months</h2>
+<h2>Forward-curve impact — bilateral arb margin per delivery month</h2>
+<div class="curve-shape"><b>Curve shape:</b> Backwardation · $1472.75 (front) → $1265.00 (back) = -207.75 $/mt over 5 months</div>
+
 <table>
-  <tr><th>Delivery</th><th>ICE Gasoil fwd ($/mt)</th><th>Arb margin ($/mt)</th><th>Status</th><th>Notes</th></tr>
-  <tr><td>Sep-26</td><td>$1472.75</td><td>-58.40</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
-<tr class="arrival"><td>Oct-26</td><td>$1479.25</td><td>-51.90</td><td><span class="pill closed">CLOSED</span></td><td>arrival month</td></tr>
-<tr><td>Nov-26</td><td>$1395.50</td><td>-135.65</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
-<tr><td>Dec-26</td><td>$1320.50</td><td>-210.65</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
-<tr><td>Jan-27</td><td>$1265.00</td><td>-266.15</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+  <tr><th>Delivery</th><th>ICE Gasoil fwd ($/mt)</th><th>NYMEX HO fwd ($/gal)</th><th>Arb margin ($/mt)</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Sep-26</td><td>$1472.75</td><td>$4.4953</td><td>+18.17</td><td><span class="pill open">OPEN</span></td><td></td></tr>
+<tr class="arrival"><td>Oct-26</td><td>$1479.25</td><td>$4.9593</td><td>-120.51</td><td><span class="pill closed">CLOSED</span></td><td>arrival month</td></tr>
+<tr><td>Nov-26</td><td>$1395.50</td><td>$4.7683</td><td>-144.50</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+<tr><td>Dec-26</td><td>$1320.50</td><td>$4.5584</td><td>-153.82</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
+<tr><td>Jan-27</td><td>$1265.00</td><td>$4.4213</td><td>-166.42</td><td><span class="pill closed">CLOSED</span></td><td></td></tr>
 </table>
 
 <h2>Break-even</h2>
 <div class="be">
-  ICE Gasoil forward needs to reach <span class="num">$1531.15/mt</span>
+  ICE Gasoil forward needs to reach <span class="num">$1599.76/mt</span>
   (<b>Oct-26</b> contract) to open the arb at current USGC spot and freight.
   <br>Currently the Oct-26 mark is <span class="num">$1479.25/mt</span> —
-  gap <span class="gap ">$-51.90/mt</span> (arb needs ARA gain / USGC drop).
+  gap <span class="gap ">$-120.51/mt</span> (arb needs ARA gain / USGC drop).
 </div>
 
 <h2>Sensitivity — freight & shipping lag</h2>
@@ -163,7 +168,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <script>
 // Config baked in at build time so the sliders can recompute locally.
-const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1479.25, "Nov-26": 1395.5, "Dec-26": 1320.5, "Jan-27": 1265.0}, "last_updated": "2026-09-12", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "usgc_ulsd_spot": "config (fallback)", "spot_note": "USGC ULSD spot not in Norgate \u2014 only NYMEX HO (&HO) available and that's NYH-priced, not USGC. Keeping the manual config value; update usgc_ulsd_spot_usd_per_gal in arb_config.json from your terminal."}};
+const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1479.25, "Nov-26": 1395.5, "Dec-26": 1320.5, "Jan-27": 1265.0}, "last_updated": "2026-09-12", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "nymex_ho": {"Sep-26": "HO-2026U", "Oct-26": "HO-2026V", "Nov-26": "HO-2026X", "Dec-26": "HO-2026Z", "Jan-27": "HO-2027F"}, "usgc_ulsd_spot": "config (fallback)", "spot_note": "USGC ULSD spot not in Norgate \u2014 only NYMEX HO (&HO) available and that's NYH-priced, not USGC. Keeping the manual config value; update usgc_ulsd_spot_usd_per_gal in arb_config.json from your terminal.", "location_basis_note": "NYMEX HO is New York Harbor ULSD, NOT USGC. The NYH\u2194USGC basis is embedded in the arb and documented on the dashboard."}, "nymex_ho_curve": {"Sep-26": 4.495299816131592, "Oct-26": 4.9593000411987305, "Nov-26": 4.7683000564575195, "Dec-26": 4.5584001541137695, "Jan-27": 4.421299934387207}};
 const GAL_PER_MT = 312.9;
 const ARRIVAL_MONTH_KEY = "Oct-26";
 const OPEN_MIN = 5, CLOSED_MAX = -5;
@@ -187,8 +192,12 @@ function recompute() {
   const monthAbbr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const arrKey = monthAbbr[arr.getMonth()] + '-' + String(arr.getFullYear() % 100).padStart(2, '0');
   const gasoil = CFG.ice_gasoil_curve[arrKey];
+  // Prefer matched-month HO fwd; fall back to config spot if missing.
+  const ho_fwd = (CFG.nymex_ho_curve || {})[arrKey];
+  const ulsd_gal = ho_fwd != null ? ho_fwd : CFG.usgc_ulsd_spot_usd_per_gal;
+  const ulsd_leg = ho_fwd != null ? ('HO ' + arrKey + ' fwd') : 'spot fallback';
 
-  const usgc_mt = CFG.usgc_ulsd_spot_usd_per_gal * GAL_PER_MT + fr + CFG.port_handling_usd_per_mt;
+  const usgc_mt = ulsd_gal * GAL_PER_MT + fr + CFG.port_handling_usd_per_mt;
   document.getElementById('usgc_mt_val').textContent = (CFG.usgc_ulsd_spot_usd_per_gal * GAL_PER_MT).toFixed(2);
   const arb = gasoil == null ? null : gasoil - usgc_mt;
   const st = statusFor(arb);
@@ -197,11 +206,12 @@ function recompute() {
   n.className = 'n ' + st.cls;
   if (arb == null) {
     n.textContent = 'no data';
-    note.textContent = 'Arrival month ' + arrKey + ' — no Gasoil forward entered in config';
+    note.textContent = 'Arrival month ' + arrKey + ' — no Gasoil forward available';
   } else {
     n.textContent = (arb >= 0 ? '+' : '') + arb.toFixed(2) + ' $/mt';
     note.textContent = st.txt + ' · arrival ' + arrKey + ' · Gasoil fwd $' + gasoil.toFixed(2)
-      + '/mt − USGC all-in $' + usgc_mt.toFixed(2) + '/mt';
+      + '/mt − ULSD leg $' + ulsd_gal.toFixed(4) + '/gal (' + ulsd_leg
+      + ') → USGC all-in $' + usgc_mt.toFixed(2) + '/mt';
   }
 }
 document.getElementById('fr').addEventListener('input', recompute);
