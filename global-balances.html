@@ -24,6 +24,7 @@
   .tag.live{background:#1d2f26;color:var(--live)}
   .tag.est{background:#332a1a;color:var(--amb)}
   .asof{color:var(--dim);font-size:12px;font-weight:500}
+  .livebadge{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:3px;background:#1d2f26;color:var(--live);letter-spacing:.01em}
   p{color:#c9c4b8;margin-top:8px;max-width:80ch}
   p b, li b, td b{color:var(--ink)}
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-top:14px}
@@ -59,8 +60,8 @@
 </header>
 
 <!-- ============ LIQUIDS ============ -->
-<section>
-  <h2>Liquids — global surplus / deficit &amp; cumulative balance <span class="tag live">LIVE</span> <span class="asof">IEA OMR May · EIA STEO Jul · press to 9 Sep</span></h2>
+<section id="liquids">
+  <h2>Liquids — global surplus / deficit &amp; cumulative balance <span class="livebadge">live · 14 Sep 2026</span></h2>
   <div class="panel">
     <svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="Quarterly liquids balance and cumulative inventory change">
       <!-- zero line -->
@@ -68,81 +69,82 @@
       <text x="12" y="70" fill="#5f6f6a" font-size="11">+2 mb/d</text>
       <text x="12" y="154" fill="#5f6f6a" font-size="11">0</text>
       <text x="12" y="240" fill="#5f6f6a" font-size="11">−5 mb/d</text>
-      <!-- quarterly bars: 2025 avg +1.8; Q1-26 -1.5 (Jan/Feb build, Mar -4.2); Q2 -5.1; Q3E -2.5; Q4E -0.3 -->
+      <!-- quarterly bars refreshed to IEA Sep OMR path: 2025 +1.8 avg; Q1-26 -1.5; Q2 -5.3; Q3 -3.4; Q4 -2.0 -->
       <rect x="80"  y="78"  width="90" height="72" fill="#5fa8a0"/><text x="86"  y="70"  fill="#5fa8a0" font-size="12" font-weight="700">+1.8</text><text x="84"  y="272" fill="#8fa19a" font-size="11.5">2025 avg</text>
-      <rect x="230" y="150" width="90" height="26" fill="#e4572e" opacity=".75"/><text x="236" y="192" fill="#e4572e" font-size="12" font-weight="700">−1.5</text><text x="234" y="272" fill="#8fa19a" font-size="11.5">Q1-26*</text>
-      <rect x="380" y="150" width="90" height="88" fill="#e4572e"/><text x="386" y="254" fill="#e4572e" font-size="12" font-weight="700">−5.1</text><text x="384" y="272" fill="#8fa19a" font-size="11.5">Q2-26</text>
-      <rect x="530" y="150" width="90" height="44" fill="#e4572e" opacity=".85"/><text x="536" y="210" fill="#e4572e" font-size="12" font-weight="700">≈−2.5E</text><text x="534" y="272" fill="#8fa19a" font-size="11.5">Q3-26E</text>
-      <rect x="680" y="150" width="90" height="6" fill="#d9a441"/><text x="686" y="174" fill="#d9a441" font-size="12" font-weight="700">≈0E†</text><text x="684" y="272" fill="#8fa19a" font-size="11.5">Q4-26E</text>
-      <!-- cumulative line (indexed, right side): 2026 cumulative draw ~ -750mb by Sep -->
-      <polyline points="125,60 275,80 425,190 575,235 725,245 870,248" fill="none" stroke="#e9e5da" stroke-width="2.5" stroke-dasharray="5 4"/>
-      <circle cx="870" cy="248" r="4" fill="#e9e5da"/>
-      <text x="700" y="240" fill="#e9e5da" font-size="12" font-weight="700">cumulative 2026: ≈ −750 mb by Sep</text>
+      <rect x="230" y="150" width="90" height="26" fill="#e4572e" opacity=".75"/><text x="236" y="192" fill="#e4572e" font-size="12" font-weight="700">−1.5</text><text x="234" y="272" fill="#8fa19a" font-size="11.5">Q1-26</text>
+      <rect x="380" y="150" width="90" height="92" fill="#e4572e"/><text x="386" y="258" fill="#e4572e" font-size="12" font-weight="700">−5.3</text><text x="384" y="272" fill="#8fa19a" font-size="11.5">Q2-26</text>
+      <rect x="530" y="150" width="90" height="59" fill="#e4572e" opacity=".9"/><text x="536" y="225" fill="#e4572e" font-size="12" font-weight="700">−3.4</text><text x="534" y="272" fill="#8fa19a" font-size="11.5">Q3-26</text>
+      <rect x="680" y="150" width="90" height="35" fill="#e4572e" opacity=".8"/><text x="686" y="200" fill="#e4572e" font-size="12" font-weight="700">−2.0E</text><text x="684" y="272" fill="#8fa19a" font-size="11.5">Q4-26E</text>
+      <!-- cumulative line: IEA Sep OMR reports 507 mb drawn since war start; 2026 YTD est ≈ -820 mb -->
+      <polyline points="125,60 275,80 425,195 575,240 725,252 870,258" fill="none" stroke="#e9e5da" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <circle cx="870" cy="258" r="4" fill="#e9e5da"/>
+      <text x="640" y="248" fill="#e9e5da" font-size="12" font-weight="700">cumulative 2026 YTD: ≈ −820 mb (Aug alone −95 mb)</text>
     </svg>
     <div class="legend"><span style="color:var(--sur)">■ surplus</span><span style="color:var(--def)">■ deficit</span><span>◌ dashed = cumulative observed inventory change since 1 Jan 2026</span></div>
-    <p>*Q1 splits violently: Jan–Feb still in glut (2025 saw the fastest builds since 2020), then March's war took global supply down 10.1&nbsp;mb/d in one month — observed inventories drew <b>129&nbsp;mb in March and 117&nbsp;mb in April</b>. Q2 averaged <b>−5.1&nbsp;mb/d</b> (EIA), a record pace. †Q4's "balanced" is the IEA's assumption of a <i>gradual Hormuz resumption from Q3</i> — an assumption currently fraying with each strike. The cumulative line is the tradable object: <b>roughly three-quarters of a billion barrels have left storage in 2026</b>, and the market is priced (per JPM's $80 Q4) as if they come back easily.</p>
+    <p><b>IEA Sep OMR (11 Sep):</b> 2026 world supply cut to 100.7&nbsp;mb/d (−5.7&nbsp;mb/d y/y) and full Middle East recovery <b>pushed to 2027</b>. Demand falls 2.5&nbsp;mb/d in 2026 — the decline eases from −5.3 in Q2 to −3.4 in Q3 to −2.0 in Q4, meaning the market stays in deficit every quarter of 2026. Since the war began, global observed inventories have drawn <b>507&nbsp;mb</b> (avg 2.8&nbsp;mb/d); August alone drew <b>95&nbsp;mb / 3.1&nbsp;mb/d</b>. The 2026-YTD stock draw is now near <b>−820&nbsp;mb</b> — a full billion barrels of cushion has been spent, and Q4 <b>no longer balances</b> on the OMR's own numbers.</p>
     <table>
-      <tr><th>Key places</th><th>Reading</th></tr>
-      <tr><td><b>OECD on-land</b></td><td class="num">−146 mb in April alone (−4.9 mb/d) — the sharpest OECD draw on record; the buffer that absorbed 2020 and 2022 is being spent</td></tr>
-      <tr><td><b>Oil on water</b></td><td class="num">+53 mb (Apr) — rerouting inflates floating storage; it's transit, not availability</td></tr>
-      <tr><td><b>Non-OECD visible</b></td><td class="num">−24 mb (Apr); China cut imports during the war and is <b>now restocking</b>, bidding Atlantic-basin grades — a second, price-insensitive draw source</td></tr>
-      <tr><td><b>US distillates</b></td><td class="num">105.6 mb (w/e 14 Aug) — lowest seasonal level since the mid-1990s, −12–13% vs 5-yr avg; the products layer is tighter than the crude layer</td></tr>
-      <tr><td><b>EU diesel + gas</b></td><td class="num">Diesel stocks lowest since 2022; gas storage ~50% at refill season — double winter deficit</td></tr>
+      <tr><th>Key places</th><th>Reading (Sep 11 IEA / Sep 9 EIA STEO / weekly)</th></tr>
+      <tr><td><b>OECD on-land</b></td><td class="num">Continued drawdown through Aug; buffer that absorbed 2020/22 now materially spent</td></tr>
+      <tr><td><b>Aug global draw</b></td><td class="num">−95 mb (−3.1 mb/d) per IEA — accelerating vs Jul; deficit widening again despite seasonal softness</td></tr>
+      <tr><td><b>US distillates</b></td><td class="num"><b>EIA STEO Sep: inventories to fall &lt;100 mb in September</b> and stay below the 5-yr (2021–25) low through end-2027 — the products squeeze is the tightest layer in the book</td></tr>
+      <tr><td><b>US gasoline</b></td><td class="num">Also below 5-yr range on STEO path — twin-product tightness, not a distillate-only story</td></tr>
+      <tr><td><b>US refinery runs</b></td><td class="num">Crude inputs highest since 2019 YTD; October seasonal maintenance drops runs &lt;16 mb/d — a bearish blip inside a bullish tape</td></tr>
+      <tr><td><b>Middle East recovery</b></td><td class="num">IEA now says <b>2027</b> (was Q3-26 assumption in May OMR) — the "balance by year-end" narrative is dead in print</td></tr>
     </table>
   </div>
 </section>
 
 <!-- ============ GRAINS & OILSEEDS ============ -->
-<section>
-  <h2>Grains, oilseeds &amp; cotton — stocks-to-use <span class="tag live">LIVE</span> <span class="asof">WASDE Sep 11 landed: corn stocks 1.6B (tightened), soy 310M (tightened), wheat flat · next print Oct WASDE + Sep 30 Grain Stocks</span></h2>
+<section id="grains-stu">
+  <h2>Grains, oilseeds &amp; cotton — stocks-to-use <span class="livebadge">live · 14 Sep 2026</span></h2>
   <div class="panel">
     <table>
-      <tr><th>Market</th><th>S/U now</th><th>Direction</th><th>Reading</th></tr>
-      <tr><td><b>US corn 26/27</b></td><td class="num d">~10.4%</td><td>Tightening ▼</td><td>Aug WASDE cut ending stocks 137&nbsp;mbu to <b>1.7&nbsp;bn bu</b> on 16.3&nbsp;bn use — exports raised on Ukraine constraints; farm price up to $4.50. From ~14.5% (2.142&nbsp;bn) in 25/26. <b>This is the fundamental leg under the record MM long — and it's genuinely tightening.</b></td></tr>
-      <tr><td><b>World corn</b></td><td class="num">~25–26%‡</td><td>Flat-tighter</td><td>Headline comfortable, but China holds the bulk; <b>ex-China runs near 11–12%</b> — the tradable number. Ukraine export constraint is a world problem, not a US one.</td></tr>
-      <tr><td><b>US soybeans 25/26</b></td><td class="num d">~7.8%</td><td>Tight, stable</td><td>340&nbsp;mbu carryout, crush-led demand. Offset: Brazil harvesting a <b>record crop</b> that bolsters global stocks and exportable supply — US tight, world comfortable.</td></tr>
-      <tr><td><b>US wheat 25/26</b></td><td class="num s">~47%</td><td>Comfortable</td><td>935&nbsp;mbu. World: Türkiye record 22.5&nbsp;Mt, Ukraine 23.5&nbsp;Mt raised — but <b>Australia cut 2.0&nbsp;Mt to 28.0</b>: the first El Niño fingerprint already in the WASDE. Ex-China world S/U sits near multi-year lows‡ beneath the comfortable headline.</td></tr>
-      <tr><td><b>World cotton 26/27</b></td><td class="num s">64%</td><td>Slack</td><td>Aug WASDE lowered stocks 600k bales <i>to</i> a 64% S/U — an enormous buffer, China-heavy. <b>The slackest balance in the book — held against fund length in the correlated corn/sugar/cotton cluster.</b></td></tr>
+      <tr><th>Market</th><th>S/U now</th><th>Direction</th><th>Reading (Sep 11 WASDE)</th></tr>
+      <tr><td><b>US corn 26/27</b></td><td class="num d">~10.1%</td><td>Tightening ▼▼</td><td>Sep WASDE cut yield <b>−2.2 bpa to 178.5</b>, production <b>−213 mbu to 15.8 bn</b>, ending stocks <b>to 1.6 bn bu</b> (from 1.7 in Aug), farm price <b>up 30¢ to $4.80</b>. The fundamental leg under the record MM long got another tightening print. Sep 30 Grain Stocks is the next material read.</td></tr>
+      <tr><td><b>World corn</b></td><td class="num">~25%</td><td>Tighter</td><td>US cut ripples to the world sheet; ex-China world S/U still the tradable number and it drifted tighter with the US yield cut. Ukraine export path remains the swing factor.</td></tr>
+      <tr><td><b>US soybeans 26/27</b></td><td class="num d">~7.0%</td><td>Tight, tighter</td><td>Sep WASDE raised production <b>+16 mbu to 4.5 bn</b> but lifted exports <b>+25 mbu to 1.69 bn</b> — net ending stocks <b>fell to 310 mbu</b> (from Aug), farm price <b>up 60¢ to $12.00</b>. The tightening surprise inside a "record crop" tape.</td></tr>
+      <tr><td><b>US wheat 25/26</b></td><td class="num s">~47%</td><td>Comfortable, price firmer</td><td>Sep WASDE left supply/use unchanged but farm price <b>up 20¢ to $6.40</b> — Australia EN cut still standing from Aug. Ex-China world S/U remains at multi-year lows beneath the comfortable headline.</td></tr>
+      <tr><td><b>US cotton 26/27</b></td><td class="num d">tightening</td><td>Tighter ▼</td><td>Sep WASDE cut production <b>3% to 13.2 M bales</b>, yield to 776 lb/acre, ending stocks <b>to 3.60 M bales</b>, upland farm price up to <b>78¢/lb</b>. World S/U at <b>58.4%</b> (from 64% in Aug) — <b>lowest since 2020/21</b>. The "slack" cell in this row has now closed materially.</td></tr>
     </table>
-    <p class="quiet">‡ World aggregates are training-vintage approximations — refresh from Friday's WASDE and mark with print date. US figures are from the August WASDE directly.</p>
+    <p class="quiet">Sep WASDE (11 Sep 2026) tightened three of four US balances; only wheat volumes were unchanged. Next: <b>Sep 30 Grain Stocks</b> + <b>Oct WASDE</b>. The correlated corn/soy/cotton fund position has lost its "slack anchor" — cotton S/U is no longer the buffer.</p>
   </div>
 </section>
 
 <!-- ============ SOFTS ============ -->
-<section>
-  <h2>Softs — annual balances (industry standard) <span class="tag live">LIVE</span> <span class="asof">ICCO Feb QB · ISO Aug · trade forecasters to early Sep</span></h2>
+<section id="softs-balance">
+  <h2>Softs — annual balances (industry standard) <span class="livebadge">live · 14 Sep 2026</span></h2>
 
   <div class="panel">
-    <h2 style="font-size:16px">Cocoa — surplus/deficit, kt (ICCO convention)</h2>
+    <h2 style="font-size:16px">Cocoa — surplus/deficit, kt (ICCO convention, Aug 2026 QB)</h2>
     <svg viewBox="0 0 1000 210" width="100%">
       <line x1="50" y1="120" x2="980" y2="120" stroke="#2a3937"/>
       <rect x="90"  y="120" width="110" height="75" fill="#e4572e"/><text x="96" y="212" fill="#8fa19a" font-size="11.5">23/24</text><text x="96" y="112" fill="#e4572e" font-size="12" font-weight="700">−489</text>
-      <rect x="290" y="109" width="110" height="11" fill="#5fa8a0"/><text x="296" y="212" fill="#8fa19a" font-size="11.5">24/25</text><text x="296" y="100" fill="#5fa8a0" font-size="12" font-weight="700">+75</text>
-      <rect x="490" y="82"  width="110" height="38" fill="#5fa8a0"/><text x="496" y="212" fill="#8fa19a" font-size="11.5">25/26E</text><text x="496" y="74" fill="#5fa8a0" font-size="12" font-weight="700">+100…+442</text>
-      <rect x="690" y="97" width="110" height="46" fill="#d9a441" opacity=".8"/><text x="696" y="212" fill="#8fa19a" font-size="11.5">26/27E</text><text x="640" y="88" fill="#d9a441" font-size="12" font-weight="700">−400 … +149 (battleground)</text>
+      <rect x="290" y="114" width="110" height="6" fill="#5fa8a0"/><text x="296" y="212" fill="#8fa19a" font-size="11.5">24/25 (ICCO Aug)</text><text x="296" y="106" fill="#5fa8a0" font-size="12" font-weight="700">+37</text>
+      <rect x="490" y="82"  width="110" height="38" fill="#5fa8a0"/><text x="496" y="212" fill="#8fa19a" font-size="11.5">25/26E (StoneX Apr)</text><text x="496" y="74" fill="#5fa8a0" font-size="12" font-weight="700">+247</text>
+      <rect x="690" y="97" width="110" height="46" fill="#d9a441" opacity=".8"/><text x="696" y="212" fill="#8fa19a" font-size="11.5">26/27E</text><text x="620" y="88" fill="#d9a441" font-size="12" font-weight="700">−400 … +150 (battleground)</text>
       <!-- cumulative since 23/24 -->
-      <polyline points="145,195 345,184 545,150 745,160" fill="none" stroke="#e9e5da" stroke-width="2.5" stroke-dasharray="5 4"/>
+      <polyline points="145,195 345,190 545,150 745,160" fill="none" stroke="#e9e5da" stroke-width="2.5" stroke-dasharray="5 4"/>
       <text x="770" y="160" fill="#e9e5da" font-size="11.5" font-weight="700">cumulative since 23/24: still &lt; 0</text>
     </svg>
-    <p>The two surpluses <b>have not refilled the 23/24 hole</b>: −489 +75 +~250 (midpoint) leaves the cumulative three-year balance still negative, with stocks-to-grindings only recovering from its 46-year low (~27%). The 26/27 forecast spread is the widest in softs: StoneX +149&nbsp;kt / BMI +82 / Guan Chong <b>−300 to −400</b> on El Niño-Harmattan risk — with early Côte d'Ivoire surveys showing below-average cherelle formation and preliminary 26/27 estimates near 1,800&nbsp;kt (−20%). A 660&nbsp;kt disagreement between credible forecasters is itself the trade: the market must price the resolution.</p>
+    <p><b>ICCO Aug 2026 QB revised 24/25 surplus DOWN from +75 to +37&nbsp;kt</b> — the "refill has begun" print got smaller. The Secretariat withheld 25/26 production/grindings data in the Aug bulletin (unusual), leaving the field to trade forecasters: <b>StoneX +247&nbsp;kt</b> for 25/26 (cut from +287 in Jan on West Africa EN risk). Cumulative since 23/24: <b>−489 +37 +247 = −205&nbsp;kt</b>, still a hole. The 26/27 spread remains the widest in softs — StoneX ~+150 vs Guan Chong <b>−300 to −400</b> on El Niño-Harmattan — and with ONI at +1.80 the left-tail forecasts are gaining weight. Cherelle counts from Côte d'Ivoire remain sub-average.</p>
   </div>
 
   <div class="panel">
-    <h2 style="font-size:16px">Sugar — surplus/deficit, Mt (ISO convention)</h2>
+    <h2 style="font-size:16px">Sugar — surplus/deficit, Mt (ISO Aug 2026 QMO)</h2>
     <svg viewBox="0 0 1000 200" width="100%">
       <line x1="50" y1="110" x2="980" y2="110" stroke="#2a3937"/>
       <rect x="90"  y="110" width="110" height="62" fill="#e4572e"/><text x="96" y="200" fill="#8fa19a" font-size="11.5">24/25</text><text x="96" y="104" fill="#e4572e" font-size="12" font-weight="700">−3.2</text>
-      <rect x="290" y="88" width="110" height="22" fill="#5fa8a0"/><text x="296" y="200" fill="#8fa19a" font-size="11.5">25/26E</text><text x="296" y="80" fill="#5fa8a0" font-size="12" font-weight="700">+1.1 … +2.2</text>
-      <rect x="490" y="110" width="110" height="18" fill="#d9a441" opacity=".85"/><text x="496" y="200" fill="#8fa19a" font-size="11.5">26/27E</text><text x="430" y="150" fill="#d9a441" font-size="12" font-weight="700">−0.2 (ISO) … −3.2 (Green Pool)</text>
+      <rect x="290" y="88" width="110" height="22" fill="#5fa8a0"/><text x="296" y="200" fill="#8fa19a" font-size="11.5">25/26E (ISO)</text><text x="296" y="80" fill="#5fa8a0" font-size="12" font-weight="700">+1.1</text>
+      <rect x="490" y="110" width="110" height="14" fill="#d9a441" opacity=".85"/><text x="496" y="200" fill="#8fa19a" font-size="11.5">26/27E</text><text x="420" y="150" fill="#d9a441" font-size="12" font-weight="700">−0.26 (ISO) … −3.17 (Datagro)</text>
       <text x="700" y="60" fill="#e9e5da" font-size="12.5" font-weight="700">S/U: ~44% — 15-yr-low zone</text>
-      <text x="700" y="80" fill="#8fa19a" font-size="11.5">London whites MM long: 70,766 — record</text>
+      <text x="700" y="80" fill="#8fa19a" font-size="11.5">London whites MM long: record long</text>
     </svg>
-    <p>The flip is consensus, the size is not: ISO's fresh 26/27 call is a <b>−0.2&nbsp;Mt deficit</b> after +1.1&nbsp;Mt in 25/26, but the trade runs much deeper — StoneX −1.7, Datagro −3.17, Green Pool −3.2 — on two stacked drivers: <b>El Niño over India/Thailand</b> and the <b>Brazil ethanol swing</b> (war-priced gasoline pulling cane away from sugar — the direct bridge to the energy dashboard; UNICA already showed mills cutting sugar mix hard). EU 26/27 production seen −19%. Stocks-to-use at ~44% is in 15-year-low territory: a small deficit lands on a thin cushion. Against that: <b>record fund length</b> — the crowded-agreement cell of the matrix below.</p>
+    <p>ISO's Aug 2026 QMO confirmed the flip: <b>26/27 deficit −262&nbsp;kt</b> on world production 180&nbsp;Mt (−1.1% y/y), after +1.1&nbsp;Mt in 25/26. The forecaster gap is the trade — <b>StoneX −550&nbsp;kt, Datagro −3.17&nbsp;Mt</b> — driven by (i) El Niño over India/Thailand (ONI +1.80 verified) and (ii) the Brazil ethanol swing, with war-priced gasoline pulling cane away from sugar (UNICA showing mills cutting sugar mix). Stocks-to-use at ~44% is 15-year-low territory: even the small ISO deficit lands on a thin cushion. Against that: record London MM long — the crowded-agreement cell of the matrix below.</p>
   </div>
 
   <div class="panel">
-    <h2 style="font-size:16px">Coffee — surplus/deficit, M bags (USDA/trade convention)</h2>
-    <p><b>25/26:</b> record world production 189.7&nbsp;M bags (Brazil 71.9&nbsp;M, +14%) — a surplus year, yet ending stocks only reach <b>~8 weeks of use</b>: coffee's "record glut" is thinner than cocoa's deficit-era cushion ever was. <b>26/27:</b> harvested now, large. <b>27/28:</b> the battleground — biennial down-year ∩ ONI +1.80 ∩ the florada verdict due by <b>10 Oct</b>. The balance projection is literally being decided on the rainfall maps of Minas this month; both branches pre-registered in the coffee playbook. Certified stocks tell the distortion story meanwhile: arabica certs at 2.5-yr lows <i>inside</i> the record year (tariff rerouting), robusta certs building on Vietnam's 4-yr-high crop.</p>
+    <h2 style="font-size:16px">Coffee — surplus/deficit, M bags (USDA/trade convention, Sep 2026)</h2>
+    <p><b>26/27 (StoneX/USDA): world production 182.5&nbsp;M bags, consumption 172.5&nbsp;M</b> — headline surplus of ~10&nbsp;M bags rebuilds stocks above 48&nbsp;M for the first time in years. Brazil <b>71.9&nbsp;M bags</b> record (arabica rebound +9.5&nbsp;M to 47.5&nbsp;M after the 5-yr underperformance), Vietnam <b>32.5&nbsp;M</b> on price-driven expansion. <b>27/28: the battleground</b> — biennial down-year ∩ ONI +1.80 ∩ the florada verdict due by <b>10 Oct</b>. Volcafe already cut arabica by 11&nbsp;M bags on drought risk in earlier prints. Balance is being decided on the rainfall maps of Minas this month; both branches pre-registered in the coffee playbook. Certified stocks tell the distortion story: arabica certs still at 2.5-yr lows <i>inside</i> the record year (tariff rerouting), robusta certs building on Vietnam's 4-yr-high crop.</p>
   </div>
 </section>
 

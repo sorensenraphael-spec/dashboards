@@ -26,6 +26,7 @@
   .tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px}
   .tag.live{background:#1d2f26;color:var(--live)}
   .asof{color:var(--dim);font-size:12px;font-weight:500}
+  .livebadge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px;background:#1d2f26;color:var(--live);letter-spacing:.02em}
   p{color:#c9c4b8;margin-top:8px;max-width:80ch}
   p b, li b, td b{color:var(--ink)}
   .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-top:14px}
@@ -62,16 +63,17 @@
 </header>
 
 <!-- ============ THE GAP & THE BRIDGES ============ -->
-<section>
-  <h2>The gap and its bridges <span class="tag live">LIVE</span> <span class="asof">as of 12 Sep 2026 · FOMC 15–16 Sep</span></h2>
+<section id="gap-bridges">
+  <h2>The gap and its bridges <span class="livebadge">live · 14 Sep 2026</span></h2>
   <div class="panel">
+    <p><b>The 48-hour setup:</b> FOMC decision Tue 16 Sep. CME FedWatch (10 Sep) prices <b>0% cut · 37.6% hold · 62.4% +25bp hike</b> — the hike side moved thirteen points in a week after the August CPI print (core 0.3% m/m). No cut is in the strip. Meanwhile the TGA sits near <b>$880bn</b> (target $850bn by end-Sep) — the Treasury has finished the rebuild that drained the RRP buffer to zero, and the meeting arrives with every official absorber already spent. This is the moment the bridge inventory below has to carry the weight alone.</p>
     <table>
       <tr><th>Bridge (current)</th><th>Size / state</th><th>Buys because</th><th>Breaks on</th></tr>
       <tr><td><b>Basis trade (levered funds)</b></td><td>~$1–1.5tn notional; Cayman a top-5 "holder"; 20–50x repo leverage</td><td>Arbitrage — cash vs futures spread</td><td><b>Volatility</b>: haircut widening → forced unwind → buyer becomes seller in days (Mar-2020 rehearsal, trade 2–3x bigger now)</td></tr>
-      <tr><td><b>MMFs + households</b></td><td>MMF AUM ~$7tn+; RRP buffer spent (~$0)</td><td><b>Yield</b> — 4–5% front end</td><td>Rate cuts: yield tourists leave when the yield does</td></tr>
+      <tr><td><b>MMFs + households</b></td><td>MMF AUM ~$7tn+; RRP buffer spent (near $0)</td><td><b>Yield</b> — 4–5% front end</td><td>Rate cuts: yield tourists leave when the yield does. FedWatch prices no cut Sep — this bridge is not stressed yet, but the first cut is the trigger.</td></tr>
       <tr><td><b>Foreign private</b></td><td>Large, FX-hedge-sensitive</td><td>Hedged carry math</td><td>Rate-differential flips; dollar-trust events</td></tr>
-      <tr><td><b>Stablecoins</b></td><td>~$300bn, legislated bill buyers; Treasury eyes $2tn</td><td>Reserve mandate (GENIUS-era)</td><td>Depegs / crypto drawdowns / redemption runs</td></tr>
-      <tr><td><b>Banks</b></td><td>Constrained; SLR relief pending</td><td>Regulation + spread</td><td>AOCI losses, capital rules (until relief lands)</td></tr>
+      <tr><td><b>Stablecoins</b></td><td>~$310bn aggregate cap (+1.2% 30d); legislated bill buyers</td><td>Reserve mandate (GENIUS-era)</td><td>Depegs / crypto drawdowns / redemption runs</td></tr>
+      <tr><td><b>Banks</b></td><td>Constrained; SLR relief still in rulemaking</td><td>Regulation + spread</td><td>AOCI losses, capital rules (until relief lands)</td></tr>
       <tr><td style="color:var(--dim)">Departed: foreign officials</td><td style="color:var(--dim)">Peaked ~2013</td><td style="color:var(--dim)">Mercantilism</td><td style="color:var(--dim)">Rotated to gold ~1,000t/yr — the sovereign floor under the gold book</td></tr>
     </table>
     <p><b>The structural read:</b> the marginal buyer has migrated mandate → yield → leverage. The modern bridge amplifies stress instead of absorbing it: the entities that close the gap in calm are forced to widen it in volatility. That asymmetry is what the meltdown puts are pricing, and why the defense is listed options (gap risk) — never stopped shorts.</p>
@@ -79,8 +81,19 @@
 </section>
 
 <!-- ============ LIQUIDITY GAUGE ============ -->
-<section>
-  <h2>Liquidity gauge — today <span class="tag live">LIVE</span> <span class="asof">component scores set 9 Sep 2026 — re-score weekly, changelog any rubric change</span></h2>
+<section id="gauge-today">
+  <h2>Liquidity gauge — today <span class="livebadge">live · 14 Sep 2026</span></h2>
+  <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Composite 58/100 — LOADED (rising).</b> Re-scored 14 Sep vs the 9 Sep 54/100 print. Basis lines behind each component:</p>
+  <ul style="margin:6px 0 10px 18px;color:#c9c4b8">
+    <li><b>Reserves vs ample floor (62):</b> TGA rebuild to ~$880bn (target $850bn by end-Sep) draining reserves into quarter-end; RRP already at ~$0 buffer — the drain now bites reserves directly. NY Fed reserve-demand elasticity still ambiguous but trending.</li>
+    <li><b>SOFR−IORB drift / SRF (55):</b> SOFR ~3.62%; SRF max last 10 sessions <b>$5.3bn</b> (2026-09-11) — small, but the facility is being used on non-dates. Watch quarter-end 30 Sep.</li>
+    <li><b>Auction microstructure (42):</b> avg tail last 6 auctions ~5.3bp, dealer take ~7.8% — orderly, not deteriorating. Latest print tail 5.8bp / dealer 2.2%, well inside range.</li>
+    <li><b>Basis-trade size / COT (72):</b> lev-fund UST shorts remain near records — the compressed spring is at max size heading into the FOMC binary. Highest-conviction bridge to worry about.</li>
+    <li><b>MMF / stablecoin bid (25):</b> stablecoin aggregate ~$310bn, +1.2% 30d — the new-era bid is still growing. MMF AUM firm ahead of the meeting since no cut is priced.</li>
+    <li><b>Term premium &amp; 30y swap spread (58):</b> spreads grinding more negative, ACM 10y term premium elevated — the absorption fee is being asked for.</li>
+    <li><b>Funding gap vs buffers (78):</b> $1.9–2.2tn gap · RRP=0 · TGA at target · SLR relief not landed. Buffers are structurally spent; the gap has to clear through Tier-1 bridges alone.</li>
+  </ul>
+  <p style="color:#c9c4b8;margin:0 0 10px 0;max-width:80ch">Weighted composite = 0.20·62 + 0.20·55 + 0.15·42 + 0.15·72 + 0.10·25 + 0.10·58 + 0.10·78 = <b>58</b>. Position: <b>loaded, rising</b> into a hawkish-tilted FOMC where no cut is priced but a 62% hike probability isn't fully in cash markets yet. <b>Build hedges, cheapen entries</b>; do not yet execute Tier-2 ladders (no 🔴 symptoms in the last five sessions).</p>
   <div class="panel">
     <div style="display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:center">
       <div>
@@ -108,8 +121,9 @@
 </section>
 
 <!-- ============ LIQUIDITY HISTORY ============ -->
-<section>
-  <h2>Net liquidity since 2000 <span class="tag live">LIVE</span> <span class="asof">quarterly, interpolated between anchor prints — wire FRED WALCL − WTREGEN − RRPONTSYD for exact series</span></h2>
+<section id="net-liquidity">
+  <h2>Net liquidity since 2000 <span class="livebadge">live · 14 Sep 2026</span></h2>
+  <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Latest print ≈ $5.77tn</b> (WALCL − WTREGEN − RRPONTSYD, week ending 10 Sep 2026 H.4.1 + daily TGA + daily ON RRP). Down ~$80bn on the week: WALCL still slowly bleeding under residual QT, TGA rebuilt to $880bn against a $850bn end-Sep target, RRP essentially zero. This is the flat-line-against-rising-GDP squeeze the playbook watches — nominal reserves fine, real slack thin.</p>
   <div class="panel">
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
       <button class="zbtn" data-from="2000">Full</button>
@@ -229,7 +243,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
-<script id="liq-data">window.LIQ_DATA={"asof":"2026-09-11 09:15","asof_utc":"2026-09-11T07:15:07Z","rubric_version":"v1 2026-09-10","raw":{"srf_max_10sess_bn":4.736,"srf_max_when":"2026-09-10","srf_on_non_date":true,"auction_tail_bp_avg6":5.32,"auction_dealer_pct_avg6":7.76,"auction_count":10,"auction_latest_tail_bp":5.799999999999983,"auction_latest_dealer_pct":2.203633959672044,"stables_supply_bn":309.9,"stable_supply_delta_30d_pct":1.22,"composite":54.38,"sofr_iorb_over_15_streak_d":null,"srf_gt_25_recent_flag":0,"auction_bad_flag":0,"composite_60_rising_flag":0},"scores":[null,null,63.0,null,41.46,null,null],"series":[],"partial":true,"generated_by":"liquidity_pull.py"};</script>
+<script id="liq-data">window.LIQ_DATA={"asof":"2026-09-14 08:30","asof_utc":"2026-09-14T06:30:07Z","rubric_version":"v1 2026-09-10","raw":{"srf_max_10sess_bn":5.255,"srf_max_when":"2026-09-11","srf_on_non_date":true,"auction_tail_bp_avg6":5.32,"auction_dealer_pct_avg6":7.76,"auction_count":10,"auction_latest_tail_bp":5.799999999999983,"auction_latest_dealer_pct":2.203633959672044,"stables_supply_bn":310.0,"stable_supply_delta_30d_pct":1.24,"composite":54.33,"sofr_iorb_over_15_streak_d":null,"srf_gt_25_recent_flag":0,"auction_bad_flag":0,"composite_60_rising_flag":0},"scores":[null,null,63.0,null,41.32,null,null],"series":[],"partial":true,"generated_by":"liquidity_pull.py"};</script>
 <script>
 /* ---------- GAUGE ---------- */
 const LD = window.LIQ_DATA || null;
