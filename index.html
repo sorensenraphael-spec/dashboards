@@ -20,13 +20,13 @@ footer{margin-top:36px;font-size:11px;color:var(--dim);line-height:1.6}
 <body>
 <h1>Marketdata — dashboards</h1>
 
-<h2>Softs &amp; Grains</h2>
+<h2>Softs & Grains</h2>
 <div class="grid">
   <a class="tile" href="cocoa-dashboard.html"><div class="stripe" style="background:#7b4a2b"></div><div class="name">Cocoa</div><div class="sub">CC — West Africa two-crop cycle · COT · ONI</div></a>
   <a class="tile" href="coffee-dashboard.html"><div class="stripe" style="background:#4b2e1a"></div><div class="name">Coffee</div><div class="sub">KC — Brazil florada · CCC ownership · ONI</div></a>
   <a class="tile" href="sugar-dashboard.html"><div class="stripe" style="background:#c4b48b"></div><div class="name">Sugar</div><div class="sub">SB — Brazil ethanol hinge · UNICA · monsoon</div></a>
   <a class="tile" href="cotton-dashboard.html"><div class="stripe" style="background:#a6a89c"></div><div class="name">Cotton</div><div class="sub">CT — US export share · India monsoon · WASDE</div></a>
-  <a class="tile" href="grains-dashboard.html"><div class="stripe" style="background:#c39a2a"></div><div class="name">Grains &amp; oilseeds</div><div class="sub">ZC ZS ZL ZW KE — WASDE · conditions · SA relay · ethanol</div></a>
+  <a class="tile" href="grains-dashboard.html"><div class="stripe" style="background:#c39a2a"></div><div class="name">Grains & oilseeds</div><div class="sub">ZC ZS ZL ZW KE — WASDE · conditions · SA relay · ethanol</div></a>
 </div>
 
 <h2>Metals</h2>
@@ -37,10 +37,16 @@ footer{margin-top:36px;font-size:11px;color:var(--dim);line-height:1.6}
 
 <h2>Macro</h2>
 <div class="grid">
-  <a class="tile" href="energy-dashboard.html"><div class="stripe" style="background:#d9a441"></div><div class="name">Energy</div><div class="sub">Crude · diesel · gasoline · products</div></a>
   <a class="tile" href="global-balances.html"><div class="stripe" style="background:#5fa8a0"></div><div class="name">Global balances</div><div class="sub">Flow ledger across the complex</div></a>
   <a class="tile" href="liquidity-dashboard.html"><div class="stripe" style="background:#8d7bd8"></div><div class="name">Liquidity</div><div class="sub">The bridge watch · daily-refreshed composite</div></a>
 </div>
 
-<footer>Auto-refreshes every 10 minutes. Data pulled daily via <code>dashboard_refresh.py</code> and <code>liquidity_pull.py</code>.</footer>
+<h2>Energy</h2>
+<div class="grid">
+  <a class="tile" href="energy-dashboard.html"><div class="stripe" style="background:#d9a441"></div><div class="name">Energy playbook</div><div class="sub">Crude · diesel · gasoline · products</div></a>
+  <a class="tile" href="gasoil-arb.html"><div class="stripe" style="background:#e4572e"></div><div class="name">Gasoil arb (USGC→ARA)</div><div class="sub">Physical distillate cargo margin — daily Norgate curve</div></a>
+  <a class="tile" href="energy-spread-seasonal.html"><div class="stripe" style="background:#7d9455"></div><div class="name">LSGO vs HO seasonal</div><div class="sub">ICE Gasoil − ULSD $/mt · 5y bands + current-year overlay · same-delivery bootstrap</div></a>
+</div>
+
+<footer>Auto-refreshes every 10 minutes. Data pulled daily via <code>dashboard_refresh.py</code>, <code>liquidity_pull.py</code>, and <code>energy_spread_seasonal_build.py</code>.</footer>
 </body></html>
