@@ -97,29 +97,29 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 <header>
   <h1>Gasoil Arb — USGC → ARA Distillate</h1>
   <div class="sub">Physical arb margin for a distillate cargo leaving the US Gulf today, arriving Europe after the shipping lag, sold into ICE Gasoil at the arrival-month contract. The forward curve is what makes this real: prompt spot is the wrong hedge.</div>
-  <div class="stamp">Snapshot generated 2026-09-15 15:02 · config last updated 2026-09-15 · update ICE Gasoil curve daily from Saxo</div>
+  <div class="stamp">Snapshot generated 2026-09-21 14:44 · config last updated 2026-09-21 · update ICE Gasoil curve daily from Saxo</div>
 </header>
 
 <h2>Current arb snapshot</h2>
 <div class="snap">
   <div>
     <div class="lbl">Arb margin ($/mt)</div>
-    <div class="val closed">-169.82</div>
-    <div class="side">Cargo arrives <b>06 Oct 2026</b> · sells <b>Oct-26</b> ICE Gasoil</div>
+    <div class="val closed">-78.53</div>
+    <div class="side">Cargo arrives <b>12 Oct 2026</b> · sells <b>Oct-26</b> ICE Gasoil</div>
   </div>
   <div class="badge closed">CLOSED</div>
   <div style="text-align:right">
     <div class="lbl">ARA received</div>
-    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1476.50</div>
+    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1509.25</div>
   </div>
   <div style="text-align:right">
     <div class="lbl">USGC all-in</div>
-    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1646.32</div>
+    <div style="font-size:20px;font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums">$1587.78</div>
   </div>
 </div>
 
 <h2>Bilateral arb per delivery month <span class="context-tag">futures-to-futures, same day, matched delivery</span></h2>
-<div class="curve-shape"><b>Curve shape:</b> Backwardation · $1472.75 (front) → $1265.75 (back) = -207.00 $/mt over 5 months</div>
+<div class="curve-shape"><b>Curve shape:</b> Backwardation · $1472.75 (front) → $1288.00 (back) = -184.75 $/mt over 5 months</div>
 <div class="warn-banner soft">⚠️ Partial HO curve — months Sep-26 unavailable from yfinance. Rows marked N/A do not compute arb.</div>
 <table>
   <tr>
@@ -131,10 +131,10 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
     <th>Status</th>
   </tr>
   <tr><td>Sep-26</td><td>$1472.75</td><td><span class="na">n/a</span></td><td><span class="na">—</span></td><td><span class="na">n/a</span></td><td><span class="pill na">N/A</span></td></tr>
-<tr class="arrival"><td>Oct-26 · <span class="pill info">arrival</span></td><td>$1476.50</td><td>$5.1081</td><td>$1598.32</td><td>-169.82</td><td><span class="pill closed">CLOSED</span></td></tr>
-<tr><td>Nov-26</td><td>$1394.50</td><td>$4.8875</td><td>$1529.30</td><td>-182.80</td><td><span class="pill closed">CLOSED</span></td></tr>
-<tr><td>Dec-26</td><td>$1320.25</td><td>$4.6430</td><td>$1452.79</td><td>-180.54</td><td><span class="pill closed">CLOSED</span></td></tr>
-<tr><td>Jan-27</td><td>$1265.75</td><td>$4.4856</td><td>$1403.54</td><td>-185.79</td><td><span class="pill closed">CLOSED</span></td></tr>
+<tr class="arrival"><td>Oct-26 · <span class="pill info">arrival</span></td><td>$1509.25</td><td>$4.9210</td><td>$1539.78</td><td>-78.53</td><td><span class="pill closed">CLOSED</span></td></tr>
+<tr><td>Nov-26</td><td>$1433.25</td><td>$4.7220</td><td>$1477.51</td><td>-92.26</td><td><span class="pill closed">CLOSED</span></td></tr>
+<tr><td>Dec-26</td><td>$1351.75</td><td>$4.4827</td><td>$1402.64</td><td>-98.89</td><td><span class="pill closed">CLOSED</span></td></tr>
+<tr><td>Jan-27</td><td>$1288.00</td><td>$4.3326</td><td>$1355.67</td><td>-115.67</td><td><span class="pill closed">CLOSED</span></td></tr>
 </table>
 <div class="curve-note">
   <b>Read:</b> each row is a paper spread a trader can lock in today by selling Gasoil and buying HO for the same delivery month. Freight + port are what you'd add to actually move the barrel and realise the spread as a physical arb. The curve shows how the bilateral spread widens or narrows across delivery months — key input for timing the trade vs waiting.<br>
@@ -158,10 +158,10 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <h2>Break-even</h2>
 <div class="be">
-  ICE Gasoil forward needs to reach <span class="num">$1646.32/mt</span>
+  ICE Gasoil forward needs to reach <span class="num">$1587.78/mt</span>
   (<b>Oct-26</b> contract) to open the arb at current USGC spot and freight.
-  <br>Currently the Oct-26 mark is <span class="num">$1476.50/mt</span> —
-  gap <span class="gap ">$-169.82/mt</span> (arb needs ARA gain / USGC drop).
+  <br>Currently the Oct-26 mark is <span class="num">$1509.25/mt</span> —
+  gap <span class="gap ">$-78.53/mt</span> (arb needs ARA gain / USGC drop).
 </div>
 
 <h2>Sensitivity — shipping lag</h2>
@@ -187,7 +187,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
     <div class="k">Port handling</div><div class="v">$6 /mt</div>
     <div class="k">Shipping lag (config)</div><div class="v">21 days</div>
     <div class="k">ULSD →$/mt factor</div><div class="v">× 312.9</div>
-    <div class="k">Config last updated</div><div class="v">2026-09-15</div>
+    <div class="k">Config last updated</div><div class="v">2026-09-21</div>
   </div>
   <div class="note">Reminder: update the ICE Gasoil forward curve in <code>arb_config.json</code> daily from your Saxo terminal. <code>null</code> entries grey out the corresponding contango row.</div>
 </div>
@@ -199,7 +199,7 @@ code{background:#141821;padding:1px 6px;border-radius:3px;color:var(--amber);fon
 
 <script>
 // Config baked in at build time so the sliders can recompute locally.
-const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1476.5, "Nov-26": 1394.5, "Dec-26": 1320.25, "Jan-27": 1265.75}, "last_updated": "2026-09-15", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "nymex_ho_curve": {"Sep-26": "HOU26.NYM", "Oct-26": "HOV26.NYM", "Nov-26": "HOX26.NYM", "Dec-26": "HOZ26.NYM", "Jan-27": "HOF27.NYM"}, "nymex_ho_curve_source": "yfinance (HO<M><YY>.NYM)", "nymex_ho_front": "&HO", "arb_structure_note": "Bilateral futures-to-futures: for each delivery month, arb = ICE_Gasoil_fwd - (NYMEX_HO_fwd \u00d7 312.9) - freight - port. Both prices are same-day settlements of the same delivery month. Physical interpretation: a trader who TODAY sells ICE Gasoil [month] and buys NYMEX HO [month] locks in this margin before freight and port.", "location_basis_note": "NYMEX HO is New York Harbor ULSD, NOT USGC. The NYH\u2194USGC basis is embedded in the arb and documented on the dashboard."}, "nymex_ho_front_usd_per_gal": 4.96150016784668, "nymex_ho_front_asof": "2026-09-14", "nymex_ho_curve": {"Sep-26": null, "Oct-26": 5.108099937438965, "Nov-26": 4.887499809265137, "Dec-26": 4.64300012588501, "Jan-27": 4.485599994659424}};
+const CFG = {"_doc": "User-owned inputs for gasoil_arb.py. Update ICE Gasoil curve daily from your Saxo terminal. null = not yet entered \u2014 the sensitivity table will grey those rows out. Contract keys are 'MMM-YY' (title-case month abbreviation).", "lag_days": 21, "freight_usd_per_mt": 42, "port_handling_usd_per_mt": 6, "usgc_ulsd_spot_usd_per_gal": 4.74, "ice_gasoil_curve": {"Sep-26": 1472.75, "Oct-26": 1509.25, "Nov-26": 1433.25, "Dec-26": 1351.75, "Jan-27": 1288.0}, "last_updated": "2026-09-21", "_fetch_source": {"gasoil": {"Sep-26": "GAS-2026U", "Oct-26": "GAS-2026V", "Nov-26": "GAS-2026X", "Dec-26": "GAS-2026Z", "Jan-27": "GAS-2027F"}, "nymex_ho_curve": {"Sep-26": "HOU26.NYM", "Oct-26": "HOV26.NYM", "Nov-26": "HOX26.NYM", "Dec-26": "HOZ26.NYM", "Jan-27": "HOF27.NYM"}, "nymex_ho_curve_source": "yfinance (HO<M><YY>.NYM)", "nymex_ho_front": "&HO", "arb_structure_note": "Bilateral futures-to-futures: for each delivery month, arb = ICE_Gasoil_fwd - (NYMEX_HO_fwd \u00d7 312.9) - freight - port. Both prices are same-day settlements of the same delivery month. Physical interpretation: a trader who TODAY sells ICE Gasoil [month] and buys NYMEX HO [month] locks in this margin before freight and port.", "location_basis_note": "NYMEX HO is New York Harbor ULSD, NOT USGC. The NYH\u2194USGC basis is embedded in the arb and documented on the dashboard."}, "nymex_ho_front_usd_per_gal": 5.057799816131592, "nymex_ho_front_asof": "2026-09-18", "nymex_ho_curve": {"Sep-26": null, "Oct-26": 4.921000003814697, "Nov-26": 4.7220001220703125, "Dec-26": 4.482699871063232, "Jan-27": 4.332600116729736}};
 const GAL_PER_MT = 312.9;
 const ARRIVAL_MONTH_KEY = "Oct-26";
 const OPEN_MIN = 5, CLOSED_MAX = -5;
