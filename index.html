@@ -6,9 +6,8 @@
 <style>
 :root{--bg:#0f1116;--fg:#e8e6df;--dim:#8a8a80;--line:#1f2229;--tile:#141821}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;padding:36px 22px;max-width:1000px;margin:0 auto;line-height:1.55}
-h1{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
-h2{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;padding:36px 22px;max-width:900px;margin:0 auto}
+h1{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:18px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .tile{background:var(--tile);border:1px solid var(--line);border-radius:8px;padding:16px 18px;text-decoration:none;color:inherit;display:block;transition:border-color .15s}
 .tile:hover{border-color:#2a3040}
@@ -18,35 +17,8 @@ h2{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 footer{margin-top:36px;font-size:11px;color:var(--dim);line-height:1.6}
 </style></head>
 <body>
-<h1>Marketdata — dashboards</h1>
-
-<h2>Softs & Grains</h2>
-<div class="grid">
-  <a class="tile" href="cocoa-dashboard.html"><div class="stripe" style="background:#7b4a2b"></div><div class="name">Cocoa</div><div class="sub">CC — West Africa two-crop cycle · COT · ONI</div></a>
-  <a class="tile" href="coffee-dashboard.html"><div class="stripe" style="background:#4b2e1a"></div><div class="name">Coffee</div><div class="sub">KC — Brazil florada · CCC ownership · ONI</div></a>
-  <a class="tile" href="sugar-dashboard.html"><div class="stripe" style="background:#c4b48b"></div><div class="name">Sugar</div><div class="sub">SB — Brazil ethanol hinge · UNICA · monsoon</div></a>
-  <a class="tile" href="cotton-dashboard.html"><div class="stripe" style="background:#a6a89c"></div><div class="name">Cotton</div><div class="sub">CT — US export share · India monsoon · WASDE</div></a>
-  <a class="tile" href="grains-dashboard.html"><div class="stripe" style="background:#c39a2a"></div><div class="name">Grains & oilseeds</div><div class="sub">ZC ZS ZL ZW KE — WASDE · conditions · SA relay · ethanol</div></a>
-</div>
-
-<h2>Metals</h2>
-<div class="grid">
-  <a class="tile" href="silver-monitor.html"><div class="stripe" style="background:#b8bcc4"></div><div class="name">Silver</div><div class="sub">SI — gold/silver ratio · COT · retail chatter</div></a>
-  <a class="tile" href="gold-monitor.html"><div class="stripe" style="background:#d4af37"></div><div class="name">Gold</div><div class="sub">GC — CB floor · ETF overhang · ratio</div></a>
-</div>
-
-<h2>Macro</h2>
-<div class="grid">
-  <a class="tile" href="global-balances.html"><div class="stripe" style="background:#5fa8a0"></div><div class="name">Global balances</div><div class="sub">Flow ledger across the complex</div></a>
-  <a class="tile" href="liquidity-dashboard.html"><div class="stripe" style="background:#8d7bd8"></div><div class="name">Liquidity</div><div class="sub">The bridge watch · daily-refreshed composite</div></a>
-</div>
-
-<h2>Energy</h2>
-<div class="grid">
-  <a class="tile" href="energy-dashboard.html"><div class="stripe" style="background:#d9a441"></div><div class="name">Energy playbook</div><div class="sub">Crude · diesel · gasoline · products</div></a>
-  <a class="tile" href="gasoil-arb.html"><div class="stripe" style="background:#e4572e"></div><div class="name">Gasoil arb (USGC→ARA)</div><div class="sub">Physical distillate cargo margin — daily Norgate curve</div></a>
-  <a class="tile" href="energy-spread-seasonal.html"><div class="stripe" style="background:#7d9455"></div><div class="name">LSGO vs HO seasonal</div><div class="sub">ICE Gasoil − ULSD $/mt · 5y bands + current-year overlay · same-delivery bootstrap</div></a>
-</div>
-
-<footer>Auto-refreshes every 10 minutes. Data pulled daily via <code>dashboard_refresh.py</code>, <code>liquidity_pull.py</code>, and <code>energy_spread_seasonal_build.py</code>.</footer>
+<h1>Marketdata — public dashboards</h1>
+<div class="grid"><a class="tile" href="liquidity-dashboard.html"><div class="stripe" style="background:#8d7bd8"></div><div class="name">Liquidity</div><div class="sub">The bridge watch · daily-refreshed composite</div></a></div>
+<footer>Auto-refreshes every 10 minutes. Data pulled daily 14:15 CET via <code>liquidity_pull.py</code>.<br>
+Personal-trading-book sections are stripped from the public copies.</footer>
 </body></html>
