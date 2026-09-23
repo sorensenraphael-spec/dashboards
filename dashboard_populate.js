@@ -60,6 +60,17 @@
     return { val: null, asof: null, field };
   }
 
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function badgeDate(v) {
+    // Accept "settle YYYY-MM-DD", "YYYY-MM-DD…", or ISO timestamps. Return
+    // "D Mon YYYY" (e.g. "22 Sep 2026") to match the prose-authored badges.
+    const m = String(v || '').match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return null;
+    const mo = MONTHS[parseInt(m[2], 10) - 1];
+    return `${parseInt(m[3], 10)} ${mo} ${m[1]}`;
+  }
+
   document.querySelectorAll('[data-field]').forEach((el) => {
     const key = el.dataset.field;
     if (key === '_generated_at') {
@@ -69,6 +80,15 @@
           ? D.generated_at
           : d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
       }
+      return;
+    }
+    if (key === '_settle_date') {
+      // For "today"-style badges inside locked sections (e.g. the liquidity
+      // gauge). Reads the badge date from window.__MD__.generated_at so the
+      // date advances even when the content pipeline can't touch the locked
+      // prose. Falls through to the placeholder text on parse failure.
+      const s = badgeDate(D.generated_at);
+      if (s) el.textContent = s;
       return;
     }
     const { val, asof, field } = resolve(key);

@@ -52,6 +52,8 @@
   .quiet{color:var(--dim);font-size:12.5px;margin-top:10px}
   .book{border:1px solid #3a2c22;background:#1c1a15;border-radius:8px;padding:18px 20px;margin-top:14px}
 </style>
+
+<!-- public build 2026-09-23 09:39 — structural strips: 0; prose edits: 0 -->
 </head>
 <body>
 <div class="wrap">
@@ -82,7 +84,7 @@
 
 <!-- ============ LIQUIDITY GAUGE ============ -->
 <section id="gauge-today">
-  <h2>Liquidity gauge — today <span class="livebadge">live · 14 Sep 2026</span></h2>
+  <h2>Liquidity gauge — today <span class="livebadge">live · <span data-field="_settle_date">14 Sep 2026</span></span></h2>
   <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Composite 58/100 — LOADED (rising).</b> Re-scored 14 Sep vs the 9 Sep 54/100 print. Basis lines behind each component:</p>
   <ul style="margin:6px 0 10px 18px;color:#c9c4b8">
     <li><b>Reserves vs ample floor (62):</b> TGA rebuild to ~$880bn (target $850bn by end-Sep) draining reserves into quarter-end; RRP already at ~$0 buffer — the drain now bites reserves directly. NY Fed reserve-demand elasticity still ambiguous but trending.</li>
@@ -231,7 +233,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js"></script>
-<script id="liq-data">window.LIQ_DATA={"asof":"2026-09-23 09:20","asof_utc":"2026-09-23T07:20:45Z","rubric_version":"v1 2026-09-10","raw":{"srf_max_10sess_bn":0.582,"srf_max_when":"2026-09-21","srf_on_non_date":true,"auction_tail_bp_avg6":5.47,"auction_dealer_pct_avg6":9.36,"auction_count":10,"auction_latest_tail_bp":4.899999999999949,"auction_latest_dealer_pct":11.246521307395131,"stables_supply_bn":311.7,"stable_supply_delta_30d_pct":1.08,"composite":54.78,"sofr_iorb_over_15_streak_d":null,"srf_gt_25_recent_flag":0,"auction_bad_flag":0,"composite_60_rising_flag":0},"scores":[null,null,63.0,null,42.44,null,null],"series":[],"partial":true,"generated_by":"liquidity_pull.py"};</script>
+<script id="liq-data">window.LIQ_DATA={"asof":"2026-09-23 09:39","asof_utc":"2026-09-23T07:39:41Z","rubric_version":"v1 2026-09-10","raw":{"srf_max_10sess_bn":0.582,"srf_max_when":"2026-09-21","srf_on_non_date":true,"auction_tail_bp_avg6":5.47,"auction_dealer_pct_avg6":9.36,"auction_count":10,"auction_latest_tail_bp":4.899999999999949,"auction_latest_dealer_pct":11.246521307395131,"stables_supply_bn":311.7,"stable_supply_delta_30d_pct":1.07,"lev_ust_net_short_pctile_5y":68.08,"cot_ust_asof":"2026-09-15","composite":59.78,"sofr_iorb_over_15_streak_d":null,"srf_gt_25_recent_flag":0,"auction_bad_flag":0,"composite_60_rising_flag":0},"scores":[null,null,63.0,68.08,42.51,null,null],"series":[],"partial":true,"generated_by":"liquidity_pull.py"};</script>
 <script>
 /* ---------- GAUGE ---------- */
 const LD = window.LIQ_DATA || null;
