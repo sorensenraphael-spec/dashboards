@@ -70,7 +70,7 @@
 <header>
   <h1>Energy Playbook — Crude · Diesel · Gasoline</h1>
   <div class="sub">Sixth playbook in the family. Organizing idea: in 2026 the barrel is not the story — <b>the split is</b>. The war rocks crude, the world is running out of diesel, and gasoline has become a byproduct of making it.</div>
-  <div class="stamp">All price marks from press sources 11–12 Sep 2026 — WTI $99–104 intraday range Friday on Iran-Gulf talks (Oman) reversing the geopolitical premium. Verify on terminal &amp; Norgate before acting. Web is for news, never for prices.</div>
+  <div class="stamp">All price marks from press sources 11–12 Sep 2026 — WTI $99–104 intraday range Friday on Iran-Gulf talks (Oman) reversing the geopolitical premium. Verify on terminal &amp; the data pack before acting. Web is for news, never for prices.</div>
 </header>
 
 <!-- ====================== HERO: 2026 IN ONE LINE ====================== -->
@@ -139,21 +139,7 @@
   </div>
 </section>
 
-<!-- ====================== BOOK PANEL ====================== -->
-<section>
-  <h2>Book — open transatlantic diesel spread</h2>
-  <div class="book">
-    <p><b>Structure:</b> short US Heating Oil Oct-26 (24,000 gal @ ~423.8 avg) vs long ICE UK Gas Oil Oct-26 (120 @ ~1,269.6). One thesis, two legs: <b>Europe's winter is tighter than America's</b> — EU pays up relative to US as heating season lands on record-low European stocks with Gulf exports still impaired.</p>
-    <ul>
-      <li><b>What pays it:</b> EU cold snap, EU gas-storage shortfall spilling into gasoil heating demand, further Gulf/Red Sea disruption of eastern supply to Europe, US export surge to EU (drains US but is priced in HO weakness vs LSGO strength).</li>
-      <li><b>What kills it:</b> a US Northeast cold snap into the lowest US distillate stocks since the mid-90s — the short leg is the squeeze-prone leg; a mild EU winter; Hormuz durable reopening (compresses everything, hits the long leg harder).</li>
-      <li><b>Climate edge (verified):</b> ONI JJA at <b>+1.80</b> — strong El Niño winters tilt the US Northeast <b>warm</b> (bearish HO demand, supports the short leg) and typically suppress late-season Atlantic hurricanes (fewer Gulf refinery hits). The European El Niño signal is weak/mixed — the long leg gets no climate help, but needs none if EU stocks stay this low.</li>
-      <li><b>Leg integrity rule:</b> if either leg gets stopped or force-closed, the survivor is a naked position that must re-justify itself within the hour — resize, re-hedge or close. No repeat of the silver amputation.</li>
-      <li><b>Roll calendar:</b> Oct contracts — diary the broker's expiry cutoffs now; roll ≥10 days before. The exit date is never again the broker's choice.</li>
-    </ul>
-    <p class="verify">Honest flag: both legs sit at record-crack levels — this is a relative-value position built at absolute extremes. Size for the scenario where the whole complex normalizes at once.</p>
-  </div>
-</section>
+
 
 <!-- ====================== SEASONAL CALENDAR ====================== -->
 <section>
@@ -235,7 +221,7 @@
     <div class="alert"><div class="sev">🟠</div><div class="txt"><b>Three consecutive US distillate builds</b> (EIA) — the swing-supplier engine is catching up.</div></div>
     <div class="alert"><div class="sev">🟠</div><div class="txt"><b>EU gas storage failing to approach ~80% by Nov 1</b> — winter crisis premium builds on the long gasoil leg.</div></div>
     <div class="alert"><div class="sev">🟠</div><div class="txt"><b>China export-quota announcement</b> (quarterly): generous diesel quotas soften Asian cracks with a 25–45 day lag to the Atlantic.</div></div>
-    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>MM positioning extremes</b> in HO / LSGO / crude (weekly, from the Norgate COT pack) — read at book level with corn/sugar/cotton per the correlated-positioning rule.</div></div>
+    <div class="alert"><div class="sev">🟠</div><div class="txt"><b>MM positioning extremes</b> in HO / LSGO / crude (weekly, from the the data pack COT pack) — correlated positioning to watch across ag.</div></div>
     <div class="alert"><div class="sev">🟠</div><div class="txt"><b>SPR / IEA release announcements</b> — sell-the-news pattern on crude, usually steepens product cracks (releases are crude, not products).</div></div>
   </div>
 </section>
@@ -245,7 +231,7 @@
   <h2>Changelog</h2>
   <div class="panel">
     <table class="changelog">
-      <tr><td style="white-space:nowrap"><b>v1 · 9 Sep 2026</b></td><td>Initial build. Regime: Iran-war year, distillate-led. Marks from press 8–9 Sep (Brent ~$99, WTI ~$93, USGC ULSD crack ~$93 after 17 Aug record $102.20, US distillates 105.6M bbl w/e 14 Aug). Book panel: transatlantic diesel spread documented with leg-integrity + roll rules. Standing convention adopted from the KC incident: <b>terminal &amp; Norgate for prices, web for news only</b>. Pending: wire HO/LSGO/CL into the Saturday Norgate pack; add COT panel when energy backfill (bg25greck job) lands.</td></tr>
+      <tr><td style="white-space:nowrap"><b>v1 · 9 Sep 2026</b></td><td>Initial build. Regime: Iran-war year, distillate-led. Marks from press 8–9 Sep (Brent ~$99, WTI ~$93, USGC ULSD crack ~$93 after 17 Aug record $102.20, US distillates 105.6M bbl w/e 14 Aug). Book panel: transatlantic diesel spread documented with leg-integrity + roll rules. Standing convention adopted from a past experience: <b>terminal &amp; the data pack for prices, web for news only</b>. Pending: wire HO/LSGO/CL into the weekly build; add COT panel when energy backfill lands.</td></tr>
       <tr><td style="white-space:nowrap"><b>v2 · 15 Sep 2026</b></td><td><b>LSGO vs HO seasonal chart restored + registry-protected.</b> The <a href="energy-spread-seasonal.html">ICE Gasoil − ULSD $/mt seasonal page</a> (same-delivery bootstrap, 5y bands, current-year overlay) had disappeared from the hub twice — root cause: <code>energy_spread_seasonal_build.py</code> wrote directly to <code>public/</code>, bypassing the <code>dashboards/</code> staging area that <code>content_refresh.py</code>'s verbatim-copy loop expected, and the hub emitter had no tile for it. Fix: generator now writes to <code>dashboards/</code> (mirrored to <code>public/</code>); <code>content_refresh.py</code> gained <code>HUB_TILE_REGISTRY</code>, <code>PROTECTED_PUBLIC_FILES</code>, and an <code>enforce_public_registry()</code> gate that ABORTS the publish (no commit, no push) if any protected file is missing from <code>public/</code> or any hub tile has no matching file. Div anchor: <code>id="seasonal-lsgo-ho"</code>.</td></tr>
     </table>
   </div>
