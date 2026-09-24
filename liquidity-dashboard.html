@@ -52,8 +52,6 @@
   .quiet{color:var(--dim);font-size:12.5px;margin-top:10px}
   .book{border:1px solid #3a2c22;background:#1c1a15;border-radius:8px;padding:18px 20px;margin-top:14px}
 </style>
-
-<!-- public build 2026-09-24 22:32 — structural strips: 0; prose edits: 0 -->
 </head>
 <body>
 <div class="wrap">
@@ -85,9 +83,9 @@
 <!-- ============ LIQUIDITY GAUGE ============ -->
 <section id="gauge-today">
   <h2>Liquidity gauge — today <span class="livebadge">live · <span data-field="_settle_date">24 Sep 2026</span></span></h2>
-  <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Composite 47.4/100 — NORMAL (upper end).</b> Re-scored 2026-09-24 against liquidity_data.json (asof 2026-09-24 11:56 CET). <b>5 of 7 components scored</b>; two await pipeline data: <b>Term premium</b> (ACM 10y — NY Fed .xls endpoint returning binary Excel, reader pending) and <b>Funding gap</b> (composite-derived slot, awaiting a scoring rubric under the fixed FRED fetcher). The drop from prior 58/loaded prints is <b>real</b> — those were computed against a pre-2026-09-24 fetch bug that returned oldest-N FRED observations instead of newest, so SOFR/IORB/DGS30 read as their 2018 vintages; see today's changelog. Basis lines behind each component:</p>
+  <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Composite 49.4/100 — NORMAL (upper end).</b> Re-scored 2026-09-24 against liquidity_data.json (asof 2026-09-24 22:32 CET). <b>5 of 7 components scored</b>; two await pipeline data: <b>Term premium</b> (ACM 10y — NY Fed .xls endpoint returning binary Excel, reader pending) and <b>Funding gap</b> (composite-derived slot, awaiting a scoring rubric under the fixed FRED fetcher). The drop from prior 58/loaded prints is <b>real</b> — those were computed against a pre-2026-09-24 fetch bug that returned oldest-N FRED observations instead of newest, so SOFR/IORB/DGS30 read as their 2018 vintages; see today's changelog. Basis lines behind each component:</p>
   <ul style="margin:6px 0 10px 18px;color:#c9c4b8">
-    <li><b>Reserves vs ample floor (49):</b> WRESBAL <b>$3.014tn</b> (week ending 2026-09-16). Above the ~$2.8tn ample floor but the H.4.1 identity has WALCL <b>$6,746.5bn</b> − TGA <b>$877bn</b> − RRP <b>$0.5bn</b> = <b>$5,869bn net liquidity</b>; every buffer to the right of WALCL is spent.</li>
+    <li><b>Reserves vs ample floor (57):</b> WRESBAL <b>$3.014tn</b> (week ending 2026-09-16). Above the ~$2.8tn ample floor but the H.4.1 identity has WALCL <b>$6,746.5bn</b> − TGA <b>$877bn</b> − RRP <b>$0.5bn</b> = <b>$5,869bn net liquidity</b>; every buffer to the right of WALCL is spent.</li>
     <li><b>SOFR−IORB drift / SRF (20):</b> SOFR <b>3.87%</b> (2026-09-22) vs IORB <b>3.90%</b> (2026-09-24) — SOFR trading <b>6bp under IORB on the 20-day mean</b>, well inside floor. SRF max last 10 sessions <b>$0.582bn on 2026-09-21</b> (non-quarter-end). Plumbing benign; the low score reflects &ldquo;flush&rdquo; not stress.</li>
     <li><b>Auction microstructure (63):</b> avg tail last 6 auctions <b>5.98bp</b>, dealer take <b>9.83%</b> (n=10). Latest print tail 8.3bp / dealer 13.6% — a step wider than the mean, worth flagging into the next coupon cycle.</li>
     <li><b>Basis-trade size / COT (68):</b> lev-fund UST net short at <b>68.08th %ile 5y</b> (CFTC TFF, asof 2026-09-15, released Fri 19 Sep). The compressed spring is near-record heading into a hiking regime.</li>
@@ -95,7 +93,7 @@
     <li><b>Term premium &amp; 30y swap spread:</b> <em>awaiting data</em> (ACM 10y NY Fed feed returns .xls binary the reader can't parse; DGS30 nominal <b>5.29%</b> from FRED for reference — not the premium).</li>
     <li><b>Funding gap vs buffers:</b> <em>awaiting data</em> (composite slot; rubric revision after FRED fetch-order fix pending).</li>
   </ul>
-  <p style="color:#c9c4b8;margin:0 0 10px 0;max-width:80ch">Weighted composite over the 5 scored components (renormalised): (0.20·49 + 0.20·20 + 0.15·63 + 0.15·68 + 0.10·44) / 0.80 = <b>47.4</b>. Position: <b>NORMAL, upper end</b>. The picture is a benign floor (SOFR sub-IORB, tiny SRF use, ample reserves) with an unreconciled leverage tail (CFTC lev-fund shorts near record). <b>Not a &ldquo;loaded&rdquo; regime post-hike; watch the Q3-end 30 Sep and next H.4.1 for the reserves trajectory.</b></p>
+  <p style="color:#c9c4b8;margin:0 0 10px 0;max-width:80ch">Weighted composite over the 5 scored components (renormalised): (0.20·57 + 0.20·20 + 0.15·63 + 0.15·68 + 0.10·44) / 0.80 = <b>49.4</b>. Position: <b>NORMAL, upper end</b>. The picture is a benign floor (SOFR sub-IORB, tiny SRF use, ample reserves) with an unreconciled leverage tail (CFTC lev-fund shorts near record). <b>Not a &ldquo;loaded&rdquo; regime post-hike; watch the Q3-end 30 Sep and next H.4.1 for the reserves trajectory.</b></p>
   <div class="panel">
     <div style="display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:center">
       <div>
