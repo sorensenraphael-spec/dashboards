@@ -1,7 +1,7 @@
 // public build — WHITELISTED subset.
 // Settles rounded (no raw series); COT from CFTC; ONI from NOAA.
 // No Norgate time series, per-contract data, or pack CSVs.
-// 2026-09-24 11:49
+// 2026-09-24 11:56
 window.__MD__ = {
   "generated_at": "settle 2026-09-23",
   "pages_present": [
