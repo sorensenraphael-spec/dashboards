@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="900">
+<meta http-equiv="cache-control" content="no-store">
+<meta http-equiv="pragma" content="no-cache">
+<title>Hog spreads seasonal — HE V/Z, Z/G, G/J, Z/M</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root {
+  --bg:#0f1116; --fg:#e8e6df; --dim:#8a8a80; --line:#1f2229;
+  --tile:#141821; --up:#5cb870; --dn:#e05c5c; --stale:#c4953a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;max-width:1400px;margin:0 auto}
+header{margin-bottom:20px;display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
+h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--fg)}
+.subhead{font-size:11px;color:var(--dim);letter-spacing:.05em}
+.hub-link{font-size:11px;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:6px}
+.hub-link:hover{color:var(--fg);border-color:#2a3040}
+.summary{margin:14px 0 24px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.summary table{width:100%;border-collapse:collapse;font-size:12px}
+.summary th,.summary td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.summary th{background:var(--tile);color:var(--dim);font-weight:500;letter-spacing:.06em}
+.summary td.pair{color:var(--fg);font-weight:500}
+.summary td.num{text-align:right}
+.summary tr:last-child td{border-bottom:none}
+.pct-high{color:var(--dn)}
+.pct-low{color:var(--up)}
+.pct-mid{color:var(--fg)}
+.chart-block{background:var(--tile);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:16px}
+.chart-block h2{font-size:12px;font-weight:500;letter-spacing:.08em;color:var(--dim);margin-bottom:6px;text-transform:uppercase}
+.chart-block .stamp{font-size:10px;color:var(--dim);margin-top:6px}
+.chart{width:100%;height:340px}
+.awaiting{color:var(--stale);font-size:12px;padding:60px 20px;text-align:center;background:#3a2e10;border-radius:6px}
+.drivers{background:var(--tile);border:1px solid var(--line);border-radius:8px;padding:16px 20px;margin-top:24px}
+.drivers h2{font-size:12px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.drivers ul{list-style:none;padding-left:0}
+.drivers li{font-size:12px;line-height:1.6;color:var(--fg);padding:6px 0 6px 16px;position:relative;border-bottom:1px solid var(--line)}
+.drivers li:last-child{border-bottom:none}
+.drivers li::before{content:"›";position:absolute;left:0;color:var(--dim)}
+.drivers .note{font-size:11px;color:var(--dim);margin-top:8px;font-style:italic}
+.footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);line-height:1.6}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width: 900px) {
+  .section-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Hog spreads · seasonal</h1>
+    <div class="subhead">HE V/Z · Z/G · G/J · Z/M &nbsp;·&nbsp; front minus back ($/cwt)</div>
+  </div>
+  <div>
+    <a class="hub-link" href="index.html">← hub</a>
+    <span class="subhead" id="data-through" style="margin-left:16px">loading…</span>
+  </div>
+</header>
+
+<!-- PROTECTED_SECTIONS registered via data-protected="true" -->
+<div id="summary" class="summary" data-protected="true" data-section-id="hog-spreads-summary">
+  <table>
+    <thead><tr>
+      <th>pair</th>
+      <th style="text-align:right">current $/cwt</th>
+      <th style="text-align:right">10y pctile (same DOY)</th>
+      <th style="text-align:right">30d change</th>
+      <th style="text-align:right">days to front expiry</th>
+      <th style="text-align:right">last settle</th>
+    </tr></thead>
+    <tbody id="summary-body">
+      <tr><td colspan="6" style="text-align:center;color:var(--dim);padding:24px">awaiting data…</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-grid">
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-VZ">
+    <h2>V/Z &nbsp; HEV(Y) − HEZ(Y)</h2>
+    <div id="chart-VZ" class="chart"></div>
+    <div class="stamp" id="stamp-VZ">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-ZG">
+    <h2>Z/G &nbsp; HEZ(Y) − HEG(Y+1)</h2>
+    <div id="chart-ZG" class="chart"></div>
+    <div class="stamp" id="stamp-ZG">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-GJ">
+    <h2>G/J &nbsp; HEG(Y+1) − HEJ(Y+1)</h2>
+    <div id="chart-GJ" class="chart"></div>
+    <div class="stamp" id="stamp-GJ">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-ZM">
+    <h2>Z/M &nbsp; HEZ(Y) − HEM(Y+1)</h2>
+    <div id="chart-ZM" class="chart"></div>
+    <div class="stamp" id="stamp-ZM">data through: —</div>
+  </div>
+</div>
+
+<div class="drivers" data-protected="true" data-section-id="hog-spreads-drivers">
+  <h2>Seasonal drivers (priors, not signals)</h2>
+  <ul id="drivers-list">
+    <li>awaiting data…</li>
+  </ul>
+  <p class="note">Priors are qualitative anchors for interpretation. Historical numbers are on the panels; no positioning, sizing or trade logic is displayed on this page.</p>
+</div>
+
+<div class="footer">
+  <strong>Method.</strong> Front-minus-back spread ($/cwt) computed from DAILY pack HE per-contract settles at
+  <code>hog_analysis/data/raw/per_contract/he_outright_ohlcv1d.parquet</code>. Seasonal band uses 25/50/75 percentile
+  across the last 5 prior calendar years' spread values at each day-of-year; the median line uses the last 10 prior years.
+  The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
+  day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
+  <br><br>
+  <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
+  The exporter is in <code>hog_analysis/build_hog_spreads.py</code>; the 08:00 rebuild chain copies the JSON into this
+  directory. No cross-imports.
+  <br><br>
+  <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
+  ASF (2018) is retained in the historical band as a documented outlier — not stripped.
+</div>
+
+<script>
+(function () {
+  const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM"];
+  const CHART_LAYOUT_BASE = {
+    paper_bgcolor: "#141821",
+    plot_bgcolor: "#141821",
+    font: { color: "#e8e6df", family: "ui-sans-serif" },
+    margin: { l: 46, r: 12, t: 8, b: 34 },
+    xaxis: { gridcolor: "#1f2229", zeroline: false, title: "day of year" },
+    yaxis: { gridcolor: "#1f2229", zeroline: true, zerolinecolor: "#8a8a80",
+             zerolinewidth: 1, title: "spread $/cwt" },
+    showlegend: true,
+    legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0, font: { size: 10 } },
+  };
+
+  function renderAwaiting(elId) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    el.innerHTML = '<div class="awaiting">awaiting data — no export yet or insufficient history</div>';
+  }
+
+  function fmtNum(v, digits) {
+    if (v === null || v === undefined || isNaN(v)) return "—";
+    const s = Number(v).toFixed(digits === undefined ? 2 : digits);
+    return (v > 0 ? "+" : "") + s;
+  }
+  function fmtNumUnsigned(v, digits) {
+    if (v === null || v === undefined || isNaN(v)) return "—";
+    return Number(v).toFixed(digits === undefined ? 2 : digits);
+  }
+  function pctClass(p) {
+    if (p === null || p === undefined) return "pct-mid";
+    if (p >= 80) return "pct-high";
+    if (p <= 20) return "pct-low";
+    return "pct-mid";
+  }
+
+  function renderSummary(data) {
+    const tbody = document.getElementById("summary-body");
+    tbody.innerHTML = "";
+    for (const tag of PAIR_TAGS) {
+      const p = (data.pairs || {})[tag];
+      if (!p) continue;
+      const s = p.summary || {};
+      const pctCls = pctClass(s.pctile_10y_same_doy);
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="pair">${p.name || tag}</td>
+        <td class="num">${fmtNum(s.current)}</td>
+        <td class="num ${pctCls}">${s.pctile_10y_same_doy != null ? fmtNumUnsigned(s.pctile_10y_same_doy, 1) + "%" : "—"}</td>
+        <td class="num">${fmtNum(s.change_30d)}</td>
+        <td class="num">${s.days_to_front_expiry != null ? s.days_to_front_expiry : "—"}</td>
+        <td class="num">${s.last_settle_date || "—"}</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+
+  function renderChart(tag, pair, data) {
+    const el = document.getElementById("chart-" + tag);
+    if (!pair || !pair.series || pair.status !== "ok") {
+      renderAwaiting("chart-" + tag);
+      document.getElementById("stamp-" + tag).textContent =
+          "data through: " + (data.data_through || "—") + "  ·  awaiting data";
+      return;
+    }
+    const s = pair.series;
+    // Filter out DOYs with nulls in the band
+    const doy = s.doy;
+    const band25 = s.band25;
+    const band75 = s.band75;
+    const med = s.median10;
+    const cur = s.current;
+    const traces = [];
+    // Band = fill between band25 and band75
+    traces.push({
+      x: doy, y: band75, name: "5y band (25–75)", type: "scatter", mode: "lines",
+      line: { color: "#4a5568", width: 0 }, showlegend: false, hoverinfo: "skip",
+    });
+    traces.push({
+      x: doy, y: band25, name: "5y band (25–75)", type: "scatter", mode: "lines",
+      fill: "tonexty", fillcolor: "rgba(107,133,183,0.22)",
+      line: { color: "#4a5568", width: 0 }, hoverinfo: "skip",
+    });
+    traces.push({
+      x: doy, y: med, name: "10y median", type: "scatter", mode: "lines",
+      line: { color: "#8fa3c9", width: 1.5, dash: "dot" }, hoverinfo: "x+y+name",
+    });
+    traces.push({
+      x: doy, y: cur, name: "2026 (current)", type: "scatter", mode: "lines",
+      line: { color: "#cb181d", width: 2.4 }, hoverinfo: "x+y+name",
+      connectgaps: false,
+    });
+    Plotly.newPlot(el, traces, {
+      ...CHART_LAYOUT_BASE,
+      xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [1, 365] },
+      title: null,
+    }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
+    document.getElementById("stamp-" + tag).textContent =
+        "data through: " + (data.data_through || "—") + "  ·  years with data: " + (pair.n_years_with_data || 0);
+  }
+
+  function renderDrivers(data) {
+    const ul = document.getElementById("drivers-list");
+    ul.innerHTML = "";
+    const priors = (data.drivers_priors || []);
+    if (!priors.length) {
+      ul.innerHTML = "<li>awaiting data…</li>";
+      return;
+    }
+    for (const p of priors) {
+      const li = document.createElement("li");
+      li.textContent = p;
+      ul.appendChild(li);
+    }
+  }
+
+  function render(data) {
+    document.getElementById("data-through").textContent =
+        "data through " + (data.data_through || "—") +
+        "  ·  generated " + (data.generated_at || "—").replace("T", " ").replace("Z", " UTC");
+    renderSummary(data);
+    for (const tag of PAIR_TAGS) {
+      renderChart(tag, (data.pairs || {})[tag], data);
+    }
+    renderDrivers(data);
+  }
+
+  // window.__MD__ pattern: try a JS wrapper first; else fetch the raw JSON.
+  window.__MD_HOG_ON_READY__ = function (data) {
+    window.__MD_HOG__ = data;
+    render(data);
+  };
+
+  // Try JS wrapper first (some hosts block .json MIME)
+  const wrap = document.createElement("script");
+  wrap.src = "hog_spreads_seasonal.js?v=" + Date.now();
+  wrap.onload = function () {
+    if (!window.__MD_HOG__) {
+      // Wrapper existed but did not populate — fall back to JSON.
+      loadJson();
+    }
+  };
+  wrap.onerror = function () { loadJson(); };
+  document.body.appendChild(wrap);
+
+  function loadJson() {
+    fetch("hog_spreads_seasonal.json?v=" + Date.now(), { cache: "no-store" })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(render)
+      .catch(err => {
+        document.getElementById("data-through").textContent = "awaiting data (no export)";
+        for (const tag of PAIR_TAGS) renderAwaiting("chart-" + tag);
+        console.warn("hog_spreads: could not load data:", err);
+      });
+  }
+})();
+</script>
+
+<!--
+PROTECTED_SECTIONS: hog-spreads-summary, hog-spread-VZ, hog-spread-ZG,
+                     hog-spread-GJ, hog-spread-ZM, hog-spreads-drivers
+Preservation guard: the refresh workflow MUST retain any element with
+`data-protected="true"` and its `data-section-id`. See
+dashboard_refresh.py / dashboard_stubs_build.py.
+-->
+
+</body>
+</html>
