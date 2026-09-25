@@ -71,6 +71,19 @@
     return `${parseInt(m[3], 10)} ${mo} ${m[1]}`;
   }
 
+  // 2026-09-25: null-tile hook. When a data-field resolves to null in
+  // window.__MD__, render "awaiting data" in a dim italic style rather than
+  // leaving the placeholder text or an empty span in place. Also register
+  // every null so the page emits a global list at the end.
+  const NULL_TILES = [];
+  function markAwaiting(el, key) {
+    el.textContent = 'awaiting data';
+    el.style.color = '#5f6f6a';
+    el.style.fontStyle = 'italic';
+    el.title = 'awaiting pipeline (no value in window.__MD__)';
+    NULL_TILES.push(key);
+  }
+
   document.querySelectorAll('[data-field]').forEach((el) => {
     const key = el.dataset.field;
     if (key === '_generated_at') {
@@ -79,6 +92,8 @@
         el.textContent = isNaN(d)
           ? D.generated_at
           : d.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      } else {
+        markAwaiting(el, key);
       }
       return;
     }
@@ -86,9 +101,10 @@
       // For "today"-style badges inside locked sections (e.g. the liquidity
       // gauge). Reads the badge date from window.__MD__.generated_at so the
       // date advances even when the content pipeline can't touch the locked
-      // prose. Falls through to the placeholder text on parse failure.
+      // prose.
       const s = badgeDate(D.generated_at);
-      if (s) el.textContent = s;
+      if (s) { el.textContent = s; }
+      else   { markAwaiting(el, key); }
       return;
     }
     const { val, asof, field } = resolve(key);
@@ -96,6 +112,11 @@
     if (formatted != null) {
       el.textContent = formatted;
       if (asof) el.title = 'as of ' + asof;
+    } else {
+      markAwaiting(el, key);
     }
   });
+
+  // expose the null-tile list for the freshness guard / audit scripts to pick up
+  window.__MD_NULL_TILES__ = NULL_TILES;
 })();
