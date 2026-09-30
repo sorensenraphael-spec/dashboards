@@ -52,8 +52,6 @@
   .quiet{color:var(--dim);font-size:12.5px;margin-top:10px}
   .book{border:1px solid #3a2c22;background:#1c1a15;border-radius:8px;padding:18px 20px;margin-top:14px}
 </style>
-
-<!-- public build 2026-09-29 08:31 — structural strips: 0; prose edits: 0 -->
 </head>
 <body>
 <div class="wrap">
@@ -66,7 +64,8 @@
 
 <!-- ============ THE GAP & THE BRIDGES ============ -->
 <section id="gap-bridges">
-  <h2>The gap and its bridges <span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>The gap and its bridges</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <div class="panel">
     <p><b>FOMC landed 16 Sep — +25bp to 3.75–4.00%.</b> The <a href="https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm">statement</a> notes the Committee &ldquo;is continuing its policy of maintaining ample reserves in the banking system&rdquo; — no QT change, no facility change. Post-hike administered rates: IORB <b>3.90%</b>, EFFR <b>3.88%</b> (2026-09-24 FRED). SOFR is settling at <b>3.87%</b>, i.e. <b>6bp under IORB on a 20-day mean</b> — plumbing healthy, no floor breach. TGA sits at <b>$877.0bn</b> (H.4.1 week ending 2026-09-16) and <b>RRP is $0.5bn</b> — the buffer is fully drained. The bridges below now carry the entire net funding gap on their own; there is no cash-on-the-sidelines cushion left.</p>
     <table>
@@ -124,7 +123,8 @@
 
 <!-- ============ LIQUIDITY HISTORY ============ -->
 <section id="net-liquidity">
-  <h2>Net liquidity since 2000 <span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>Net liquidity since 2000</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p style="color:#c9c4b8;margin:8px 0 4px 0;max-width:80ch"><b>Latest print $5,869.1bn</b> (H.4.1 identity: WALCL <b>$6,746.5bn</b> − WTREGEN <b>$877.0bn</b> − RRPONTSYD <b>$0.5bn</b>, freshest component date 2026-09-23). Reserves reported separately at <b>$3.014tn</b> (WRESBAL, week of 2026-09-16). Chart series in the panel below was regenerated 2026-09-24 after fixing a FRED unit assumption for WTREGEN (Mil. of $ per FRED metadata, not Bil. as the pipeline historically assumed) — pre-2026-09-24 chart vintages had the TGA leg scaled 1000× too small and are invalid. Post-hike (16 Sep +25bp): the drain now bites reserves directly with no RRP buffer to intercept.</p>
   <div class="panel">
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -367,5 +367,6 @@ document.getElementById('zreset').addEventListener('click',()=>{hist.resetZoom()
 <!-- marketdata dashboard live-data hooks (auto-refreshing, shared across all dashboards) -->
 <script src="dashboard_data.js"></script>
 <script src="dashboard_populate.js"></script>
+<script src="dashboard_charts.js"></script>
 </body>
 </html>

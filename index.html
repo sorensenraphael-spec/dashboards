@@ -1,58 +1,256 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta http-equiv="refresh" content="600">
-<title>Marketdata — public dashboards</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="refresh" content="300">
+<meta http-equiv="cache-control" content="no-store">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="0">
+<title>Marketdata</title>
 <style>
-:root{--bg:#0f1116;--fg:#e8e6df;--dim:#8a8a80;--line:#1f2229;--tile:#141821}
+:root {
+  --bg:#0f1116; --fg:#e8e6df; --dim:#8a8a80; --line:#1f2229;
+  --tile:#141821; --tile-hover:#1a1f2b;
+  --up:#5cb870; --dn:#e05c5c; --stale:#c4953a; --stale-bg:#3a2e10;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,sans-serif;padding:36px 22px;max-width:1000px;margin:0 auto;line-height:1.55}
-h1{font-size:13px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:22px}
-h2{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.tile{background:var(--tile);border:1px solid var(--line);border-radius:8px;padding:16px 18px;text-decoration:none;color:inherit;display:block;transition:border-color .15s}
-.tile:hover{border-color:#2a3040}
-.stripe{height:2px;border-radius:1px;margin-bottom:12px;opacity:.7}
-.name{font-size:15px;font-weight:600;margin-bottom:4px}
-.sub{font-size:12px;color:var(--dim)}
-footer{margin-top:36px;font-size:11px;color:var(--dim);line-height:1.6}
-</style></head>
+body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:24px;max-width:1200px;margin:0 auto}
+header{margin-bottom:20px}
+h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+.banner{display:flex;align-items:center;gap:10px;padding:9px 14px;border:1px solid var(--line);border-radius:6px;font-size:12px;color:var(--dim);background:var(--tile)}
+.banner.stale{border-color:#4a3e20;background:var(--stale-bg);color:var(--stale)}
+.banner.missing{border-color:#3a2a2a;background:#2a1a1a;color:var(--dn)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--up);display:inline-block}
+.banner.stale .dot{background:var(--stale)}
+.banner.missing .dot{background:var(--dn)}
+.banner .age{color:var(--fg);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.tile{background:var(--tile);border:1px solid var(--line);border-radius:8px;padding:14px 16px 12px;text-decoration:none;color:inherit;transition:background .15s,border-color .15s;display:block}
+.tile:hover{background:var(--tile-hover);border-color:#2a3040}
+.tile .head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.tile .name{font-size:13px;font-weight:500;color:var(--fg)}
+.tile .sym{font-size:10px;color:var(--dim);letter-spacing:.1em}
+.tile .stripe{height:2px;border-radius:1px;margin-bottom:10px;opacity:.7}
+.tile .price{font-size:22px;font-weight:600;color:var(--fg);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.tile .change{font-size:11px;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .change.up{color:var(--up)}
+.tile .change.dn{color:var(--dn)}
+.tile .asof{font-size:10px;color:var(--dim);margin-top:8px}
+.tile[data-stale="true"] .asof{color:var(--stale)}
+.tile .pending{font-size:10px;color:var(--stale);margin-top:6px;letter-spacing:.03em}
+.group{margin:22px 0 10px;font-size:11px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+</style>
+</head>
 <body>
-<h1>Marketdata — dashboards</h1>
 
-<h2>Softs & Grains</h2>
-<div class="grid">
-  <a class="tile" href="cocoa-dashboard.html"><div class="stripe" style="background:#7b4a2b"></div><div class="name">Cocoa</div><div class="sub">CC — West Africa two-crop cycle · COT · ONI</div></a>
-  <a class="tile" href="coffee-dashboard.html"><div class="stripe" style="background:#4b2e1a"></div><div class="name">Coffee</div><div class="sub">KC — Brazil florada · CCC ownership · ONI</div></a>
-  <a class="tile" href="sugar-dashboard.html"><div class="stripe" style="background:#c4b48b"></div><div class="name">Sugar</div><div class="sub">SB — Brazil ethanol hinge · UNICA · monsoon</div></a>
-  <a class="tile" href="cotton-dashboard.html"><div class="stripe" style="background:#a6a89c"></div><div class="name">Cotton</div><div class="sub">CT — US export share · India monsoon · WASDE</div></a>
-  <a class="tile" href="grains-dashboard.html"><div class="stripe" style="background:#c39a2a"></div><div class="name">Grains & oilseeds</div><div class="sub">ZC ZS ZL ZW KE — WASDE · conditions · SA relay · ethanol</div></a>
-</div>
+<header>
+  <h1>Marketdata</h1>
+  <div id="banner" class="banner"><span class="dot"></span><span>data updated: </span><span class="age" id="asof">—</span><span id="agedelta"></span></div>
+</header>
 
-<h2>Metals</h2>
-<div class="grid">
-  <a class="tile" href="silver-monitor.html"><div class="stripe" style="background:#b8bcc4"></div><div class="name">Silver</div><div class="sub">SI — gold/silver ratio · COT · retail chatter</div></a>
-  <a class="tile" href="gold-monitor.html"><div class="stripe" style="background:#d4af37"></div><div class="name">Gold</div><div class="sub">GC — CB floor · ETF overhang · ratio</div></a>
-</div>
+<main class="grid">
+  <a href="cocoa-dashboard.html"   class="tile" data-market="CC">
+    <div class="stripe" style="background:#7b4a2b"></div>
+    <div class="head"><span class="name">Cocoa</span><span class="sym">CC</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="coffee-dashboard.html"  class="tile" data-market="KC">
+    <div class="stripe" style="background:#4b2e1a"></div>
+    <div class="head"><span class="name">Coffee</span><span class="sym">KC</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="sugar-dashboard.html"   class="tile" data-market="SB">
+    <div class="stripe" style="background:#c4b48b"></div>
+    <div class="head"><span class="name">Sugar</span><span class="sym">SB</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="cotton-dashboard.html"  class="tile" data-market="CT">
+    <div class="stripe" style="background:#a6a89c"></div>
+    <div class="head"><span class="name">Cotton</span><span class="sym">CT</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="grains-dashboard.html"  class="tile" data-market="ZC">
+    <div class="stripe" style="background:#c39a2a"></div>
+    <div class="head"><span class="name">Grains</span><span class="sym">ZC ZS ZL ZW KE</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="silver-monitor.html"    class="tile" data-market="SI">
+    <div class="stripe" style="background:#b8bcc4"></div>
+    <div class="head"><span class="name">Silver</span><span class="sym">SI</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="gold-monitor.html"      class="tile" data-market="GC">
+    <div class="stripe" style="background:#d4af37"></div>
+    <div class="head"><span class="name">Gold</span><span class="sym">GC</span></div>
+    <div class="price" data-field="price">—</div>
+    <div class="change" data-field="change">—</div>
+    <div class="asof"  data-field="asof">—</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="energy-dashboard.html"   class="tile">
+    <div class="stripe" style="background:#d9a441"></div>
+    <div class="head"><span class="name">Energy</span><span class="sym">CL / RB / HO</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Crude · diesel · gasoline</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="global-balances.html"    class="tile">
+    <div class="stripe" style="background:#5fa8a0"></div>
+    <div class="head"><span class="name">Global balances</span><span class="sym">flow ledger</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Book-wide balance sheet</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="liquidity-dashboard.html" class="tile">
+    <div class="stripe" style="background:#8d7bd8"></div>
+    <div class="head"><span class="name">Liquidity</span><span class="sym">bridge watch</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Net funding gap</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="curve_steepness.html" class="tile">
+    <div class="stripe" style="background:#5f8fa8"></div>
+    <div class="head"><span class="name">Curve steepness</span><span class="sym">term structure</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Spot vs deferred slope</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+  <a href="gasoil-arb.html" class="tile">
+    <div class="stripe" style="background:#a8845f"></div>
+    <div class="head"><span class="name">Gasoil arb</span><span class="sym">GAS − HO</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Cross-Atlantic diesel spread</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+</main>
 
-<h2>Macro</h2>
-<div class="grid">
-  <a class="tile" href="global-balances.html"><div class="stripe" style="background:#5fa8a0"></div><div class="name">Global balances</div><div class="sub">Flow ledger across the complex</div></a>
-  <a class="tile" href="liquidity-dashboard.html"><div class="stripe" style="background:#8d7bd8"></div><div class="name">Liquidity</div><div class="sub">The bridge watch · daily-refreshed composite</div></a>
-  <a class="tile" href="curve_steepness.html"><div class="stripe" style="background:#5f8fa8"></div><div class="name">Curve steepness</div><div class="sub">Term-structure slope across the softs & metals complex</div></a>
-</div>
+<div class="group">Seasonal spreads</div>
+<main class="grid">
+  <a href="energy-spread-seasonal.html" class="tile">
+    <div class="stripe" style="background:#d9a441"></div>
+    <div class="head"><span class="name">Energy · seasonal</span><span class="sym">GAS − HO $/mt</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Same-delivery bootstrap</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+</main>
 
-<h2>Energy</h2>
-<div class="grid">
-  <a class="tile" href="energy-dashboard.html"><div class="stripe" style="background:#d9a441"></div><div class="name">Energy playbook</div><div class="sub">Crude · diesel · gasoline · products</div></a>
-  <a class="tile" href="gasoil-arb.html"><div class="stripe" style="background:#e4572e"></div><div class="name">Gasoil arb (USGC→ARA)</div><div class="sub">Physical distillate cargo margin — daily settle curve</div></a>
-  <a class="tile" href="energy-spread-seasonal.html"><div class="stripe" style="background:#7d9455"></div><div class="name">LSGO vs HO seasonal</div><div class="sub">ICE Gasoil − ULSD $/mt · 5y bands + current-year overlay · same-delivery bootstrap</div></a>
-</div>
+<div class="group">Livestock</div>
+<main class="grid">
+  <a href="hog-spreads-seasonal.html" class="tile">
+    <div class="stripe" style="background:#c9737a"></div>
+    <div class="head"><span class="name">Hog spreads · seasonal</span><span class="sym">HE V/Z Z/G G/J Z/M</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Front − back $/cwt</div>
+    <div class="change">reference</div>
+    <div class="asof">no live binding</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+</main>
 
-<h2>Livestock</h2>
-<div class="grid">
-  <a class="tile" href="hog-spreads-seasonal.html"><div class="stripe" style="background:#c9737a"></div><div class="name">Hog spreads seasonal</div><div class="sub">HE V/Z · Z/G · G/J · Z/M — front minus back $/cwt · 5y bands · 10y median · current-year overlay</div></a>
-</div>
+<script>document.write('<script src="dashboard_data.js?v='+Date.now()+'" onerror="window.__MD_LOAD_ERR__=true"><\/script>');</script>
+<script>
+(function(){
+  const STALE_MIN = 30;
+  const banner = document.getElementById('banner');
+  const asofEl = document.getElementById('asof');
+  const deltaEl = document.getElementById('agedelta');
 
-<footer>Auto-refreshes every 10 minutes. Data pulled daily via <code>dashboard_refresh.py</code>, <code>liquidity_pull.py</code>, and <code>energy_spread_seasonal_build.py</code>.</footer>
-</body></html>
+  const D = window.__MD__;
+  if (!D || window.__MD_LOAD_ERR__) {
+    banner.className = 'banner missing';
+    asofEl.textContent = 'dashboard_data.js not loaded — run dashboard_refresh.py';
+    return;
+  }
+
+  // Banner: format generated_at + age
+  const gen = new Date(D.generated_at);
+  const ageMin = (Date.now() - gen.getTime()) / 60000;
+  asofEl.textContent = gen.toLocaleString([], {hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'});
+  deltaEl.textContent = ' · ' + (ageMin < 1 ? 'just now'
+    : ageMin < 60 ? Math.round(ageMin) + ' min ago'
+    : (ageMin/60).toFixed(1) + ' h ago');
+  if (ageMin > STALE_MIN) banner.className = 'banner stale';
+
+  // Tile populate
+  function fmtChg(v){
+    if (v == null || isNaN(v)) return '';
+    const s = v >= 0 ? '+' : '';
+    return s + v.toFixed(2) + '%';
+  }
+  function fmtAsOf(iso){
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) return String(iso).slice(0,16).replace('T',' ');
+    return d.toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+
+  // For dashboards not present on disk, intercept the click and surface an
+  // inline "not built yet — drop <file> into dashboards/" note directly on
+  // the tile. No opacity change, no browser 404.
+  const present = new Set(D.pages_present || []);
+  document.querySelectorAll('.tile').forEach(tile => {
+    const href = tile.getAttribute('href');
+    if (!href || present.has(href)) return;
+    tile.addEventListener('click', ev => {
+      ev.preventDefault();
+      const hint = tile.querySelector('.pending');
+      if (!hint) return;
+      hint.textContent = 'Not built yet — drop ' + href + ' into dashboards/';
+      hint.hidden = false;
+      clearTimeout(tile._t);
+      tile._t = setTimeout(() => { hint.hidden = true; }, 4000);
+    });
+  });
+
+  document.querySelectorAll('.tile').forEach(tile => {
+    const mkt = tile.dataset.market;
+    const m = (D.markets || {})[mkt];
+    if (!m) return;
+    const p = m.price || m.clean_close;
+    if (!p) return;
+    const priceEl = tile.querySelector('[data-field="price"]');
+    const chgEl   = tile.querySelector('[data-field="change"]');
+    const asEl    = tile.querySelector('[data-field="asof"]');
+    if (priceEl && p.value != null) priceEl.textContent = Number(p.value).toLocaleString(undefined,{maximumFractionDigits:2});
+    if (chgEl && p.day_change_pct != null) {
+      chgEl.textContent = fmtChg(p.day_change_pct);
+      chgEl.classList.toggle('up', p.day_change_pct >= 0);
+      chgEl.classList.toggle('dn', p.day_change_pct <  0);
+    }
+    if (asEl && p.as_of) asEl.textContent = fmtAsOf(p.as_of) + (p.stale ? ' · stale' : '');
+    if (p.stale) tile.dataset.stale = 'true';
+  });
+})();
+</script>
+
+<footer style="margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--dim);line-height:1.7">
+Local-only. Publishing retired 2026-09-29 — the ~/marketdata/public repo is now private and no schedulers push to it. One task runs: <code>dashboards_daily</code> at 08:00 CET, refreshing <code>dashboard_data.js</code> (window.__MD__). Toast at end lists the settle date and any null / stale fields. Prose blocks on each page carry a static <em>Note - written DATE - not auto-updated</em> label - no badge shows a date the machine did not set.
+</footer>
+
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-28T06:35:32Z",
-  "data_through": "2026-09-24",
+  "generated_at": "2026-09-29T06:35:33Z",
+  "data_through": "2026-09-25",
   "status": "ok",
   "pairs": {
     "VZ": {
@@ -2110,7 +2110,7 @@
           8.275,
           9.55,
           9.725,
-          null,
+          9.2,
           null,
           null,
           null,
@@ -2578,11 +2578,11 @@
         ]
       },
       "summary": {
-        "current": 9.725,
-        "pctile_10y_same_doy": 71.4,
-        "change_30d": -0.35,
-        "days_to_front_expiry": 20,
-        "last_settle_date": "2026-09-24"
+        "current": 9.2,
+        "pctile_10y_same_doy": 85.7,
+        "change_30d": -0.65,
+        "days_to_front_expiry": 19,
+        "last_settle_date": "2026-09-25"
       },
       "n_years_with_data": 17
     },
@@ -4693,7 +4693,7 @@
           -1.55,
           -1.7,
           -1.375,
-          null,
+          -1.3,
           null,
           null,
           null,
@@ -5161,11 +5161,11 @@
         ]
       },
       "summary": {
-        "current": -1.375,
-        "pctile_10y_same_doy": 100.0,
-        "change_30d": 1.5,
-        "days_to_front_expiry": 81,
-        "last_settle_date": "2026-09-24"
+        "current": -1.3,
+        "pctile_10y_same_doy": 85.7,
+        "change_30d": 1.4,
+        "days_to_front_expiry": 80,
+        "last_settle_date": "2026-09-25"
       },
       "n_years_with_data": 17
     },
@@ -7276,7 +7276,7 @@
           -5.0,
           -5.175,
           -5.45,
-          null,
+          -5.6,
           null,
           null,
           null,
@@ -7744,11 +7744,11 @@
         ]
       },
       "summary": {
-        "current": -5.45,
+        "current": -5.6,
         "pctile_10y_same_doy": 28.6,
-        "change_30d": 0.225,
-        "days_to_front_expiry": 141,
-        "last_settle_date": "2026-09-24"
+        "change_30d": 0.1,
+        "days_to_front_expiry": 140,
+        "last_settle_date": "2026-09-25"
       },
       "n_years_with_data": 17
     },
@@ -9859,7 +9859,7 @@
           -19.5,
           -19.85,
           -20.125,
-          null,
+          -20.225,
           null,
           null,
           null,
@@ -10327,11 +10327,11 @@
         ]
       },
       "summary": {
-        "current": -20.125,
-        "pctile_10y_same_doy": 42.9,
-        "change_30d": 1.85,
-        "days_to_front_expiry": 81,
-        "last_settle_date": "2026-09-24"
+        "current": -20.225,
+        "pctile_10y_same_doy": 57.1,
+        "change_30d": 1.475,
+        "days_to_front_expiry": 80,
+        "last_settle_date": "2026-09-25"
       },
       "n_years_with_data": 17
     }

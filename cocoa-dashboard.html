@@ -161,7 +161,8 @@
 
 <!-- ================= HIGHLIGHTS ================= -->
 <div class="hl" id="highlights">
-  <h2 style="font-size:22px">Latest from the ground &amp; the tape<span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2 style="font-size:22px">Latest from the ground &amp; the tape</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <ul>
     <li><span class="d">19 Sep</span><span class="t"><strong>CFTC COT (15 Sep reference, released 19 Sep): MM net short −9.5k contracts</strong> (19.4th percentile since 2010). Funds <em>reversed</em> the prior week's covering and re-added ~4.8k net short from the −4.75k Sep 8 print. The covering rally that began from the −19.9k April record stalled here. <em>The 🔴 regime-line (flip to net long) has not fired — and the Sep 15 re-shorting confirms funds are not yet positioned for a supply squeeze.</em></span></li>
     <li><span class="d">18 Sep</span><span class="t">Front-month settle at $5,327/t (pack close). Down from the $6,500+ area touched in late August. The market has retraced roughly half the Jun–Sep rally on no fundamental improvement — private balance estimates for 26/27 have actually tightened (StoneX revised its deficit forecast higher; the global supply surplus estimate narrowed sharply to ≈25 kt, near balanced). <em>Price fell as funds re-shorted — the fundamental story did not weaken; positioning drove the move.</em></span></li>
@@ -178,17 +179,27 @@
   <h2 style="font-size:22px">Alert triggers — pre-registered</h2>
   <p class="sub" style="margin-bottom:12px">Material-change conditions defined in advance. Every refresh checks this list first and reports any that fired, before anything else. 🔴 = regime line crossed, 🟠 = material development.</p>
   <ul>
-    <li><span class="d">🔴</span><span class="t"><strong>Managed money flips net long</strong> — the positioning regime change; new-money sponsorship the rally hasn't had.</span></li>
-    <li><span class="d">🔴</span><span class="t"><strong>ICCO Nov bulletin shows a 26/27 deficit</strong> — the sign of the balance settled against consensus; the fan's lower branches activate.</span></li>
-    <li><span class="d">🔴</span><span class="t"><strong>CCC slows or halts forward sales</strong> — the best-informed actor signalling a short crop through behaviour.</span></li>
-    <li><span class="d">🟠</span><span class="t"><strong>Cumulative arrivals &gt;15% behind the 5-yr average by mid-November</strong> — the point where "late" starts being indistinguishable from "small" even accounting for the announced delay.</span></li>
-    <li><span class="d">🟠</span><span class="t"><strong>Sustained ICE certified stock drawdown</strong> (−10% from the peak, multi-week) — the bears' best fact eroding.</span></li>
-    <li><span class="d">🟠</span><span class="t"><strong>Dec–Mar spread tightening toward backwardation</strong> — the Q4 congestion/EUDR story expressing where it should.</span></li>
-    <li><span class="d">🟠</span><span class="t"><strong>Farmgate price announcements</strong> (CI &amp; Ghana) — supply-behaviour setter; also tests whether harmonization holds.</span></li>
-    <li><span class="d">🟠</span><span class="t"><strong>Any EUDR delay/modification headline</strong> — instantly reprices the Q4 compression scenario.</span></li>
+    <li data-alert="CC.cot.mm_net > 0"><span class="d">🔴</span><span class="t"><strong>Managed money flips net long</strong> — the positioning regime change; new-money sponsorship the rally hasn't had. <span class="alert-dot">⚪</span></span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>ICCO Nov bulletin shows a 26/27 deficit</strong> — the sign of the balance settled against consensus; the fan's lower branches activate. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🔴</span><span class="t"><strong>CCC slows or halts forward sales</strong> — the best-informed actor signalling a short crop through behaviour. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Cumulative arrivals &gt;15% behind the 5-yr average by mid-November</strong> — the point where "late" starts being indistinguishable from "small" even accounting for the announced delay. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Sustained ICE certified stock drawdown</strong> (−10% from the peak, multi-week) — the bears' best fact eroding. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Dec–Mar spread tightening toward backwardation</strong> — the Q4 congestion/EUDR story expressing where it should. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Farmgate price announcements</strong> (CI &amp; Ghana) — supply-behaviour setter; also tests whether harmonization holds. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
+    <li><span class="d">🟠</span><span class="t"><strong>Any EUDR delay/modification headline</strong> — instantly reprices the Q4 compression scenario. <span style="color:#8a8a80;font-size:11px">(manual check)</span></span></li>
   </ul>
   <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. Each refresh appends a dated line here noting fired alerts and material edits.</p>
 </div>
+
+<!-- ================= DATA CHARTS ================= -->
+<section id="data-charts">
+  <h2>Live series (from pack)</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;font-style:italic;margin:2px 0 12px 0">Note - auto-updated by dashboards_daily 08:00 CET</p>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>West Africa cocoa belt - rainfall anomaly (60 mo)</h3><div data-chart="rainfall.wca_cocoa" style="min-height:180px"></div></div>
+    <div class="chart-card"><h3>NY cocoa (CC) - COT MM net, last 3 years</h3><div data-chart="CC.cot_3y" style="min-height:180px"></div></div>
+  </div>
+</section>
 
 <!-- ================= PRIMER ================= -->
 <section id="primer">
@@ -216,7 +227,8 @@
 
 <!-- ================= CURRENT STORY ================= -->
 <section id="now">
-  <h2>The current story<span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>The current story</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p class="sub">Where we are in the cycle and what the market is actually arguing about.</p>
   <p><strong>You are entering this market mid-whiplash, with the tape now consolidating.</strong> The 2023–24 super-spike (disease + failed harvests + harmattan damage) took NY cocoa to a record near <strong>$12,900/t in December 2024</strong>. Recovery supply then crushed it: prices collapsed roughly 75% to a low around <strong>$2,846 in April 2026</strong>. From there NY rallied more than 100% into August, printed a run to $6,500+, and has since drifted back into the <strong>$5,900–6,100 zone</strong> as of 11 September (Dec contract ~$5,961). The market is now sitting inside a range instead of trending — and range-bound cocoa is exactly the setup where the 26/27 supply signals are being tested against the two-year-high stocks.</p>
   <p><strong>The argument is present-vs-future, and the "future" side keeps adding.</strong> The present is comfortable: 2025/26 closed as a recovery year — Ivorian port arrivals reached <strong>2.11 MMT through 2 August, +20% y/y</strong> and the highest since 2022/23; Ghana harvested ~<strong>750 kt, +25%</strong>; ICE certified stocks sit at ~<strong>3.41 M bags, a two-year high</strong> (727,526 bags as of 1 Sep, flat); ICCO's revised 24/25 balance shows a modest 37 kt surplus. The future is where the flow deteriorates: <strong>Reuters pod-counter survey pegs Ivory Coast 26/27 main crop at 1.35–1.45 MMT</strong> (>10% below current), <strong>COCOBOD flags Ghana at 470–620 kt (a 16–38% drop)</strong> with a licensed-buyer view even lower ("more than a third"), CCC's <strong>8–10 week delay</strong> is now visible in the projected sub-15,000 t weekly deliveries for September, and <strong>El Niño (ONI +1.80)</strong> is by consensus about to strengthen the Dec–Feb harmattan.</p>
@@ -228,7 +240,8 @@
 
 <!-- ================= BALANCE SHEET ================= -->
 <section id="balance">
-  <h2>The 2026/27 balance sheet<span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>The 2026/27 balance sheet</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p class="sub">Combining the accumulated surplus with next season's crop problems: the question is not "surplus or deficit" but "how big is the cushion, and does the trajectory flip." Update focus of this refresh: <strong>the two-crop cycle at the mid-to-main transition</strong> — port arrivals through the transition and the pod-count read into the main harvest.</p>
 
   <h3>The mid-to-main-crop transition, in the actual numbers</h3>
@@ -260,7 +273,8 @@
 
 <!-- ================= WATCH LIST ================= -->
 <section id="watch">
-  <h2>What to watch next<span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>What to watch next</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p class="sub">Dated triggers, most imminent first. This is the section to re-run before touching the market.</p>
   <table>
     <tr><th>When</th><th>What</th><th>Why it moves price</th></tr>
@@ -358,7 +372,8 @@
 
 <!-- ================= CHATTER ================= -->
 <section id="chatter">
-  <h2>Origin &amp; social chatter<span class="livebadge">live · 24 Sep 2026</span></h2>
+  <h2>Origin &amp; social chatter</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p class="sub">What the ground-level conversation is saying, and how to listen without an account anywhere.</p>
 
   <div class="panel">
@@ -386,7 +401,7 @@
   <p><strong>Positioning is the primary short-horizon driver.</strong> The April→August round trip was a positioning event wearing a fundamentals costume: record shorts met deteriorating crop news. The COT is therefore your single most useful weekly read — the same crowding logic as the silver monitor, and cocoa is arguably even more squeeze-prone than silver right now given the depth problem.</p>
 
   <div class="panel" id="positioning">
-    <h3>Positioning snapshot<span class="livebadge">live · 14 Sep 2026</span></h3>
+    <h3>Positioning snapshot</h3>
     <ul>
       <li><strong>Managed money: net short −4,750 contracts</strong> (26,056 long vs 30,806 short, CFTC COT reference date 8 Sep, published 12 Sep). That's ~5.7k of net short covered in a single week from −10.5k the prior report, and roughly <strong>76% covered</strong> from the −19,885 April record. Funds have <em>not</em> flipped long — but the mix has changed: longs increased 4,125 while shorts fell 1,583, so the covering is now being met by <em>new long initiation</em>, not just short exits.</li>
       <li><strong>Percentile context:</strong> −4.75k sits in the ~<strong>25th percentile</strong> of MM net position since 2010 (range roughly +85k to −57k). Low, but not extreme short. The historical long-skew of the market (2010s peaks +60–85k) means the fuel above the market is still enormous if conviction returns.</li>
@@ -425,6 +440,7 @@
 <!-- ================= CHARTS ================= -->
 <section id="gauges">
   <h2>Historical gauges</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 14 Sep 2026 - not auto-updated</p>
   <p style="border-left:3px solid var(--amber);padding-left:12px"><strong>Measured update (8 Sep, COT pack):</strong> MM net −4.8k = <strong>25.6th percentile since 2010</strong> (range +85k / −57k) — "low but not extreme short" confirmed quantitatively; the long-skew history is real (2010s longs peaked +85k).</p>
   <p class="sub">Every live number placed against its history — the de-meaning layer. Anchors marked ≈ are from Claude's historical knowledge: right order of magnitude, verify before sizing against them. Upgradeable to true percentiles with one upload of CFTC/ICCO historical files.</p>
   <table>
@@ -440,13 +456,14 @@
 
 <!-- ================= CHARTS ================= -->
 <section id="charts">
-  <h2>Charts<span class="livebadge">live · 12 Sep 2026</span></h2>
+  <h2>Charts</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 12 Sep 2026 - not auto-updated</p>
   <p class="sub">Built from the sourced data points in this brief — sparse reference marks, not continuous series. They show the shape of the cycle; pull live curves from ICE/Barchart/Saxo before trading against a level.</p>
   <div class="charts-grid">
-    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NY cocoa, key sourced marks (USD/t)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">NY cocoa, key sourced marks (USD/t)</text><line x1="58" y1="256.0" x2="506" y2="256.0" stroke="#57402a" stroke-width="0.6"/><text x="50" y="260.0" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="191.4" x2="506" y2="191.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="195.4" text-anchor="end" font-size="11" fill="#c9b394">4,000</text><line x1="58" y1="126.9" x2="506" y2="126.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="130.9" text-anchor="end" font-size="11" fill="#c9b394">8,000</text><line x1="58" y1="62.3" x2="506" y2="62.3" stroke="#57402a" stroke-width="0.6"/><text x="50" y="66.3" text-anchor="end" font-size="11" fill="#c9b394">12,000</text><path d="M76.0,47.7 L144.7,139.8 L213.3,209.3 L282.0,210.1 L350.7,163.6 L419.3,151.1 L488.0,154.5" fill="none" stroke="#e39a3b" stroke-width="2.4" stroke-linejoin="round"/><circle cx="76.0" cy="47.7" r="4" fill="#e39a3b"/><text x="76.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Dec 24</text><circle cx="144.7" cy="139.8" r="4" fill="#e39a3b"/><text x="144.7" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 25</text><circle cx="213.3" cy="209.3" r="4" fill="#e39a3b"/><text x="213.3" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Feb 26</text><circle cx="282.0" cy="210.1" r="4" fill="#e39a3b"/><text x="282.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Apr 26</text><circle cx="350.7" cy="163.6" r="4" fill="#e39a3b"/><text x="350.7" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Jul 26</text><circle cx="419.3" cy="151.1" r="4" fill="#e39a3b"/><text x="419.3" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Aug 26</text><circle cx="488.0" cy="154.5" r="4" fill="#e39a3b"/><text x="488.0" y="272" text-anchor="middle" font-size="10.5" fill="#c9b394">Sep 26</text><text x="76.0" y="37.7" text-anchor="start" font-size="11" fill="#f0e2cb">12,906 record</text><text x="282.0" y="228.1" text-anchor="middle" font-size="11" fill="#f0e2cb">2,846 low</text><text x="488.0" y="144.5" text-anchor="end" font-size="11" fill="#f0e2cb">≈6,300</text></svg></div>
-    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Global balance, kt (production − grindings)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Global balance, kt (production − grindings)</text><line x1="58" y1="223.7" x2="506" y2="223.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="227.7" text-anchor="end" font-size="11" fill="#c9b394">-400</text><line x1="58" y1="180.7" x2="506" y2="180.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="184.7" text-anchor="end" font-size="11" fill="#c9b394">-200</text><line x1="58" y1="137.6" x2="506" y2="137.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="141.6" text-anchor="end" font-size="11" fill="#c9b394">0</text><line x1="58" y1="94.6" x2="506" y2="94.6" stroke="#57402a" stroke-width="0.6"/><text x="50" y="98.6" text-anchor="end" font-size="11" fill="#c9b394">200</text><line x1="58" y1="51.5" x2="506" y2="51.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="55.5" text-anchor="end" font-size="11" fill="#c9b394">400</text><rect x="101.0" y="137.6" width="26.0" height="105.5" fill="#cf6349"/><text x="114.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">23/24</text><rect x="213.0" y="129.7" width="26.0" height="8.0" fill="#8fb069"/><text x="226.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">24/25</text><rect x="295.0" y="84.5" width="26.0" height="53.2" fill="#8fb069"/><rect x="325.0" y="67.7" width="26.0" height="70.0" fill="#8fb069"/><rect x="355.0" y="42.5" width="26.0" height="95.1" fill="#8fb069"/><text x="338.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26e</text><rect x="407.0" y="120.0" width="26.0" height="17.6" fill="#e39a3b"/><rect x="437.0" y="113.7" width="26.0" height="23.9" fill="#e39a3b"/><rect x="467.0" y="105.5" width="26.0" height="32.1" fill="#e39a3b"/><text x="450.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text><line x1="58" y1="137.6" x2="506" y2="137.6" stroke="#f0e2cb" stroke-width="1"/><text x="506" y="42" text-anchor="end" font-size="10.5" fill="#c9b394">25/26 &amp; 26/27: three forecasters each (Guan Chong deficit call not plottable — no figure published)</text></svg></div>
-    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stocks-to-grindings ratio with 26/27 scenarios"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Stocks-to-grindings, % — with implied 26/27 scenarios</text><line x1="58" y1="243.4" x2="506" y2="243.4" stroke="#57402a" stroke-width="0.6"/><text x="50" y="247.4" text-anchor="end" font-size="11" fill="#c9b394">25%</text><line x1="58" y1="180.7" x2="506" y2="180.7" stroke="#57402a" stroke-width="0.6"/><text x="50" y="184.7" text-anchor="end" font-size="11" fill="#c9b394">30%</text><line x1="58" y1="117.9" x2="506" y2="117.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="121.9" text-anchor="end" font-size="11" fill="#c9b394">35%</text><line x1="58" y1="55.1" x2="506" y2="55.1" stroke="#57402a" stroke-width="0.6"/><text x="50" y="59.1" text-anchor="end" font-size="11" fill="#c9b394">40%</text><rect x="58" y="55.1" width="448" height="62.8" fill="#8fb069" opacity="0.16"/><text x="64" y="90.5" text-anchor="start" font-size="11" fill="#8fb069">comfortable ≈35–40%</text><path d="M98.0,218.3 L204.0,203.3 L310.0,130.4" fill="none" stroke="#e39a3b" stroke-width="2.4"/><circle cx="98.0" cy="218.3" r="4.5" fill="#e39a3b"/><text x="98.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">23/24</text><text x="98.0" y="207.3" text-anchor="middle" font-size="11" fill="#f0e2cb">27% · 46-yr low</text><circle cx="204.0" cy="203.3" r="4.5" fill="#e39a3b"/><text x="204.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">24/25</text><text x="204.0" y="192.3" text-anchor="middle" font-size="11" fill="#f0e2cb">28.2% (ICCO)</text><circle cx="310.0" cy="130.4" r="4.5" fill="#e39a3b"/><text x="310.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">25/26e</text><text x="310.0" y="119.4" text-anchor="middle" font-size="11" fill="#f0e2cb">~34% implied</text><path d="M310.0,130.4 L416.0,105.3" fill="none" stroke="#8fb069" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="105.3" r="4.5" fill="#8fb069"/><text x="424.0" y="109.3" text-anchor="start" font-size="10.5" fill="#8fb069">consensus surplus → ~36%</text><path d="M310.0,130.4 L416.0,155.6" fill="none" stroke="#e39a3b" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="155.6" r="4.5" fill="#e39a3b"/><text x="424.0" y="159.6" text-anchor="start" font-size="10.5" fill="#e39a3b">modest deficit → ~32%</text><path d="M310.0,130.4 L416.0,205.8" fill="none" stroke="#cf6349" stroke-width="2" stroke-dasharray="6 4"/><circle cx="416.0" cy="205.8" r="4.5" fill="#cf6349"/><text x="424.0" y="209.8" text-anchor="start" font-size="10.5" fill="#cf6349">tail (−300kt) → ~28%</text><text x="416.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">26/27f</text></svg></div>
-    <div class="chart-card"><svg viewBox="0 0 520 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Managed money net position, NY cocoa (contracts)"><text x="58" y="18" font-size="13.5" fill="#f0e2cb" font-weight="600">Managed money net position, NY cocoa (contracts)</text><line x1="58" y1="225.9" x2="506" y2="225.9" stroke="#57402a" stroke-width="0.6"/><text x="50" y="229.9" text-anchor="end" font-size="11" fill="#c9b394">-20k</text><line x1="58" y1="150.5" x2="506" y2="150.5" stroke="#57402a" stroke-width="0.6"/><text x="50" y="154.5" text-anchor="end" font-size="11" fill="#c9b394">-10k</text><line x1="58" y1="75.2" x2="506" y2="75.2" stroke="#57402a" stroke-width="0.6"/><text x="50" y="79.2" text-anchor="end" font-size="11" fill="#c9b394">0k</text><line x1="58" y1="75.2" x2="506" y2="75.2" stroke="#f0e2cb" stroke-width="1"/><text x="506" y="68.2" text-anchor="end" font-size="11" fill="#c9b394">net long above / net short below</text><path d="M108.0,198.5 L272.0,225.0 L436.0,125.4" fill="none" stroke="#cf6349" stroke-width="2.4"/><circle cx="108.0" cy="198.5" r="4.5" fill="#cf6349"/><text x="108.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">7 Apr 26</text><text x="108.0" y="218.5" text-anchor="middle" font-size="11" fill="#f0e2cb">−16.4k</text><circle cx="272.0" cy="225.0" r="4.5" fill="#cf6349"/><text x="272.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">28 Apr 26</text><text x="272.0" y="245.0" text-anchor="middle" font-size="11" fill="#f0e2cb">−19.9k · record short</text><circle cx="436.0" cy="125.4" r="4.5" fill="#cf6349"/><text x="436.0" y="272" text-anchor="middle" font-size="11" fill="#c9b394">11 Aug 26</text><text x="436.0" y="145.4" text-anchor="middle" font-size="11" fill="#f0e2cb">−6.7k · ⅔ covered, not flipped</text></svg></div>
+    <div class="chart-card"><h3>NY cocoa settle - last year</h3><div data-chart="CC.settle_1y" style="min-height:180px"></div></div>
+    <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0">would need: ICCO quarterly balance history (annual surplus/deficit kt, 2010-present)</p></div>
+    <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0">would need: ICE certified cocoa stocks daily bag count (NY + London), 2010-present</p></div>
+    <div class="chart-card"><h3>Managed money net - last 3 years</h3><div data-chart="CC.cot_3y" style="min-height:180px"></div></div>
   </div>
   <p class="calnote">Reading them together: price has retraced to the middle of the two-year range while the balance (chart 2) shrinks toward zero from above, the stock cushion (chart 3) sits just below the comfort band, and positioning (chart 4) is still short. All four point the same direction — a market repricing from surplus-comfort toward 2026/27 risk — but none has crossed its regime line yet: no deficit printed, S/G not yet comfortable <em>or</em> critical, funds not yet flipped long.</p>
 </section>
@@ -460,5 +477,6 @@
 <!-- marketdata dashboard live-data hooks (auto-refreshing) -->
 <script src="dashboard_data.js"></script>
 <script src="dashboard_populate.js"></script>
+<script src="dashboard_charts.js"></script>
 </body>
 </html>

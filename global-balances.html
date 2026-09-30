@@ -57,11 +57,26 @@
   <h1>Global Balances — the Flow &amp; Stock Ledger</h1>
   <div class="sub">One page, every market in the book, each in its industry-standard unit: <b>surplus/deficit flow (mb/d) for liquids</b>, <b>stocks-to-use for grains, oilseeds &amp; cotton</b>, <b>annual tonnage balances for softs</b>. Balances answer "how tight"; the synthesis matrix at the bottom crosses them with positioning to answer "how crowded is the agreement."</div>
   <div class="stamp">Figures from IEA/EIA/USDA/ISO/ICCO &amp; trade forecasters, vintages as tagged · verify before acting · WASDE Sep 11 landed: corn yield −2.2 bpa to 178.5, prod 15.8B, stocks 1.6B, farm price $4.80 · soy 4.5B prod, 310M stocks, farm $12.00 · wheat unchanged, farm $6.40 · next prints: EIA petroleum Wed · Unica bi-weekly · ICCO QB / ISO QMO quarterly</div>
+  <div class="panel" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px 20px;font-size:13px">
+    <div><div style="color:var(--dim);font-size:11px">CL (crude, $/bbl)</div><b data-field="CL.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">ZC (corn, ¢/bu)</div><b data-field="ZC.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">ZS (soy, ¢/bu)</div><b data-field="ZS.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">ZW (wheat, ¢/bu)</div><b data-field="ZW.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">CC (cocoa, $/t)</div><b data-field="CC.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">KC (coffee, ¢/lb)</div><b data-field="KC.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">SB (sugar, ¢/lb)</div><b data-field="SB.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">CT (cotton, ¢/lb)</div><b data-field="CT.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">GC (gold, $/oz)</div><b data-field="GC.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">SI (silver, $/oz)</div><b data-field="SI.price">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">ONI</div><b data-field="ONI.value">—</b></div>
+    <div><div style="color:var(--dim);font-size:11px">as of</div><b data-field="_settle_date">—</b></div>
+  </div>
 </header>
 
 <!-- ============ LIQUIDS ============ -->
 <section id="liquids">
-  <h2>Liquids — global surplus / deficit &amp; cumulative balance <span class="livebadge">live · 14 Sep 2026</span></h2>
+  <h2>Liquids — global surplus / deficit &amp; cumulative balance</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 14 Sep 2026 - not auto-updated</p>
   <div class="panel">
     <svg viewBox="0 0 1000 300" width="100%" role="img" aria-label="Quarterly liquids balance and cumulative inventory change">
       <!-- zero line -->
@@ -96,7 +111,8 @@
 
 <!-- ============ GRAINS & OILSEEDS ============ -->
 <section id="grains-stu">
-  <h2>Grains, oilseeds &amp; cotton — stocks-to-use <span class="livebadge">live · 15 Sep 2026</span></h2>
+  <h2>Grains, oilseeds &amp; cotton — stocks-to-use</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 15 Sep 2026 - not auto-updated</p>
   <div class="panel">
     <table>
       <tr><th>Market</th><th>S/U now</th><th>Direction</th><th>Reading (Sep 11 WASDE)</th></tr>
@@ -112,7 +128,8 @@
 
 <!-- ============ SOFTS ============ -->
 <section id="softs-balance">
-  <h2>Softs — annual balances (industry standard) <span class="livebadge">live · 14 Sep 2026</span></h2>
+  <h2>Softs — annual balances (industry standard)</h2>
+<p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 14 Sep 2026 - not auto-updated</p>
 
   <div class="panel">
     <h2 style="font-size:16px">Cocoa — surplus/deficit, kt (ICCO convention, Aug 2026 QB)</h2>
@@ -201,5 +218,6 @@
 </section>
 
 </div>
+<script src="dashboard_charts.js"></script>
 </body>
 </html>
