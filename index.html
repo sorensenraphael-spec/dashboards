@@ -175,7 +175,7 @@ h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 <script>document.write('<script src="dashboard_data.js?v='+Date.now()+'" onerror="window.__MD_LOAD_ERR__=true"><\/script>');</script>
 <script>
 (function(){
-  const STALE_MIN = 30;
+  const STALE_MIN = 26 * 60;  // daily cadence — flag stale if > 26h since last run
   const banner = document.getElementById('banner');
   const asofEl = document.getElementById('asof');
   const deltaEl = document.getElementById('agedelta');
@@ -187,13 +187,19 @@ h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     return;
   }
 
-  // Banner: format generated_at + age
+  // Banner: format generated_at (site refresh) + settle_date (data vintage) + age
   const gen = new Date(D.generated_at);
   const ageMin = (Date.now() - gen.getTime()) / 60000;
-  asofEl.textContent = gen.toLocaleString([], {hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'});
-  deltaEl.textContent = ' · ' + (ageMin < 1 ? 'just now'
+  const runLabel = isNaN(gen)
+    ? String(D.generated_at)
+    : gen.toLocaleString([], {hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'});
+  const ageLabel = ageMin < 1 ? 'just now'
     : ageMin < 60 ? Math.round(ageMin) + ' min ago'
-    : (ageMin/60).toFixed(1) + ' h ago');
+    : ageMin < 26*60 ? (ageMin/60).toFixed(1) + ' h ago'
+    : Math.round(ageMin/60/24) + ' d ago';
+  const settleLabel = D.settle_date ? ' · settle ' + D.settle_date : '';
+  asofEl.textContent = runLabel;
+  deltaEl.textContent = ' · ' + ageLabel + settleLabel;
   if (ageMin > STALE_MIN) banner.className = 'banner stale';
 
   // Tile populate

@@ -1,8 +1,9 @@
 // PUBLIC WHITELIST — do not edit.
 // No raw Norgate time series. CFTC/NOAA/rounded-settle only.
-// 2026-09-30 11:36
+// 2026-09-30 11:45
 window.__MD__ = {
-  "generated_at": "2026-09-28",
+  "generated_at": "2026-09-30T08:00:11",
+  "settle_date": "2026-09-28",
   "pages_present": [
     "cocoa-dashboard.html",
     "coffee-dashboard.html",
@@ -8497,5 +8498,5 @@ window.__MD__ = {
       ]
     ]
   },
-  "_public_note": "public whitelist - latest settle rounded (Norgate), COT weekly series (CFTC), ONI monthly (NOAA), rainfall monthly (public). Raw Norgate daily settle time series is NOT included by license. Regenerated daily by publish_public.py."
+  "_public_note": "public whitelist - latest settle rounded (Norgate), COT weekly series (CFTC), ONI monthly (NOAA), rainfall monthly (public). Raw Norgate daily settle time series is NOT included by license. Regenerated daily by publish_public.py. generated_at = script run time; settle_date = data vintage."
 };
