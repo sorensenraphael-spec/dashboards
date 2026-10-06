@@ -43,6 +43,12 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .drivers li::before{content:"›";position:absolute;left:0;color:var(--dim)}
 .drivers .note{font-size:11px;color:var(--dim);margin-top:8px;font-style:italic}
 .footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);line-height:1.6}
+.years{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 14px;padding:10px 12px;background:var(--tile);border:1px solid var(--line);border-radius:8px;font-size:12px}
+.years .lbl{color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.years label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-variant-numeric:tabular-nums}
+.years .sw{width:10px;height:3px;border-radius:1px;display:inline-block}
+.years button{background:none;border:1px solid var(--line);color:var(--dim);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer}
+.years button:hover{color:var(--fg);border-color:#2a3040}
 .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width: 900px) {
   .section-grid { grid-template-columns: 1fr; }
@@ -79,6 +85,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </table>
 </div>
 
+<div id="year-picker" class="years" hidden></div>
+
 <div class="section-grid">
   <div class="chart-block" data-protected="true" data-section-id="hog-spread-VZ">
     <h2>V/Z &nbsp; HEV(Y) − HEZ(Y)</h2>
@@ -111,15 +119,15 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 </div>
 
 <div class="footer">
-  <strong>Method.</strong> Front-minus-back spread ($/cwt) computed from DAILY pack HE per-contract settles at
-  <code>hog_analysis/data/raw/per_contract/he_outright_ohlcv1d.parquet</code>. Seasonal band uses 25/50/75 percentile
+  <strong>Method.</strong> Front-minus-back spread ($/cwt) computed from Norgate per-contract HE daily settles
+  (<code>HE-YYYYM</code>). The x-axis is the calendar date; prior years are aligned by day of year. Seasonal band uses 25/50/75 percentile
   across the last 5 prior calendar years' spread values at each day-of-year; the median line uses the last 10 prior years.
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
   <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
-  The exporter is in <code>hog_analysis/build_hog_spreads.py</code>; the 08:00 rebuild chain copies the JSON into this
-  directory. No cross-imports.
+  The exporter is <code>build_hog_spreads.py</code> in this repo (since 2026-10-06), run by the 08:00
+  <code>dashboards_daily</code> chain. No cross-imports.
   <br><br>
   <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
   ASF (2018) is retained in the historical band as a documented outlier — not stripped.
@@ -133,7 +141,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     plot_bgcolor: "#141821",
     font: { color: "#e8e6df", family: "ui-sans-serif" },
     margin: { l: 46, r: 12, t: 8, b: 34 },
-    xaxis: { gridcolor: "#1f2229", zeroline: false, title: "day of year" },
+    xaxis: { gridcolor: "#1f2229", zeroline: false, type: "date",
+             tickformat: "%d %b", dtick: "M1", hoverformat: "%d %b" },
     yaxis: { gridcolor: "#1f2229", zeroline: true, zerolinecolor: "#8a8a80",
              zerolinewidth: 1, title: "spread $/cwt" },
     showlegend: true,
@@ -181,6 +190,83 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     }
   }
 
+  const YEAR_PALETTE = ["#e6a23c", "#5cb870", "#4fb3d9", "#b48ead", "#d08770",
+                        "#a3be8c", "#ebcb8b", "#88c0d0", "#c9737a", "#9aa5ce"];
+  const SELECTED = new Set();   // ticked prior years, shared by the four charts
+  const YEAR_TRACES = {};       // tag -> { year: trace index }
+  let ALL_YEARS = [];
+
+  function currentYear(data) {
+    return parseInt(String(data.data_through || "").slice(0, 4), 10) || new Date().getFullYear();
+  }
+  function yearColor(y) {
+    const i = ALL_YEARS.indexOf(String(y));
+    return YEAR_PALETTE[(i < 0 ? 0 : i) % YEAR_PALETTE.length];
+  }
+  // day-of-year + values -> calendar dates in `year`, nulls dropped
+  function pts(doy, vals, year) {
+    const x = [], y = [];
+    for (let i = 0; i < doy.length; i++) {
+      const v = (vals || [])[i];
+      if (v === null || v === undefined) continue;
+      x.push(new Date(Date.UTC(year, 0, doy[i])).toISOString().slice(0, 10));
+      y.push(v);
+    }
+    return { x, y };
+  }
+
+  function applyYears() {
+    for (const tag of PAIR_TAGS) {
+      const idx = YEAR_TRACES[tag];
+      const el = document.getElementById("chart-" + tag);
+      if (!idx || !el || !el.data) continue;
+      const years = Object.keys(idx);
+      if (!years.length) continue;
+      Plotly.restyle(el, { visible: years.map(y => SELECTED.has(y)) }, years.map(y => idx[y]));
+    }
+    document.querySelectorAll("#year-picker input").forEach(cb => { cb.checked = SELECTED.has(cb.value); });
+  }
+
+  function renderYearPicker(data) {
+    const set = new Set();
+    for (const tag of PAIR_TAGS) {
+      const p = (data.pairs || {})[tag];
+      Object.keys((p && p.series && p.series.years) || {}).forEach(y => set.add(y));
+    }
+    ALL_YEARS = Array.from(set).sort();
+    const box = document.getElementById("year-picker");
+    box.innerHTML = "";
+    if (!ALL_YEARS.length) { box.hidden = true; return; }
+    box.hidden = false;
+    const lbl = document.createElement("span");
+    lbl.className = "lbl";
+    lbl.textContent = "years";
+    box.appendChild(lbl);
+    for (const y of ALL_YEARS) {
+      const l = document.createElement("label");
+      const cb = document.createElement("input");
+      cb.type = "checkbox"; cb.value = y; cb.checked = SELECTED.has(y);
+      cb.addEventListener("change", () => {
+        if (cb.checked) SELECTED.add(y); else SELECTED.delete(y);
+        applyYears();
+      });
+      const sw = document.createElement("span");
+      sw.className = "sw"; sw.style.background = yearColor(y);
+      l.appendChild(cb); l.appendChild(sw); l.appendChild(document.createTextNode(y));
+      box.appendChild(l);
+    }
+    for (const [text, fill] of [["all", true], ["none", false]]) {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = text;
+      b.addEventListener("click", () => {
+        SELECTED.clear();
+        if (fill) ALL_YEARS.forEach(y => SELECTED.add(y));
+        applyYears();
+      });
+      box.appendChild(b);
+    }
+  }
+
   function renderChart(tag, pair, data) {
     const el = document.getElementById("chart-" + tag);
     if (!pair || !pair.series || pair.status !== "ok") {
@@ -190,35 +276,48 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       return;
     }
     const s = pair.series;
-    // Filter out DOYs with nulls in the band
-    const doy = s.doy;
-    const band25 = s.band25;
-    const band75 = s.band75;
-    const med = s.median10;
-    const cur = s.current;
+    const curYear = currentYear(data);
+    // 2026-10-06: every line is drawn through its non-null points only, on a
+    // calendar-date axis (day-of-year mapped onto the current year), so
+    // weekends and holidays no longer break the line.
+    const band25 = pts(s.doy, s.band25, curYear);
+    const band75 = pts(s.doy, s.band75, curYear);
+    const med = pts(s.doy, s.median10, curYear);
+    const cur = pts(s.doy, s.current, curYear);
     const traces = [];
     // Band = fill between band25 and band75
     traces.push({
-      x: doy, y: band75, name: "5y band (25–75)", type: "scatter", mode: "lines",
+      x: band75.x, y: band75.y, name: "5y band (25–75)", type: "scatter", mode: "lines",
       line: { color: "#4a5568", width: 0 }, showlegend: false, hoverinfo: "skip",
     });
     traces.push({
-      x: doy, y: band25, name: "5y band (25–75)", type: "scatter", mode: "lines",
+      x: band25.x, y: band25.y, name: "5y band (25–75)", type: "scatter", mode: "lines",
       fill: "tonexty", fillcolor: "rgba(107,133,183,0.22)",
       line: { color: "#4a5568", width: 0 }, hoverinfo: "skip",
     });
     traces.push({
-      x: doy, y: med, name: "10y median", type: "scatter", mode: "lines",
+      x: med.x, y: med.y, name: "10y median", type: "scatter", mode: "lines",
       line: { color: "#8fa3c9", width: 1.5, dash: "dot" }, hoverinfo: "x+y+name",
     });
+    // One trace per prior year, shown only when its box is ticked.
+    const yearIdx = {};
+    for (const y of Object.keys(s.years || {}).sort()) {
+      const p = pts(s.doy, s.years[y], curYear);
+      yearIdx[y] = traces.length;
+      traces.push({
+        x: p.x, y: p.y, name: y, type: "scatter", mode: "lines",
+        line: { color: yearColor(y), width: 1.3 }, hoverinfo: "x+y+name",
+        visible: SELECTED.has(y),
+      });
+    }
     traces.push({
-      x: doy, y: cur, name: "2026 (current)", type: "scatter", mode: "lines",
+      x: cur.x, y: cur.y, name: curYear + " (current)", type: "scatter", mode: "lines",
       line: { color: "#cb181d", width: 2.4 }, hoverinfo: "x+y+name",
-      connectgaps: false,
     });
+    YEAR_TRACES[tag] = yearIdx;
     Plotly.newPlot(el, traces, {
       ...CHART_LAYOUT_BASE,
-      xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [1, 365] },
+      xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [curYear + "-01-01", curYear + "-12-31"] },
       title: null,
     }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
     document.getElementById("stamp-" + tag).textContent =
@@ -245,6 +344,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
         "data through " + (data.data_through || "—") +
         "  ·  generated " + (data.generated_at || "—").replace("T", " ").replace("Z", " UTC");
     renderSummary(data);
+    renderYearPicker(data);
     for (const tag of PAIR_TAGS) {
       renderChart(tag, (data.pairs || {})[tag], data);
     }

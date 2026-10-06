@@ -255,7 +255,7 @@ h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 </script>
 
 <footer style="margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:11px;color:var(--dim);line-height:1.7">
-Local-only. Publishing retired 2026-09-29 — the ~/marketdata/public repo is now private and no schedulers push to it. One task runs: <code>dashboards_daily</code> at 08:00 CET, refreshing <code>dashboard_data.js</code> (window.__MD__). Toast at end lists the settle date and any null / stale fields. Prose blocks on each page carry a static <em>Note - written DATE - not auto-updated</em> label - no badge shows a date the machine did not set.
+Public. <code>dashboards_daily</code> runs at 08:00 CET: it refreshes <code>dashboard_data.js</code> (window.__MD__), then publishes a whitelisted copy to GitHub Pages after a leak scan. Toast at end lists the settle date and any null / stale fields. Prose blocks on each page carry a static <em>Note - written DATE - not auto-updated</em> label - no badge shows a date the machine did not set.
 </footer>
 
 </body>
