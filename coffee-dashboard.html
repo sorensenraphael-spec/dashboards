@@ -202,6 +202,21 @@
 <!-- ================= WATCH ================= -->
 <section id="florada">
   <h2>Florada tracker</h2>
+  <!-- Mechanical rain gauge — auto-updated from florada_gauge.js (build_florada_js.py), added 2026-10-07 -->
+  <div class="panel" id="florada-auto">
+    <p class="static-note" style="color:#8a8a80;font-size:12px;margin:0 0 10px 0;font-style:italic" id="florada-auto-stamp">Rain gauge — auto-updated daily — awaiting data</p>
+    <table>
+      <tr><th>Measure (Cerrado, region average)</th><th>Value</th></tr>
+      <tr><td>Days to the 10 Oct failure trigger</td><td><span data-florada="days_to_oct10">awaiting data</span></td></tr>
+      <tr><td>Soaking days since 1 Sep (&ge; <span data-florada="threshold">20</span> mm)</td><td><span data-florada="soaking">awaiting data</span></td></tr>
+      <tr><td>Wettest day since 1 Sep</td><td><span data-florada="wettest">awaiting data</span></td></tr>
+      <tr><td>Rain, last 7 days</td><td><span data-florada="last7">awaiting data</span></td></tr>
+      <tr><td>Rain since 1 Sep</td><td><span data-florada="since_sep1">awaiting data</span></td></tr>
+      <tr><td>Forecast, today through 10 Oct</td><td><span data-florada="forecast">awaiting data</span></td></tr>
+    </table>
+    <div id="florada-chart" style="height:260px;margin-top:10px"></div>
+    <p class="calnote" style="margin-top:6px">Daily rain, average of four Cerrado points (Open-Meteo). Solid bars are actuals, pale bars are forecast, the dotted line is the soaking threshold. This is the mechanical layer only; the bloom score below is hand-written.</p>
+  </div>
 <p class="static-note" style="color:#8a8a80;font-size:12px;margin:2px 0 12px 0;font-style:italic">Note - written 24 Sep 2026 - not auto-updated</p>
   <p class="sub">The decisive event of the coffee year, instrumented. Two layers: the rain (quantitative, causal) and the bloom (qualitative, scored). Active Sep–Nov. <strong>Clock: ~18 days to the Oct 10 failure trigger.</strong></p>
 
@@ -414,5 +429,52 @@
 <script src="dashboard_data.js"></script>
 <script src="dashboard_populate.js"></script>
 <script src="dashboard_charts.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>document.write('<script src="florada_gauge.js?v='+Date.now()+'"><\/script>');</script>
+<script>
+// Florada rain gauge — fills #florada-auto from window.__MD_FLORADA__. Added 2026-10-07.
+(function () {
+  const F = window.__MD_FLORADA__;
+  if (!F) return;
+  function set(key, text) {
+    document.querySelectorAll('[data-florada="' + key + '"]').forEach(el => { el.textContent = text; });
+  }
+  function shortDate(iso) {
+    const d = new Date(iso + "T00:00:00Z");
+    return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });
+  }
+  const mm = v => Number(v).toFixed(1) + " mm";
+  set("threshold", Number(F.soak_threshold_mm).toFixed(0));
+  set("days_to_oct10", F.days_to_oct10 >= 0 ? F.days_to_oct10 + " days" : "window closed " + (-F.days_to_oct10) + " days ago");
+  set("soaking", F.soaking_events_since_sep1 +
+      (F.last_soaking_event_date ? " (last on " + shortDate(F.last_soaking_event_date) + ")" : " — none yet"));
+  if (F.wettest_day) set("wettest", mm(F.wettest_day[1]) + " on " + shortDate(F.wettest_day[0]));
+  set("last7", mm(F.rain_last7_mm));
+  set("since_sep1", mm(F.rain_since_sep1_mm));
+  set("forecast", mm(F.forecast_to_oct10_mm));
+  const stamp = document.getElementById("florada-auto-stamp");
+  if (stamp) stamp.textContent = "Rain gauge — auto-updated " + String(F.generated_at).replace("T", " ") +
+      " · actuals through " + shortDate(F.last_actual_date || F.as_of) +
+      ((F.collector_errors || []).length ? " · collector errors: " + F.collector_errors.length : "");
+
+  const el = document.getElementById("florada-chart");
+  if (!el || !window.Plotly) return;
+  const a = F.actual || [], f = F.forecast || [];
+  const xs = a.concat(f).map(r => r[0]);
+  Plotly.newPlot(el, [
+    { x: a.map(r => r[0]), y: a.map(r => r[1]), type: "bar", name: "actual", marker: { color: "#8fb069" } },
+    { x: f.map(r => r[0]), y: f.map(r => r[1]), type: "bar", name: "forecast", marker: { color: "rgba(143,176,105,0.35)" } },
+  ], {
+    paper_bgcolor: "#3a2718", plot_bgcolor: "#3a2718",
+    font: { color: "#f0e2cb", size: 11 },
+    margin: { l: 44, r: 10, t: 6, b: 34 }, bargap: 0.15,
+    xaxis: { type: "date", tickformat: "%d %b", gridcolor: "#57402a" },
+    yaxis: { title: "mm / day", gridcolor: "#57402a", rangemode: "tozero" },
+    shapes: xs.length ? [{ type: "line", x0: xs[0], x1: xs[xs.length - 1], y0: F.soak_threshold_mm, y1: F.soak_threshold_mm,
+                           line: { color: "#e39a3b", width: 1.5, dash: "dot" } }] : [],
+    showlegend: true, legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0, font: { size: 10 } },
+  }, { responsive: true, displaylogo: false });
+})();
+</script>
 </body>
 </html>

@@ -128,6 +128,10 @@
   /* charts */
   .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:20px 0}
   @media(max-width:820px){.charts-grid{grid-template-columns:1fr}}
+  .eth-years{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:10px 0 12px;font-size:13px;color:var(--husk-dim)}
+  .eth-years label{display:inline-flex;align-items:center;gap:5px;cursor:pointer}
+  .eth-years .sw{width:10px;height:3px;display:inline-block}
+  .eth-years button{background:none;border:1px solid var(--shell);color:var(--husk-dim);font-size:12px;padding:2px 8px;cursor:pointer}
   .chart-card{background:var(--nib);border:1px solid var(--shell);padding:14px 10px 6px}
   .chart-card svg{width:100%;height:auto;display:block;font-family:'Archivo',sans-serif}
 
@@ -308,14 +312,15 @@
   <div class="panel" style="font-family:ui-monospace,'SF Mono',monospace;font-size:13px;background:var(--cacao);border:1px solid var(--shell);padding:14px 18px">
     Margin ($/bu) &nbsp;=&nbsp; 2.8 gal &times; P<sub>eth</sub> &nbsp;+&nbsp; 17 lb &times; P<sub>ddgs</sub> &nbsp;+&nbsp; 0.7 lb &times; P<sub>co</sub> &nbsp;−&nbsp; P<sub>corn</sub> &nbsp;−&nbsp; (natgas + opex)
   </div>
+  <p class="calnote" id="eth-inputs-stamp">Inputs below are auto-updated daily — awaiting data</p>
   <table>
     <tr><th>Input</th><th>Current</th><th>As of</th><th>Note</th></tr>
-    <tr><td>Ethanol (D6 spot, $/gal)</td><td><span style="color:var(--amber)">≈ $1.75</span></td><td>9 Sep 2026</td><td>manual — verify vs terminal</td></tr>
-    <tr><td>DDGS ($/ton)</td><td><span style="color:var(--amber)">≈ $175</span></td><td>Aug 2026</td><td>manual — verify vs terminal</td></tr>
-    <tr><td>Corn oil ($/lb)</td><td><span style="color:var(--amber)">≈ $0.42</span></td><td>Sep 2026</td><td>manual — verify vs terminal</td></tr>
-    <tr><td>Corn (ZC front, $/bu)</td><td><span data-field="ZC.price">≈ $5.30</span></td><td>live (pack)</td><td>auto-refresh every 15 min</td></tr>
-    <tr><td>Natgas + opex ($/bu equivalent)</td><td><span style="color:var(--amber)">≈ $0.35</span></td><td>Aug 2026</td><td>manual — verify vs terminal</td></tr>
-    <tr><td><strong>Estimated margin</strong></td><td><strong style="color:var(--amber)">≈ +$0.20/bu</strong></td><td>combined</td><td>indicative — recompute at terminal before trading</td></tr>
+    <tr><td>Ethanol (plant FOB, $/gal)</td><td><span data-eth="ethanol">awaiting data</span></td><td><span data-eth="usda_week">—</span></td><td>USDA weekly ethanol report, mean of plant averages</td></tr>
+    <tr><td>DDGS 10% ($/ton)</td><td><span data-eth="ddgs">awaiting data</span></td><td><span data-eth="usda_week">—</span></td><td>USDA weekly ethanol report, ethanol-plant rows</td></tr>
+    <tr><td>Distillers corn oil ($/lb)</td><td><span data-eth="corn_oil">awaiting data</span></td><td><span data-eth="usda_week">—</span></td><td>USDA weekly ethanol report, feed grade</td></tr>
+    <tr><td>Corn (ZC front, $/bu)</td><td><span data-eth="corn">awaiting data</span></td><td><span data-eth="corn_asof">—</span></td><td>front contract settle, rounded to the cent</td></tr>
+    <tr><td>Natgas + opex ($/bu equivalent)</td><td><span style="color:var(--amber)" data-eth="opex">≈ $0.35</span></td><td>fixed</td><td>assumption, not a data feed</td></tr>
+    <tr><td><strong>Computed margin</strong></td><td><strong data-eth="margin">awaiting data</strong></td><td>combined</td><td>formula above applied to these inputs — recompute at terminal before trading</td></tr>
   </table>
 
   <h3>Margin state — behavioural implications</h3>
@@ -327,7 +332,12 @@
     <tr><td><span style="color:var(--leaf)"><strong>Windfall</strong></span></td><td>&gt; +$0.40</td><td>Max grind, all plants running; upside corn demand surprise into WASDE.</td></tr>
   </table>
 
-  <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0">would need: EIA weekly ethanol production (kbpd) + DDGS $/ton + ethanol front-month $/gal to compute crush margin history</p></div>
+  <h3>EIA weekly grind &amp; stocks — seasonal</h3>
+  <div id="eth-year-picker" class="eth-years" hidden></div>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>Fuel ethanol production (kb/d)</h3><div id="eth-chart-production" style="height:320px"></div><p class="calnote" id="eth-stamp-production">awaiting data</p></div>
+    <div class="chart-card"><h3>Fuel ethanol ending stocks (kbbl)</h3><div id="eth-chart-stocks" style="height:320px"></div><p class="calnote" id="eth-stamp-stocks">awaiting data</p></div>
+  </div>
 
   <!-- =============================================================== -->
   <!-- SEASONAL CRUSH-MARGIN CHART (new v1.3, added 16 Sep 2026)        -->
@@ -339,7 +349,7 @@
     <div class="panel" style="font-family:ui-monospace,'SF Mono',monospace;font-size:12.5px;background:var(--cacao);border:1px solid var(--shell);padding:12px 16px;margin-bottom:12px">
       Margin&nbsp;($/bu) = 2.8&nbsp;gal &middot; P<sub>eth</sub> &nbsp;+&nbsp; 17&nbsp;lb &middot; P<sub>ddgs</sub> &nbsp;+&nbsp; 0.7&nbsp;lb &middot; P<sub>corn&nbsp;oil</sub> &nbsp;&minus;&nbsp; P<sub>corn</sub> &nbsp;&minus;&nbsp; (natgas + opex)
     </div>
-    <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0">would need: 5-year weekly crush-margin panel (Peth/Pddgs/Pcorn-oil/Pcorn/natgas+opex, MY Sep-Aug)</p></div>
+    <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0" id="eth-margin-history">awaiting data</p></div>
     <p class="calnote">Section registered in <code>morning_pipeline.PROTECTED_SECTIONS["grains-dashboard.html"]</code>. Preservation test asserts <code>id="seasonal-ethanol-margin"</code> survives both dashboard_refresh and content_refresh passes.</p>
   </section>
 
@@ -369,7 +379,7 @@
     <li><strong>🟠 D6 RIN moves &gt;20% in a month</strong>, or any RVO revision / E15 rulemaking headline — policy thermometer or explicit intervention.</li>
     <li><strong>🟠 Brazil parity flip</strong> (hydrous ethanol vs sugar) sustained 2+ weeks — cross-book signal into sugar.</li>
   </ul>
-  <p class="calnote">Ethanol / DDGS / corn oil / natgas / D6 RIN marks are amber-stale (manual until sourced). Corn is live from the pack via <code>dashboard_data.js</code>.</p>
+  <p class="calnote">Ethanol, DDGS and corn oil come from the USDA National Weekly Ethanol Report; production and stocks from EIA; corn from the front ZC settle — all via <code>build_ethanol.py</code> → <code>ethanol_data.js</code>, refreshed by the 08:00 chain. Natgas + opex is a fixed assumption; D6 RIN is not sourced.</p>
 </section>
 
 <!-- ================= CHATTER ================= -->
@@ -469,5 +479,139 @@
 <script src="dashboard_data.js"></script>
 <script src="dashboard_populate.js"></script>
 <script src="dashboard_charts.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>document.write('<script src="ethanol_data.js?v='+Date.now()+'"><\/script>');</script>
+<script>
+// Ethanol complex — fills the inputs table and the EIA seasonal charts from
+// window.__MD_ETH__ (build_ethanol.py). Added 2026-10-07.
+(function () {
+  const E = window.__MD_ETH__;
+  if (!E) return;
+  const PALETTE = ["#e6a23c", "#5cb870", "#4fb3d9", "#b48ead", "#d08770",
+                   "#a3be8c", "#ebcb8b", "#88c0d0", "#c9737a", "#9aa5ce"];
+  const SELECTED = new Set();
+  const YEAR_TRACES = {};
+  function set(key, text) {
+    document.querySelectorAll('[data-eth="' + key + '"]').forEach(el => { el.textContent = text; });
+  }
+  function signed(v, d) { return (v > 0 ? "+" : "") + Number(v).toFixed(d); }
+  function longDate(iso) {
+    const d = new Date(iso + "T00:00:00Z");
+    return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  }
+
+  // inputs table
+  const u = E.usda, c = E.corn;
+  if (u) {
+    set("ethanol", "$" + u.ethanol_usd_gal.toFixed(2));
+    set("ddgs", "$" + u.ddgs_usd_ton.toFixed(0));
+    set("corn_oil", "$" + u.corn_oil_usd_lb.toFixed(2));
+    set("usda_week", "week ending " + longDate(u.week_end));
+  }
+  if (c) { set("corn", "$" + c.usd_bu.toFixed(2)); set("corn_asof", "settle " + longDate(c.as_of)); }
+  set("opex", "$" + Number(E.natgas_opex_usd_bu).toFixed(2));
+  if (E.margin_usd_bu != null) {
+    set("margin", signed(E.margin_usd_bu, 2) + " $/bu");
+    document.querySelectorAll('[data-eth="margin"]').forEach(el => {
+      el.style.color = E.margin_usd_bu < -0.30 ? "var(--ember)" : E.margin_usd_bu < 0.10 ? "var(--amber)" : "var(--leaf)";
+    });
+  }
+  const stamp = document.getElementById("eth-inputs-stamp");
+  if (stamp) stamp.textContent = "Inputs auto-updated " + String(E.generated_at).replace("T", " ") +
+      (u ? " · USDA week ending " + longDate(u.week_end) : "") + (c ? " · corn settle " + longDate(c.as_of) : "");
+
+  // margin history (accumulates one USDA week at a time)
+  const mh = document.getElementById("eth-margin-history");
+  if (mh) {
+    const hist = E.margin_history || [];
+    mh.textContent = hist.length
+      ? "Weekly margin history: " + hist.length + " week(s) on file, from " + longDate(hist[0][0]) +
+        " (latest " + signed(hist[hist.length - 1][1], 2) + " $/bu). The 5-year seasonal frame needs a multi-year " +
+        "USDA price backfill (MARS API key); the chart is drawn once that history exists."
+      : "awaiting data";
+  }
+
+  // EIA seasonal charts
+  function pts(dates, vals) {
+    const x = [], y = [];
+    for (let i = 0; i < dates.length; i++) {
+      const v = (vals || [])[i];
+      if (v === null || v === undefined) continue;
+      x.push(dates[i]); y.push(v);
+    }
+    return { x, y };
+  }
+  const years = Object.keys(((E.eia || {}).production || (E.eia || {}).stocks || {}).years || {}).sort();
+  function draw(key) {
+    const s = (E.eia || {})[key];
+    const el = document.getElementById("eth-chart-" + key);
+    if (!s || !el || !window.Plotly) return;
+    const curYear = s.dates[0].slice(0, 4);
+    const b75 = pts(s.dates, s.band75), b25 = pts(s.dates, s.band25);
+    const med = pts(s.dates, s.median10), cur = pts(s.dates, s.current);
+    const traces = [
+      { x: b75.x, y: b75.y, type: "scatter", mode: "lines", line: { width: 0 }, showlegend: false, hoverinfo: "skip" },
+      { x: b25.x, y: b25.y, name: "5y band (25–75)", type: "scatter", mode: "lines", fill: "tonexty",
+        fillcolor: "rgba(227,154,59,0.18)", line: { width: 0 }, hoverinfo: "skip" },
+      { x: med.x, y: med.y, name: "10y median", type: "scatter", mode: "lines",
+        line: { color: "#c9b394", width: 1.5, dash: "dot" } },
+    ];
+    const idx = {};
+    years.forEach((y, i) => {
+      const p = pts(s.dates, s.years[y]);
+      idx[y] = traces.length;
+      traces.push({ x: p.x, y: p.y, name: y, type: "scatter", mode: "lines",
+                    line: { color: PALETTE[i % PALETTE.length], width: 1.3 }, visible: SELECTED.has(y) });
+    });
+    traces.push({ x: cur.x, y: cur.y, name: curYear + " (current)", type: "scatter", mode: "lines",
+                  line: { color: "#cf6349", width: 2.4 } });
+    YEAR_TRACES[key] = idx;
+    Plotly.newPlot(el, traces, {
+      paper_bgcolor: "#3a2718", plot_bgcolor: "#3a2718",
+      font: { color: "#f0e2cb", family: "Archivo, sans-serif", size: 11 },
+      margin: { l: 52, r: 10, t: 6, b: 34 },
+      xaxis: { type: "date", tickformat: "%d %b", dtick: "M1", hoverformat: "%d %b", gridcolor: "#57402a",
+               range: [curYear + "-01-01", curYear + "-12-31"] },
+      yaxis: { gridcolor: "#57402a", title: s.unit },
+      showlegend: true, legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0, font: { size: 10 } },
+    }, { responsive: true, displaylogo: false });
+    const m = s.summary || {};
+    const st = document.getElementById("eth-stamp-" + key);
+    if (st) st.textContent = "week ending " + longDate(m.week_ending) + ": " + Number(m.current).toLocaleString() + " " + s.unit +
+        (m.change_1w != null ? " · w/w " + signed(m.change_1w, 0) : "") +
+        (m.change_1y != null ? " · y/y " + signed(m.change_1y, 0) : "") +
+        (m.pctile_10y_same_week != null ? " · 10y pctile " + m.pctile_10y_same_week + "%" : "") + " · source EIA";
+  }
+  function applyYears() {
+    for (const key of Object.keys(YEAR_TRACES)) {
+      const idx = YEAR_TRACES[key], el = document.getElementById("eth-chart-" + key);
+      if (!el || !el.data || !years.length) continue;
+      Plotly.restyle(el, { visible: years.map(y => SELECTED.has(y)) }, years.map(y => idx[y]));
+    }
+    document.querySelectorAll("#eth-year-picker input").forEach(cb => { cb.checked = SELECTED.has(cb.value); });
+  }
+  const box = document.getElementById("eth-year-picker");
+  if (box && years.length) {
+    box.hidden = false;
+    box.appendChild(document.createTextNode("Years"));
+    years.forEach((y, i) => {
+      const l = document.createElement("label"), cb = document.createElement("input"), sw = document.createElement("span");
+      cb.type = "checkbox"; cb.value = y;
+      cb.addEventListener("change", () => { if (cb.checked) SELECTED.add(y); else SELECTED.delete(y); applyYears(); });
+      sw.className = "sw"; sw.style.background = PALETTE[i % PALETTE.length];
+      l.appendChild(cb); l.appendChild(sw); l.appendChild(document.createTextNode(y));
+      box.appendChild(l);
+    });
+    [["all", true], ["none", false]].forEach(([text, fill]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = text;
+      b.addEventListener("click", () => { SELECTED.clear(); if (fill) years.forEach(y => SELECTED.add(y)); applyYears(); });
+      box.appendChild(b);
+    });
+  }
+  draw("production");
+  draw("stocks");
+})();
+</script>
 </body>
 </html>
