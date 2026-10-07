@@ -49,6 +49,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .years .sw{width:10px;height:3px;border-radius:1px;display:inline-block}
 .years button{background:none;border:1px solid var(--line);color:var(--dim);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer}
 .years button:hover{color:var(--fg);border-color:#2a3040}
+.unit-toggle{display:inline-flex;margin-left:14px;vertical-align:middle;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.unit-toggle button{background:none;border:0;color:var(--dim);font-size:11px;padding:4px 10px;cursor:pointer;letter-spacing:.03em;text-transform:none}
+.unit-toggle button.on{background:#2a3040;color:var(--fg)}
 .cutbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px;padding:10px 12px;background:var(--tile);border:1px solid var(--line);border-radius:8px;font-size:12px}
 .cutbar .lbl{color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
 .cutbar select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:12px;max-width:100%}
@@ -154,8 +157,13 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
-<div class="group-title">Primal volume traded — 1-week moving average (loads)<span class="src" id="volume-through">loading…</span></div>
+<div class="group-title"><span id="volume-title">Primal volume traded — 1-week moving average (loads)</span><span class="unit-toggle" data-unit-toggle><button type="button" data-unit="abs" class="on">loads / lb</button><button type="button" data-unit="pct">% of production</button></span><span class="src" id="volume-through">loading…</span></div>
 <div class="section-grid">
+  <div class="chart-block">
+    <h2>Slaughter production — 6-day average, Saturday included</h2>
+    <div id="chart-production" class="chart"></div>
+    <div class="stamp" id="stamp-production">data through: —</div>
+  </div>
   <div class="chart-block">
     <h2>Loin volume</h2>
     <div id="chart-vol-loin" class="chart"></div>
@@ -188,7 +196,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
-<div class="group-title">Individual cuts — price &amp; volume<span class="src" id="cuts-through">loading…</span></div>
+<div class="group-title">Individual cuts — price &amp; volume<span class="unit-toggle" data-unit-toggle><button type="button" data-unit="abs" class="on">loads / lb</button><button type="button" data-unit="pct">% of production</button></span><span class="src" id="cuts-through">loading…</span></div>
 <div class="cutbar">
   <span class="lbl">primal</span><select id="cut-section" aria-label="primal"></select>
   <span class="lbl">cut</span><select id="cut-item" aria-label="cut"></select>
@@ -233,6 +241,14 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   <strong>Primal volume.</strong> For each primal, the pounds traded on every item of its cuts section in the same
   report are summed per day, converted to loads of 40,000 lb, and smoothed with a 5-trading-day (one week) moving
   average. Rib uses the Sparerib Cuts section. Band, median and year overlays are computed on the smoothed series.
+  <br><br>
+  <strong>% of production.</strong> The switch next to the volume titles re-expresses every volume chart as a share of
+  slaughter: pounds traded over five trading days divided by carcass pounds slaughtered over the same six kill
+  days, Saturday included (the report has no Saturday row — Saturday's kill is inside Friday's, so five report rows
+  are six kill days). The production chart shows that 6-day average in million lb of carcass per kill day.
+  Slaughter is USDA LM_HG201 barrows and gilts, producer-sold plus packer-sold, head count times average carcass
+  weight — the kill reported under mandatory price reporting, not total US production — so read the level as an index
+  and the trend across years as the signal.
   <br><br>
   <strong>Individual cuts.</strong> Every cut priced this year in the report's cuts sections (loin, butt, picnic,
   sparerib, ham, belly, jowl, trim, variety, added ingredients), exported by <code>build_pork_cuts.py</code>. Price is
@@ -442,6 +458,40 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
         : "data through: " + (data.data_through || "—") + "  ·  years with data: " + (pair.n_years_with_data || 0);
   }
 
+  // Volume unit shared by the primal charts and the cut chart:
+  // "abs" = loads / thousand lb, "pct" = % of slaughter production.
+  let VOL_UNIT = "abs";
+  let CUTOUT = null;
+  function renderVolume() {
+    if (!CUTOUT) return;
+    const pct = VOL_UNIT === "pct";
+    const src = pct ? (CUTOUT.volume_pct || {}) : (CUTOUT.volume || {});
+    document.getElementById("volume-title").textContent = pct
+        ? "Primal volume traded — % of production (1-week)"
+        : "Primal volume traded — 1-week moving average (loads)";
+    document.getElementById("volume-through").textContent = pct
+        ? "pounds traded over 5 trading days ÷ carcass pounds slaughtered over the same 6 kill days (USDA LM_HG201)  ·  production through " + (CUTOUT.production_through || "—")
+        : "USDA LM_PK602, sum of cut-level pounds ÷ 40,000  ·  data through " + (CUTOUT.volume_through || "—");
+    for (const tag of VOLUME_TAGS) {
+      const el = document.getElementById("chart-vol-" + tag);
+      if (window.Plotly && el.data) Plotly.purge(el);
+      el.innerHTML = "";
+      delete YEAR_TRACES["vol-" + tag];
+      renderChart("vol-" + tag, src[tag], CUTOUT, pct ? "% of production" : "loads (5-day avg)");
+    }
+  }
+  document.querySelectorAll("[data-unit-toggle] button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      VOL_UNIT = btn.dataset.unit;
+      document.querySelectorAll("[data-unit-toggle] button").forEach(b => {
+        b.classList.toggle("on", b.dataset.unit === VOL_UNIT);
+      });
+      renderVolume();
+      if (CUTS) renderCut();
+      applyYears();
+    });
+  });
+
   function renderCutout(data) {
     document.getElementById("cutout-through").textContent =
         "USDA LM_PK602  ·  data through " + (data.data_through || "—");
@@ -449,12 +499,10 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     for (const tag of CUTOUT_TAGS) {
       renderChart(tag, (data.pairs || {})[tag], data, "$/cwt");
     }
-    document.getElementById("volume-through").textContent =
-        "USDA LM_PK602, sum of cut-level pounds ÷ 40,000  ·  data through " + (data.volume_through || "—");
+    CUTOUT = data;
     renderYearPicker({ pairs: data.volume || {} });
-    for (const tag of VOLUME_TAGS) {
-      renderChart("vol-" + tag, (data.volume || {})[tag], data, "loads (5-day avg)");
-    }
+    renderChart("production", data.production, data, "M lb carcass / kill day");
+    renderVolume();
     applyYears();
   }
 
@@ -511,6 +559,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       document.getElementById("volume-through").textContent = "awaiting data (no export)";
       for (const tag of CUTOUT_TAGS) renderAwaiting("chart-" + tag);
       for (const tag of VOLUME_TAGS) renderAwaiting("chart-vol-" + tag);
+      renderAwaiting("chart-production");
       console.warn("pork_cutout: could not load data:", err);
     });
 
@@ -528,7 +577,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     const key = secSel.value, name = cutSel.value;
     const cut = tradedCuts(key).find(c => c.name === name);
     const hist = ((CUT_HIST[key] || {}).cuts || {})[name] || {};
-    for (const [metric, tag, yTitle] of [["price", "cut-price", "$/cwt"], ["volume", "cut-volume", "000 lb (5-day avg)"]]) {
+    const pct = VOL_UNIT === "pct";
+    for (const [metric, tag, yTitle] of [["price", "cut-price", "$/cwt"],
+                                         [pct ? "volume_pct" : "volume", "cut-volume", pct ? "% of production" : "000 lb (5-day avg)"]]) {
       const el = document.getElementById("chart-" + tag);
       if (window.Plotly && el.data) Plotly.purge(el);
       el.innerHTML = "";
@@ -543,7 +594,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       renderChart(tag, pair, CUTS, yTitle);
     }
     document.getElementById("cut-title-price").textContent = (name || "Cut") + " — price ($/cwt)";
-    document.getElementById("cut-title-volume").textContent = (name || "Cut") + " — volume, 1-week moving average (000 lb)";
+    document.getElementById("cut-title-volume").textContent = (name || "Cut") +
+        (pct ? " — volume, % of production (1-week)" : " — volume, 1-week moving average (000 lb)");
     applyYears();
   }
   function onSection() {
