@@ -43,12 +43,14 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .drivers li::before{content:"›";position:absolute;left:0;color:var(--dim)}
 .drivers .note{font-size:11px;color:var(--dim);margin-top:8px;font-style:italic}
 .footer{margin-top:32px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);line-height:1.6}
-.years{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 14px;padding:10px 12px;background:var(--tile);border:1px solid var(--line);border-radius:8px;font-size:12px}
+.years{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 14px;padding:10px 12px;background:var(--tile);border:1px solid var(--line);border-radius:8px;font-size:12px}
 .years .lbl{color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
 .years label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-variant-numeric:tabular-nums}
 .years .sw{width:10px;height:3px;border-radius:1px;display:inline-block}
 .years button{background:none;border:1px solid var(--line);color:var(--dim);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer}
 .years button:hover{color:var(--fg);border-color:#2a3040}
+.group-title{margin:26px 0 10px;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.group-title .src{letter-spacing:.03em;text-transform:none;font-size:11px;margin-left:10px}
 .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width: 900px) {
   .section-grid { grid-template-columns: 1fr; }
@@ -110,6 +112,45 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
+<div class="group-title">Pork cutout &amp; primals ($/cwt)<span class="src" id="cutout-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block">
+    <h2>Carcass cutout</h2>
+    <div id="chart-carcass" class="chart"></div>
+    <div class="stamp" id="stamp-carcass">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Loin</h2>
+    <div id="chart-loin" class="chart"></div>
+    <div class="stamp" id="stamp-loin">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Butt</h2>
+    <div id="chart-butt" class="chart"></div>
+    <div class="stamp" id="stamp-butt">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Picnic</h2>
+    <div id="chart-picnic" class="chart"></div>
+    <div class="stamp" id="stamp-picnic">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Rib</h2>
+    <div id="chart-rib" class="chart"></div>
+    <div class="stamp" id="stamp-rib">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Ham</h2>
+    <div id="chart-ham" class="chart"></div>
+    <div class="stamp" id="stamp-ham">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Belly</h2>
+    <div id="chart-belly" class="chart"></div>
+    <div class="stamp" id="stamp-belly">data through: —</div>
+  </div>
+</div>
+
 <div class="drivers" data-protected="true" data-section-id="hog-spreads-drivers">
   <h2>Seasonal drivers (priors, not signals)</h2>
   <ul id="drivers-list">
@@ -129,6 +170,10 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   The exporter is <code>build_hog_spreads.py</code> in this repo (since 2026-10-06), run by the 08:00
   <code>dashboards_daily</code> chain. No cross-imports.
   <br><br>
+  <strong>Pork cutout.</strong> Carcass cutout and primal values ($/cwt) from USDA AMS LM_PK602 (National Daily Pork
+  FOB Plant, Negotiated Sales, Afternoon), exported by <code>build_pork_cutout.py</code> into
+  <code>pork_cutout_seasonal.json</code>. Same band, median and year overlays as the spreads.
+  <br><br>
   <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
   ASF (2018) is retained in the historical band as a documented outlier — not stripped.
 </div>
@@ -136,6 +181,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 <script>
 (function () {
   const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM"];
+  const CUTOUT_TAGS = ["carcass", "loin", "butt", "picnic", "rib", "ham", "belly"];
   const CHART_LAYOUT_BASE = {
     paper_bgcolor: "#141821",
     plot_bgcolor: "#141821",
@@ -216,7 +262,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   }
 
   function applyYears() {
-    for (const tag of PAIR_TAGS) {
+    for (const tag of Object.keys(YEAR_TRACES)) {
       const idx = YEAR_TRACES[tag];
       const el = document.getElementById("chart-" + tag);
       if (!idx || !el || !el.data) continue;
@@ -228,9 +274,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   }
 
   function renderYearPicker(data) {
-    const set = new Set();
-    for (const tag of PAIR_TAGS) {
-      const p = (data.pairs || {})[tag];
+    // accumulates across datasets (spreads JSON + cutout JSON)
+    const set = new Set(ALL_YEARS);
+    for (const p of Object.values(data.pairs || {})) {
       Object.keys((p && p.series && p.series.years) || {}).forEach(y => set.add(y));
     }
     ALL_YEARS = Array.from(set).sort();
@@ -267,7 +313,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     }
   }
 
-  function renderChart(tag, pair, data) {
+  function renderChart(tag, pair, data, yTitle) {
     const el = document.getElementById("chart-" + tag);
     if (!pair || !pair.series || pair.status !== "ok") {
       renderAwaiting("chart-" + tag);
@@ -318,10 +364,25 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     Plotly.newPlot(el, traces, {
       ...CHART_LAYOUT_BASE,
       xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [curYear + "-01-01", curYear + "-12-31"] },
+      yaxis: { ...CHART_LAYOUT_BASE.yaxis, title: yTitle || CHART_LAYOUT_BASE.yaxis.title },
       title: null,
     }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
-    document.getElementById("stamp-" + tag).textContent =
-        "data through: " + (data.data_through || "—") + "  ·  years with data: " + (pair.n_years_with_data || 0);
+    const sm = pair.summary || {};
+    document.getElementById("stamp-" + tag).textContent = yTitle
+        ? "last: " + fmtNumUnsigned(sm.current) + "  ·  10y pctile: " +
+          (sm.pctile_10y_same_doy != null ? fmtNumUnsigned(sm.pctile_10y_same_doy, 1) + "%" : "—") +
+          "  ·  30d: " + fmtNum(sm.change_30d) + "  ·  data through: " + (sm.last_settle_date || "—")
+        : "data through: " + (data.data_through || "—") + "  ·  years with data: " + (pair.n_years_with_data || 0);
+  }
+
+  function renderCutout(data) {
+    document.getElementById("cutout-through").textContent =
+        "USDA LM_PK602  ·  data through " + (data.data_through || "—");
+    renderYearPicker(data);
+    for (const tag of CUTOUT_TAGS) {
+      renderChart(tag, (data.pairs || {})[tag], data, "$/cwt");
+    }
+    applyYears();
   }
 
   function renderDrivers(data) {
@@ -368,6 +429,15 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   };
   wrap.onerror = function () { loadJson(); };
   document.body.appendChild(wrap);
+
+  fetch("pork_cutout_seasonal.json?v=" + Date.now(), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(renderCutout)
+    .catch(err => {
+      document.getElementById("cutout-through").textContent = "awaiting data (no export)";
+      for (const tag of CUTOUT_TAGS) renderAwaiting("chart-" + tag);
+      console.warn("pork_cutout: could not load data:", err);
+    });
 
   function loadJson() {
     fetch("hog_spreads_seasonal.json?v=" + Date.now(), { cache: "no-store" })

@@ -1,6 +1,6 @@
 // PUBLIC WHITELIST — do not edit.
 // No raw Norgate time series. CFTC/NOAA/rounded-settle only.
-// 2026-10-07 08:02
+// 2026-10-07 14:58
 window.__MD__ = {
   "generated_at": "2026-10-07T08:00:08",
   "settle_date": "2026-10-06",
