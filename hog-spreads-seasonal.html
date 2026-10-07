@@ -49,6 +49,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .years .sw{width:10px;height:3px;border-radius:1px;display:inline-block}
 .years button{background:none;border:1px solid var(--line);color:var(--dim);font-size:11px;padding:3px 8px;border-radius:5px;cursor:pointer}
 .years button:hover{color:var(--fg);border-color:#2a3040}
+.cutbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 14px;padding:10px 12px;background:var(--tile);border:1px solid var(--line);border-radius:8px;font-size:12px}
+.cutbar .lbl{color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.cutbar select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-size:12px;max-width:100%}
 .group-title{margin:26px 0 10px;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .group-title .src{letter-spacing:.03em;text-transform:none;font-size:11px;margin-left:10px}
 .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -185,6 +188,25 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
+<div class="group-title">Individual cuts — price &amp; volume<span class="src" id="cuts-through">loading…</span></div>
+<div class="cutbar">
+  <span class="lbl">primal</span><select id="cut-section" aria-label="primal"></select>
+  <span class="lbl">cut</span><select id="cut-item" aria-label="cut"></select>
+  <span class="lbl" id="cut-count"></span>
+</div>
+<div class="section-grid">
+  <div class="chart-block">
+    <h2 id="cut-title-price">Cut price ($/cwt)</h2>
+    <div id="chart-cut-price" class="chart"></div>
+    <div class="stamp" id="stamp-cut-price">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2 id="cut-title-volume">Cut volume — 1-week moving average (000 lb)</h2>
+    <div id="chart-cut-volume" class="chart"></div>
+    <div class="stamp" id="stamp-cut-volume">data through: —</div>
+  </div>
+</div>
+
 <div class="drivers" data-protected="true" data-section-id="hog-spreads-drivers">
   <h2>Seasonal drivers (priors, not signals)</h2>
   <ul id="drivers-list">
@@ -211,6 +233,12 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   <strong>Primal volume.</strong> For each primal, the pounds traded on every item of its cuts section in the same
   report are summed per day, converted to loads of 40,000 lb, and smoothed with a 5-trading-day (one week) moving
   average. Rib uses the Sparerib Cuts section. Band, median and year overlays are computed on the smoothed series.
+  <br><br>
+  <strong>Individual cuts.</strong> Every cut priced this year in the report's cuts sections (loin, butt, picnic,
+  sparerib, ham, belly, jowl, trim, variety, added ingredients), exported by <code>build_pork_cuts.py</code>. Price is
+  the report's daily weighted average ($/cwt), drawn through the days the cut traded. Volume is the cut's pounds in
+  thousands, 5-trading-day moving average, with a no-trade report day counted as zero. Cuts are matched by the
+  report's item description, so a cut that USDA renamed starts a new history.
   <br><br>
   <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
   ASF (2018) is retained in the historical band as a documented outlier — not stripped.
@@ -484,6 +512,77 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       for (const tag of CUTOUT_TAGS) renderAwaiting("chart-" + tag);
       for (const tag of VOLUME_TAGS) renderAwaiting("chart-vol-" + tag);
       console.warn("pork_cutout: could not load data:", err);
+    });
+
+  // ---- individual cuts: one selector, two charts (price, volume) ----
+  let CUTS = null;
+  const CUT_HIST = {};
+  const DOY = Array.from({ length: 365 }, (_, i) => i + 1);
+  const secSel = document.getElementById("cut-section");
+  const cutSel = document.getElementById("cut-item");
+
+  function tradedCuts(key) {
+    return ((CUTS.sections[key] || {}).cuts || []).filter(c => c.price && c.price.current);
+  }
+  function renderCut() {
+    const key = secSel.value, name = cutSel.value;
+    const cut = tradedCuts(key).find(c => c.name === name);
+    const hist = ((CUT_HIST[key] || {}).cuts || {})[name] || {};
+    for (const [metric, tag, yTitle] of [["price", "cut-price", "$/cwt"], ["volume", "cut-volume", "000 lb (5-day avg)"]]) {
+      const el = document.getElementById("chart-" + tag);
+      if (window.Plotly && el.data) Plotly.purge(el);
+      el.innerHTML = "";
+      delete YEAR_TRACES[tag];
+      const cur = (cut || {})[metric] || {}, h = hist[metric] || {};
+      const pair = cur.current ? {
+        status: "ok",
+        series: { doy: DOY, band25: h.band25 || [], band75: h.band75 || [], median10: h.median10 || [],
+                  current: cur.current, years: h.years || {} },
+        summary: cur.summary || {},
+      } : null;
+      renderChart(tag, pair, CUTS, yTitle);
+    }
+    document.getElementById("cut-title-price").textContent = (name || "Cut") + " — price ($/cwt)";
+    document.getElementById("cut-title-volume").textContent = (name || "Cut") + " — volume, 1-week moving average (000 lb)";
+    applyYears();
+  }
+  function onSection() {
+    const key = secSel.value;
+    const cuts = tradedCuts(key);
+    cutSel.innerHTML = "";
+    for (const c of cuts) {
+      const o = document.createElement("option");
+      o.value = c.name; o.textContent = c.name;
+      cutSel.appendChild(o);
+    }
+    document.getElementById("cut-count").textContent = cuts.length + " cuts traded this year";
+    if (CUT_HIST[key]) { renderCut(); return; }
+    fetch("pork_cuts_hist_" + key + ".json?v=" + CUTS.year)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(h => { CUT_HIST[key] = h; })
+      .catch(err => { CUT_HIST[key] = { cuts: {} }; console.warn("pork_cuts hist " + key + ":", err); })
+      .then(() => { if (secSel.value === key) renderCut(); });
+  }
+  secSel.addEventListener("change", onSection);
+  cutSel.addEventListener("change", renderCut);
+  fetch("pork_cuts_current.json?v=" + Date.now(), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => {
+      CUTS = d;
+      document.getElementById("cuts-through").textContent =
+          "USDA LM_PK602, every cut in the report  ·  data through " + (d.data_through || "—");
+      for (const key of Object.keys(d.sections || {})) {
+        if (!tradedCuts(key).length) continue;
+        const o = document.createElement("option");
+        o.value = key; o.textContent = d.sections[key].name;
+        secSel.appendChild(o);
+      }
+      onSection();
+    })
+    .catch(err => {
+      document.getElementById("cuts-through").textContent = "awaiting data (no export)";
+      renderAwaiting("chart-cut-price"); renderAwaiting("chart-cut-volume");
+      console.warn("pork_cuts: could not load data:", err);
     });
 
   function loadJson() {
