@@ -151,6 +151,40 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
+<div class="group-title">Primal volume traded — 1-week moving average (loads)<span class="src" id="volume-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block">
+    <h2>Loin volume</h2>
+    <div id="chart-vol-loin" class="chart"></div>
+    <div class="stamp" id="stamp-vol-loin">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Butt volume</h2>
+    <div id="chart-vol-butt" class="chart"></div>
+    <div class="stamp" id="stamp-vol-butt">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Picnic volume</h2>
+    <div id="chart-vol-picnic" class="chart"></div>
+    <div class="stamp" id="stamp-vol-picnic">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Rib volume</h2>
+    <div id="chart-vol-rib" class="chart"></div>
+    <div class="stamp" id="stamp-vol-rib">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Ham volume</h2>
+    <div id="chart-vol-ham" class="chart"></div>
+    <div class="stamp" id="stamp-vol-ham">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Belly volume</h2>
+    <div id="chart-vol-belly" class="chart"></div>
+    <div class="stamp" id="stamp-vol-belly">data through: —</div>
+  </div>
+</div>
+
 <div class="drivers" data-protected="true" data-section-id="hog-spreads-drivers">
   <h2>Seasonal drivers (priors, not signals)</h2>
   <ul id="drivers-list">
@@ -174,6 +208,10 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   FOB Plant, Negotiated Sales, Afternoon), exported by <code>build_pork_cutout.py</code> into
   <code>pork_cutout_seasonal.json</code>. Same band, median and year overlays as the spreads.
   <br><br>
+  <strong>Primal volume.</strong> For each primal, the pounds traded on every item of its cuts section in the same
+  report are summed per day, converted to loads of 40,000 lb, and smoothed with a 5-trading-day (one week) moving
+  average. Rib uses the Sparerib Cuts section. Band, median and year overlays are computed on the smoothed series.
+  <br><br>
   <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
   ASF (2018) is retained in the historical band as a documented outlier — not stripped.
 </div>
@@ -182,6 +220,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 (function () {
   const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM"];
   const CUTOUT_TAGS = ["carcass", "loin", "butt", "picnic", "rib", "ham", "belly"];
+  const VOLUME_TAGS = ["loin", "butt", "picnic", "rib", "ham", "belly"];
   const CHART_LAYOUT_BASE = {
     paper_bgcolor: "#141821",
     plot_bgcolor: "#141821",
@@ -382,6 +421,12 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     for (const tag of CUTOUT_TAGS) {
       renderChart(tag, (data.pairs || {})[tag], data, "$/cwt");
     }
+    document.getElementById("volume-through").textContent =
+        "USDA LM_PK602, sum of cut-level pounds ÷ 40,000  ·  data through " + (data.volume_through || "—");
+    renderYearPicker({ pairs: data.volume || {} });
+    for (const tag of VOLUME_TAGS) {
+      renderChart("vol-" + tag, (data.volume || {})[tag], data, "loads (5-day avg)");
+    }
     applyYears();
   }
 
@@ -435,7 +480,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     .then(renderCutout)
     .catch(err => {
       document.getElementById("cutout-through").textContent = "awaiting data (no export)";
+      document.getElementById("volume-through").textContent = "awaiting data (no export)";
       for (const tag of CUTOUT_TAGS) renderAwaiting("chart-" + tag);
+      for (const tag of VOLUME_TAGS) renderAwaiting("chart-vol-" + tag);
       console.warn("pork_cutout: could not load data:", err);
     });
 
