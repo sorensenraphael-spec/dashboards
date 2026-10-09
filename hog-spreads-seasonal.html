@@ -227,8 +227,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   <strong>Method.</strong> Front-minus-back spread ($/cwt) computed from Norgate per-contract HE daily settles
   (<code>HE-YYYYM</code>). The x-axis is the calendar date; prior years are aligned by day of year. Seasonal band uses 25/50/75 percentile
   across the last 5 prior calendar years' spread values at each day-of-year; the median line uses the last 10 prior years.
-  Year boxes go back to 2010 for the futures spreads (dashed lines for years older than the 10-year median window);
-  the cutout, volume and cut charts start in 2016.
+  Year boxes go back to 2010 for the futures spreads; the cutout, volume and cut charts start in 2016.
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
@@ -440,8 +439,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       yearIdx[y] = traces.length;
       traces.push({
         x: p.x, y: p.y, name: y, type: "scatter", mode: "lines",
-        line: { color: yearColor(y), width: 1.3, dash: parseInt(y, 10) < curYear - 10 ? "dash" : "solid" },
-        hoverinfo: "x+y+name",
+        line: { color: yearColor(y), width: 1.3 }, hoverinfo: "x+y+name",
         visible: SELECTED.has(y),
       });
     }
