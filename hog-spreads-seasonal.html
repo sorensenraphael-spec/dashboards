@@ -227,7 +227,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   <strong>Method.</strong> Front-minus-back spread ($/cwt) computed from Norgate per-contract HE daily settles
   (<code>HE-YYYYM</code>). The x-axis is the calendar date; prior years are aligned by day of year. Seasonal band uses 25/50/75 percentile
   across the last 5 prior calendar years' spread values at each day-of-year; the median line uses the last 10 prior years.
-  Year boxes go back to 2010 for the futures spreads; the cutout, volume and cut charts start in 2016.
+  Year boxes go back to 1980 for the futures spreads (years before 1997 predate the lean hog contract, which replaced
+  live hogs in February 1997; Norgate carries them under the HE symbols) and to 2013, the start of LM_PK602, for the
+  cutout, volume and cut charts. Band and median are unchanged (last 5 and last 10 years).
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
@@ -320,21 +322,26 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     }
   }
 
-  // 16 slots: the first six serve the futures-spread years 2010-2015, the last ten keep the
-  // colours the last-10-years boxes always had.
-  const YEAR_PALETTE = ["#7d8590", "#c678dd", "#56b6c2", "#e06c75", "#d19a66", "#61afef",
-                        "#e6a23c", "#5cb870", "#4fb3d9", "#b48ead", "#d08770",
+  // The ten most recent prior years keep the colours the boxes always had; every older year
+  // (spreads go back to 1980, USDA charts to 2013) gets its own hue from a golden-angle wheel.
+  const YEAR_PALETTE = ["#e6a23c", "#5cb870", "#4fb3d9", "#b48ead", "#d08770",
                         "#a3be8c", "#ebcb8b", "#88c0d0", "#c9737a", "#9aa5ce"];
-  const SELECTED = new Set();   // ticked prior years, shared by the four charts
+  const SELECTED = new Set();   // ticked prior years, shared by every chart on the page
   const YEAR_TRACES = {};       // tag -> { year: trace index }
   let ALL_YEARS = [];
+  let CUR_YEAR = new Date().getFullYear();
 
   function currentYear(data) {
-    return parseInt(String(data.data_through || "").slice(0, 4), 10) || new Date().getFullYear();
+    const y = parseInt(String(data.data_through || "").slice(0, 4), 10) || new Date().getFullYear();
+    CUR_YEAR = y;
+    return y;
   }
   function yearColor(y) {
-    const i = ALL_YEARS.indexOf(String(y));
-    return YEAR_PALETTE[(i < 0 ? 0 : i) % YEAR_PALETTE.length];
+    const n = parseInt(y, 10);
+    const k = n - (CUR_YEAR - YEAR_PALETTE.length);
+    if (k >= 0 && k < YEAR_PALETTE.length) return YEAR_PALETTE[k];
+    const hue = ((n - 1980) * 137.508) % 360;
+    return "hsl(" + hue.toFixed(0) + ", 45%, 58%)";
   }
   // day-of-year + values -> calendar dates in `year`, nulls dropped
   function pts(doy, vals, year) {
@@ -394,6 +401,21 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       b.addEventListener("click", () => {
         SELECTED.clear();
         if (fill) ALL_YEARS.forEach(y => SELECTED.add(y));
+        applyYears();
+      });
+      box.appendChild(b);
+    }
+    // one button per decade (and "last 10"): ticks the group, or clears it when it is fully ticked
+    const groups = [["last 10", ALL_YEARS.filter(y => parseInt(y, 10) >= CUR_YEAR - 10)]];
+    const decades = Array.from(new Set(ALL_YEARS.map(y => Math.floor(parseInt(y, 10) / 10) * 10))).sort();
+    for (const d of decades) groups.push([d + "s", ALL_YEARS.filter(y => Math.floor(parseInt(y, 10) / 10) * 10 === d)]);
+    for (const [text, ys] of groups) {
+      if (!ys.length) continue;
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = text;
+      b.addEventListener("click", () => {
+        const allOn = ys.every(y => SELECTED.has(y));
+        ys.forEach(y => { if (allOn) SELECTED.delete(y); else SELECTED.add(y); });
         applyYears();
       });
       box.appendChild(b);
