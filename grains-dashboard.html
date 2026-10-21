@@ -194,7 +194,7 @@
     <li data-alert="ZC.cot.percentile > 95"><span class="d">🟠</span><span class="t"><strong>ZC MM percentile &gt; 95</strong> — record-crowding gauge, pack-driven. <span class="alert-dot">⚪</span></span></li>
     <li data-alert="ONI.value > 1"><span class="d">🟠</span><span class="t"><strong>ONI &gt; +1 (strong El Niño)</strong> — SA planting overlay live; hardens the 27/28 chapter. <span class="alert-dot">⚪</span></span></li>
   </ul>
-  <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. · v1.1 — 7 Sep 2026: corn MM net long updated to +431k (user-supplied), at/near the all-time record; liquidation trigger now measured from this level. · v1.2 — 9 Sep 2026: added <a href="#ethanol">Ethanol complex</a> section (crush-margin panel with formula, margin-state gauge, policy layer, Brazil-parity cross-link, EIA behaviour signal, 4 pre-registered alerts). Cross-references energy-dashboard.html (new v1) and sugar-dashboard.html (bumped to v1.1 with reciprocal parity note). · v1.2.1 — 10 Sep 2026: added margin-state gauge SVG chart with current-position marker and 🔴-alert reference line at zero.</p>
+  <p class="calnote" style="margin-top:6px">Changelog: v1 — 7 Sep 2026, initial build. · v1.1 — 7 Sep 2026: corn MM net long updated to +431k (user-supplied), at/near the all-time record; liquidation trigger now measured from this level. · v1.2 — 9 Sep 2026: added <a href="#ethanol">Ethanol complex</a> section (crush-margin panel with formula, margin-state gauge, policy layer, Brazil-parity cross-link, EIA behaviour signal, 4 pre-registered alerts). Cross-references energy-dashboard.html (new v1) and sugar-dashboard.html (bumped to v1.1 with reciprocal parity note). · v1.2.1 — 10 Sep 2026: added margin-state gauge SVG chart with current-position marker and 🔴-alert reference line at zero. · v1.4 — 21 Oct 2026: seasonal crush-margin chart now drawn — USDA AMS_3616 weekly history backfilled to Jul 2022 from the My Market News public-data feed (<code>backfill_ams_3616.py</code>), marketing-year overlay computed in <code>build_ethanol.py</code>; no formula or threshold change.</p>
 </div>
 
 <!-- ================= DATA CHARTS ================= -->
@@ -349,7 +349,7 @@
     <div class="panel" style="font-family:ui-monospace,'SF Mono',monospace;font-size:12.5px;background:var(--cacao);border:1px solid var(--shell);padding:12px 16px;margin-bottom:12px">
       Margin&nbsp;($/bu) = 2.8&nbsp;gal &middot; P<sub>eth</sub> &nbsp;+&nbsp; 17&nbsp;lb &middot; P<sub>ddgs</sub> &nbsp;+&nbsp; 0.7&nbsp;lb &middot; P<sub>corn&nbsp;oil</sub> &nbsp;&minus;&nbsp; P<sub>corn</sub> &nbsp;&minus;&nbsp; (natgas + opex)
     </div>
-    <div class="chart-card"><p style="color:#8a8a80;font-size:12px;font-style:italic;margin:8px 0" id="eth-margin-history">awaiting data</p></div>
+    <div class="chart-card"><div id="eth-chart-margin" style="height:340px"></div><p class="calnote" id="eth-margin-history">awaiting data</p></div>
     <p class="calnote">Section registered in <code>morning_pipeline.PROTECTED_SECTIONS["grains-dashboard.html"]</code>. Preservation test asserts <code>id="seasonal-ethanol-margin"</code> survives both dashboard_refresh and content_refresh passes.</p>
   </section>
 
@@ -520,15 +520,70 @@
   if (stamp) stamp.textContent = "Inputs auto-updated " + String(E.generated_at).replace("T", " ") +
       (u ? " · USDA week ending " + longDate(u.week_end) : "") + (c ? " · corn settle " + longDate(c.as_of) : "");
 
-  // margin history (accumulates one USDA week at a time)
+  // seasonal crush-margin chart — marketing-year overlay from
+  // build_ethanol.margin_seasonal (history: pack_static/AMS_3616_weekly.csv,
+  // backfilled to Jul 2022 on 2026-10-21). Added 2026-10-21.
   const mh = document.getElementById("eth-margin-history");
+  const ms = E.margin_seasonal, mel = document.getElementById("eth-chart-margin");
+  function ptsT(dates, vals, labels) {
+    const x = [], y = [], t = [];
+    for (let i = 0; i < dates.length; i++) {
+      const v = (vals || [])[i];
+      if (v === null || v === undefined) continue;
+      x.push(dates[i]); y.push(v); t.push((labels || [])[i] ? "week ending " + longDate(labels[i]) : "");
+    }
+    return { x, y, t };
+  }
+  if (ms && mel && window.Plotly) {
+    const b75 = pts(ms.dates, ms.band75), b25 = pts(ms.dates, ms.band25), med = pts(ms.dates, ms.median);
+    const traces = [];
+    if (b25.x.length) {
+      traces.push({ x: b75.x, y: b75.y, type: "scatter", mode: "lines", line: { width: 0 }, showlegend: false, hoverinfo: "skip" });
+      traces.push({ x: b25.x, y: b25.y, name: "prior MYs (25–75)", type: "scatter", mode: "lines", fill: "tonexty",
+                    fillcolor: "rgba(227,154,59,0.18)", line: { width: 0 }, hoverinfo: "skip" });
+    }
+    if (med.x.length) traces.push({ x: med.x, y: med.y, name: "prior-MY median", type: "scatter", mode: "lines",
+                                    line: { color: "#c9b394", width: 1.5, dash: "dot" }, hoverinfo: "skip" });
+    Object.keys(ms.years || {}).sort().forEach((y, i) => {
+      const p = ptsT(ms.dates, ms.years[y], (ms.week_ends || {})[y]);
+      traces.push({ x: p.x, y: p.y, text: p.t, name: "MY " + y, type: "scatter", mode: "lines",
+                    line: { color: PALETTE[i % PALETTE.length], width: 1.2 }, opacity: 0.85,
+                    hovertemplate: "MY " + y + " %{text}: %{y:+.2f} $/bu<extra></extra>" });
+    });
+    const cur = ptsT(ms.dates, ms.current, ms.current_week_ends);
+    traces.push({ x: cur.x, y: cur.y, text: cur.t, name: "MY " + ms.current_my + " (current)", type: "scatter",
+                  mode: "lines+markers", line: { color: "#cf6349", width: 2.4 }, marker: { size: 4 },
+                  hovertemplate: "MY " + ms.current_my + " %{text}: %{y:+.2f} $/bu<extra></extra>" });
+    Plotly.newPlot(mel, traces, {
+      paper_bgcolor: "#3a2718", plot_bgcolor: "#3a2718",
+      font: { color: "#f0e2cb", family: "Archivo, sans-serif", size: 11 },
+      margin: { l: 52, r: 10, t: 6, b: 34 },
+      xaxis: { type: "date", tickformat: "%b", dtick: "M1", gridcolor: "#57402a",
+               range: [ms.dates[0], ms.dates[ms.dates.length - 1]] },
+      yaxis: { gridcolor: "#57402a", title: "$/bu", zeroline: false },
+      shapes: [
+        { type: "rect", xref: "paper", x0: 0, x1: 1, y0: -0.30, y1: 0.10, fillcolor: "rgba(227,154,59,0.10)", line: { width: 0 } },
+        { type: "line", xref: "paper", x0: 0, x1: 1, y0: 0, y1: 0, line: { color: "#cf6349", width: 1, dash: "dash" } },
+      ],
+      annotations: [
+        { xref: "paper", x: 0.995, y: 0, xanchor: "right", yanchor: "bottom", showarrow: false,
+          text: "🔴 alert line (margin < 0) · shaded = breakeven band", font: { size: 10, color: "#cf6349" } },
+      ],
+      showlegend: true, legend: { orientation: "h", yanchor: "bottom", y: 1.02, x: 0, font: { size: 10 } },
+    }, { responsive: true, displaylogo: false });
+  }
   if (mh) {
     const hist = E.margin_history || [];
-    mh.textContent = hist.length
-      ? "Weekly margin history: " + hist.length + " week(s) on file, from " + longDate(hist[0][0]) +
-        " (latest " + signed(hist[hist.length - 1][1], 2) + " $/bu). The 5-year seasonal frame needs a multi-year " +
-        "USDA price backfill (MARS API key); the chart is drawn once that history exists."
-      : "awaiting data";
+    const last = hist.length ? hist[hist.length - 1] : null;
+    mh.textContent = ms
+      ? "MY " + ms.current_my + ", week ending " + longDate(ms.last_week) + ": " + (last ? signed(last[1], 2) + " $/bu" : "—") +
+        " · " + ms.n_weeks + " weeks on file since " + longDate(ms.first_week) + " · band/median over " + ms.n_priors +
+        " prior MY" + (ms.n_priors === 1 ? "" : "s") + " (USDA report 3616 starts Jul 2022) · USDA AMS_3616 ethanol-plant averages + " +
+        "front ZC settle · auto-updated " + String(E.generated_at).replace("T", " ")
+      : (hist.length
+          ? "Weekly margin history: " + hist.length + " week(s) on file, from " + longDate(hist[0][0]) +
+            " (latest " + signed(last[1], 2) + " $/bu); the seasonal frame draws once a prior marketing year exists."
+          : "awaiting data");
   }
 
   // EIA seasonal charts
