@@ -95,6 +95,36 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 
 <div id="year-picker" class="years" hidden></div>
 
+<div class="group-title">Underlying contracts — outright settles ($/cwt)<span class="src" id="contracts-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block" id="block-contract-V">
+    <h2>Oct &nbsp; HEV(Y)</h2>
+    <div id="chart-V" class="chart"></div>
+    <div class="stamp" id="stamp-V">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-contract-Z">
+    <h2>Dec &nbsp; HEZ(Y)</h2>
+    <div id="chart-Z" class="chart"></div>
+    <div class="stamp" id="stamp-Z">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-contract-G">
+    <h2>Feb &nbsp; HEG(Y+1)</h2>
+    <div id="chart-G" class="chart"></div>
+    <div class="stamp" id="stamp-G">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-contract-J">
+    <h2>Apr &nbsp; HEJ(Y+1)</h2>
+    <div id="chart-J" class="chart"></div>
+    <div class="stamp" id="stamp-J">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-contract-M">
+    <h2>Jun &nbsp; HEM(Y+1)</h2>
+    <div id="chart-M" class="chart"></div>
+    <div class="stamp" id="stamp-M">data through: —</div>
+  </div>
+</div>
+
+<div class="group-title">Spreads — front minus back ($/cwt)</div>
 <div class="section-grid">
   <div class="chart-block" data-protected="true" data-section-id="hog-spread-VZ">
     <h2>V/Z &nbsp; HEV(Y) − HEZ(Y)</h2>
@@ -277,6 +307,12 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
+  <strong>Underlying contracts</strong> (written 2026-10-28). The five legs of the spreads as outright settles
+  ($/cwt) on the same calendar axis and with the same year-role convention: in year Y the October and December
+  charts show HEV(Y) and HEZ(Y), the February, April and June charts show the next year's contracts, so each line
+  is the contract the spreads above it are made of. Band, median and year overlays follow the spread rules; the
+  stamp shows the last settle, its 10-year same-day percentile and the 30-day change. Levels are nominal.
+  <br><br>
   <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
   The exporter is <code>build_hog_spreads.py</code> in this repo (since 2026-10-06), run by the 08:00
   <code>dashboards_daily</code> chain. No cross-imports.
@@ -319,6 +355,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 <script>
 (function () {
   const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM"];
+  const CONTRACT_TAGS = ["V", "Z", "G", "J", "M"];   // outright legs, added 2026-10-28
   const CUTOUT_TAGS = ["carcass", "loin", "butt", "picnic", "rib", "ham", "belly"];
   const VOLUME_TAGS = ["loin", "butt", "picnic", "rib", "ham", "belly"];
   const CHART_LAYOUT_BASE = {
@@ -608,6 +645,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     renderYearPicker(data);
     for (const tag of PAIR_TAGS) {
       renderChart(tag, (data.pairs || {})[tag], data);
+    }
+    document.getElementById("contracts-through").textContent =
+        "Norgate HE-YYYYM settles  ·  data through " + (data.data_through || "—");
+    for (const tag of CONTRACT_TAGS) {
+      renderChart(tag, (data.contracts || {})[tag], data, "$/cwt");
     }
     renderDrivers(data);
   }
