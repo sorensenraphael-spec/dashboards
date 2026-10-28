@@ -215,6 +215,50 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
+<div class="group-title">Pork in cold storage — USDA NASS, end of month<span class="unit-toggle" data-cs-toggle><button type="button" data-view="raw" class="on">million lb</button><button type="button" data-view="index">trend-adjusted</button><button type="button" data-view="pct_prod">% of slaughter</button></span><span class="src" id="cs-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block">
+    <h2>Total frozen pork</h2>
+    <div id="chart-cs-total" class="chart"></div>
+    <div class="stamp" id="stamp-cs-total">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Hams</h2>
+    <div id="chart-cs-hams" class="chart"></div>
+    <div class="stamp" id="stamp-cs-hams">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Bellies</h2>
+    <div id="chart-cs-bellies" class="chart"></div>
+    <div class="stamp" id="stamp-cs-bellies">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Loins</h2>
+    <div id="chart-cs-loins" class="chart"></div>
+    <div class="stamp" id="stamp-cs-loins">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Ribs</h2>
+    <div id="chart-cs-ribs" class="chart"></div>
+    <div class="stamp" id="stamp-cs-ribs">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Butts</h2>
+    <div id="chart-cs-butts" class="chart"></div>
+    <div class="stamp" id="stamp-cs-butts">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Picnics</h2>
+    <div id="chart-cs-picnics" class="chart"></div>
+    <div class="stamp" id="stamp-cs-picnics">data through: —</div>
+  </div>
+  <div class="chart-block">
+    <h2>Trimmings</h2>
+    <div id="chart-cs-trimmings" class="chart"></div>
+    <div class="stamp" id="stamp-cs-trimmings">data through: —</div>
+  </div>
+</div>
+
 <div class="drivers" data-protected="true" data-section-id="hog-spreads-drivers">
   <h2>Seasonal drivers (priors, not signals)</h2>
   <ul id="drivers-list">
@@ -258,6 +302,15 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   the report's daily weighted average ($/cwt), drawn through the days the cut traded. Volume is the cut's pounds in
   thousands, 5-trading-day moving average, with a no-trade report day counted as zero. Cuts are matched by the
   report's item description, so a cut that USDA renamed starts a new history.
+  <br><br>
+  <strong>Cold storage</strong> (written 2026-10-27). End-of-month stocks of frozen pork, total and by cut, from the
+  USDA NASS Cold Storage report (public, private and semi-private refrigerated warehouses, million lb), exported by
+  <code>build_cold_storage.py</code> into <code>cold_storage_seasonal.json</code> from the report text files on USDA
+  ESMIS. The report for a month is released around the 22nd to 25th of the following month. Each month sits on its
+  month-end day of the calendar axis; band, median and year overlays follow the cutout rules by month. "Trend-adjusted"
+  divides each series by its own trailing 12-month mean (100 = that mean), so seasons compare across the structural
+  decline in freezer stocks since 2020. "% of slaughter" divides stocks by the carcass pounds slaughtered in the month
+  (LM_HG201, as on the volume charts). Hams, loins and bellies are the report's totals for those cuts.
   <br><br>
   <strong>Data quality.</strong> "awaiting data" appears when a pair has fewer than 3 prior calendar years at a DOY.
   ASF (2018) is retained in the historical band as a documented outlier — not stripped.
@@ -587,6 +640,55 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       for (const tag of VOLUME_TAGS) renderAwaiting("chart-vol-" + tag);
       renderAwaiting("chart-production");
       console.warn("pork_cutout: could not load data:", err);
+    });
+
+  // ---- pork cold storage (USDA NASS, monthly; added 2026-10-27) ----
+  // Monthly end-of-month stocks ride the same day-of-year chart: each month sits on its month-end day.
+  const CS_TAGS = ["total", "hams", "bellies", "loins", "ribs", "butts", "picnics", "trimmings"];
+  const CS_DOY = [31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365];
+  const CS_UNITS = { raw: "million lb", index: "index, 100 = trailing 12-mo mean", pct_prod: "% of month's slaughter" };
+  let CS = null, CS_VIEW = "raw";
+  function csPair(p) {
+    if (!p || p.status !== "ok" || !p.series) return p;
+    const s = p.series;
+    return { status: "ok", n_years_with_data: p.n_years_with_data, summary: p.summary,
+             series: { doy: CS_DOY, band25: s.band25, band50: s.band50, band75: s.band75,
+                       median10: s.median10, current: s.current, years: s.years } };
+  }
+  function renderColdStorage() {
+    if (!CS) return;
+    const view = (CS.views || {})[CS_VIEW] || {};
+    document.getElementById("cs-through").textContent =
+        "USDA NASS Cold Storage  ·  stocks through " + (CS.data_through || "—") + "  ·  " + CS_UNITS[CS_VIEW];
+    renderYearPicker({ pairs: view });
+    for (const tag of CS_TAGS) {
+      const raw = view[tag];
+      renderChart("cs-" + tag, csPair(raw), CS, CS_UNITS[CS_VIEW]);
+      const st = document.getElementById("stamp-cs-" + tag);
+      const sm = (raw && raw.summary) || {};
+      if (raw && raw.status === "ok" && st) {
+        st.textContent = "last: " + fmtNumUnsigned(sm.current, 1) + " (" + (sm.as_of || "—") + ")" +
+          "  ·  YoY: " + (sm.yoy_pct != null ? fmtNum(sm.yoy_pct, 1) + "%" : "—") +
+          "  ·  vs 5y same month: " + (sm.vs_5y_same_month_pct != null ? fmtNum(sm.vs_5y_same_month_pct, 1) + "%" : "—") +
+          "  ·  10y pctile: " + (sm.pctile_10y_same_month != null ? fmtNumUnsigned(sm.pctile_10y_same_month, 1) + "%" : "—");
+      }
+    }
+    applyYears();
+  }
+  document.querySelectorAll("[data-cs-toggle] button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      CS_VIEW = btn.dataset.view;
+      document.querySelectorAll("[data-cs-toggle] button").forEach(b => b.classList.toggle("on", b === btn));
+      renderColdStorage();
+    });
+  });
+  fetch("cold_storage_seasonal.json?v=" + Date.now(), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => { CS = d; renderColdStorage(); })
+    .catch(err => {
+      document.getElementById("cs-through").textContent = "awaiting data (no export)";
+      for (const tag of CS_TAGS) renderAwaiting("chart-cs-" + tag);
+      console.warn("cold_storage: could not load data:", err);
     });
 
   // ---- individual cuts: one selector, two charts (price, volume) ----
