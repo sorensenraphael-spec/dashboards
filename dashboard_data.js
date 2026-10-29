@@ -1,9 +1,9 @@
 // PUBLIC WHITELIST — do not edit.
 // No raw Norgate time series. CFTC/NOAA/rounded-settle only.
-// 2026-10-28 17:38
+// 2026-10-29 08:06
 window.__MD__ = {
-  "generated_at": "2026-10-28T08:00:13",
-  "settle_date": "2026-10-27",
+  "generated_at": "2026-10-29T08:00:07",
+  "settle_date": "2026-10-28",
   "pages_present": [
     "cocoa-dashboard.html",
     "coffee-dashboard.html",
@@ -23,8 +23,8 @@ window.__MD__ = {
   "markets": {
     "ZC": {
       "price": {
-        "value": 449.0,
-        "as_of": "2026-10-27"
+        "value": 452.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 164423,
@@ -663,8 +663,8 @@ window.__MD__ = {
     },
     "ZS": {
       "price": {
-        "value": 1229.0,
-        "as_of": "2026-10-27"
+        "value": 1224.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 221325,
@@ -1303,8 +1303,8 @@ window.__MD__ = {
     },
     "ZL": {
       "price": {
-        "value": 66.71,
-        "as_of": "2026-10-27"
+        "value": 65.56,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 71518,
@@ -1943,8 +1943,8 @@ window.__MD__ = {
     },
     "ZW": {
       "price": {
-        "value": 610.0,
-        "as_of": "2026-10-27"
+        "value": 599.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": -52005,
@@ -2583,8 +2583,8 @@ window.__MD__ = {
     },
     "KE": {
       "price": {
-        "value": 650.0,
-        "as_of": "2026-10-27"
+        "value": 643.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 7490,
@@ -3223,8 +3223,8 @@ window.__MD__ = {
     },
     "CC": {
       "price": {
-        "value": 5577.0,
-        "as_of": "2026-10-27"
+        "value": 5456.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": -8821,
@@ -3863,8 +3863,8 @@ window.__MD__ = {
     },
     "KC": {
       "price": {
-        "value": 293.8,
-        "as_of": "2026-10-27"
+        "value": 286.8,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 22337,
@@ -4503,8 +4503,8 @@ window.__MD__ = {
     },
     "SB": {
       "price": {
-        "value": 19.2,
-        "as_of": "2026-10-27"
+        "value": 19.34,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 264530,
@@ -5143,8 +5143,8 @@ window.__MD__ = {
     },
     "CT": {
       "price": {
-        "value": 78.06,
-        "as_of": "2026-10-27"
+        "value": 78.15,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 60598,
@@ -5783,8 +5783,8 @@ window.__MD__ = {
     },
     "CL": {
       "price": {
-        "value": 100.0,
-        "as_of": "2026-10-27"
+        "value": 103.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 36187,
@@ -6423,8 +6423,8 @@ window.__MD__ = {
     },
     "GC": {
       "price": {
-        "value": 4075.0,
-        "as_of": "2026-10-27"
+        "value": 4052.0,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 104206,
@@ -7063,8 +7063,8 @@ window.__MD__ = {
     },
     "SI": {
       "price": {
-        "value": 54.51,
-        "as_of": "2026-10-27"
+        "value": 53.67,
+        "as_of": "2026-10-28"
       },
       "cot": {
         "mm_net": 3505,
@@ -7709,8 +7709,8 @@ window.__MD__ = {
     "as_of": "2026-JAS"
   },
   "gold_silver_ratio": {
-    "value": 75.1,
-    "as_of": "2026-10-28T08:00:12"
+    "value": 76.6,
+    "as_of": "2026-10-29T08:00:07"
   },
   "rainfall": {
     "cerrado": [
