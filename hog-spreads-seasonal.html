@@ -6,7 +6,7 @@
 <meta http-equiv="refresh" content="900">
 <meta http-equiv="cache-control" content="no-store">
 <meta http-equiv="pragma" content="no-cache">
-<title>Hog spreads seasonal — HE V/Z, Z/G, G/J, Z/M</title>
+<title>Hog spreads seasonal — HE V/Z, Z/G, G/J, Z/M, M/Q</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
 :root {
@@ -68,7 +68,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 <header>
   <div>
     <h1>Hog spreads · seasonal</h1>
-    <div class="subhead">HE V/Z · Z/G · G/J · Z/M &nbsp;·&nbsp; front minus back ($/cwt)</div>
+    <div class="subhead">HE V/Z · Z/G · G/J · Z/M · M/Q &nbsp;·&nbsp; front minus back ($/cwt)</div>
   </div>
   <div>
     <a class="hub-link" href="index.html">← hub</a>
@@ -122,6 +122,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     <div id="chart-M" class="chart"></div>
     <div class="stamp" id="stamp-M">data through: —</div>
   </div>
+  <div class="chart-block" id="block-contract-Q">
+    <h2>Aug &nbsp; HEQ(Y+1)</h2>
+    <div id="chart-Q" class="chart"></div>
+    <div class="stamp" id="stamp-Q">data through: —</div>
+  </div>
 </div>
 
 <div class="group-title">Spreads — front minus back ($/cwt)</div>
@@ -145,6 +150,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     <h2>Z/M &nbsp; HEZ(Y) − HEM(Y+1)</h2>
     <div id="chart-ZM" class="chart"></div>
     <div class="stamp" id="stamp-ZM">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-MQ">
+    <h2>M/Q &nbsp; HEM(Y+1) − HEQ(Y+1)</h2>
+    <div id="chart-MQ" class="chart"></div>
+    <div class="stamp" id="stamp-MQ">data through: —</div>
   </div>
 </div>
 
@@ -307,10 +317,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
-  <strong>Underlying contracts</strong> (written 2026-10-28). The five legs of the spreads as outright settles
+  <strong>Underlying contracts</strong> (written 2026-10-28; August leg added 2026-10-30). The six legs of the spreads as outright settles
   ($/cwt) on the same calendar axis and with the same year-role convention: in year Y the October and December
-  charts show HEV(Y) and HEZ(Y), the February, April and June charts show the next year's contracts, so each line
-  is the contract the spreads above it are made of. Band, median and year overlays follow the spread rules; the
+  charts show HEV(Y) and HEZ(Y), the February, April, June and August charts show the next year's contracts, so each line
+  is the contract the spreads below it are made of. The August contract lists in mid-April of the prior year, so the
+  M/Q spread and the August chart start there. Band, median and year overlays follow the spread rules; the
   stamp shows the last settle, its 10-year same-day percentile and the 30-day change. Levels are nominal.
   <br><br>
   <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
@@ -354,8 +365,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 
 <script>
 (function () {
-  const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM"];
-  const CONTRACT_TAGS = ["V", "Z", "G", "J", "M"];   // outright legs, added 2026-10-28
+  const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM", "MQ"];   // MQ added 2026-10-30
+  const CONTRACT_TAGS = ["V", "Z", "G", "J", "M", "Q"];   // outright legs, added 2026-10-28; Q 2026-10-30
   const CUTOUT_TAGS = ["carcass", "loin", "butt", "picnic", "rib", "ham", "belly"];
   const VOLUME_TAGS = ["loin", "butt", "picnic", "rib", "ham", "belly"];
   const CHART_LAYOUT_BASE = {
@@ -822,7 +833,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 
 <!--
 PROTECTED_SECTIONS: hog-spreads-summary, hog-spread-VZ, hog-spread-ZG,
-                     hog-spread-GJ, hog-spread-ZM, hog-spreads-drivers
+                     hog-spread-GJ, hog-spread-ZM, hog-spread-MQ, hog-spreads-drivers
 Preservation guard: the refresh workflow MUST retain any element with
 `data-protected="true"` and its `data-section-id`. See
 dashboard_refresh.py / dashboard_stubs_build.py.
