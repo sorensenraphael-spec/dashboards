@@ -1,8 +1,8 @@
 // PUBLIC WHITELIST — do not edit.
 // No raw Norgate time series. CFTC/NOAA/rounded-settle only.
-// 2026-11-01 08:04
+// 2026-11-02 08:02
 window.__MD__ = {
-  "generated_at": "2026-11-01T08:00:06",
+  "generated_at": "2026-11-02T08:00:07",
   "settle_date": "2026-10-30",
   "pages_present": [
     "cocoa-dashboard.html",
@@ -7709,8 +7709,8 @@ window.__MD__ = {
     "as_of": "2026-JAS"
   },
   "gold_silver_ratio": {
-    "value": 79.1,
-    "as_of": "2026-11-01T08:00:06"
+    "value": 77.9,
+    "as_of": "2026-11-02T08:00:07"
   },
   "rainfall": {
     "cerrado": [
