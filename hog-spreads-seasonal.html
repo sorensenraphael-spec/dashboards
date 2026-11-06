@@ -129,6 +129,40 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </div>
 </div>
 
+<div class="group-title">Underlying contracts — open interest (contracts)<span class="src" id="oi-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block" id="block-oi-V">
+    <h2>Oct &nbsp; HEV(Y) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-V" class="chart"></div>
+    <div class="stamp" id="stamp-oi-V">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-oi-Z">
+    <h2>Dec &nbsp; HEZ(Y) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-Z" class="chart"></div>
+    <div class="stamp" id="stamp-oi-Z">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-oi-G">
+    <h2>Feb &nbsp; HEG(Y+1) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-G" class="chart"></div>
+    <div class="stamp" id="stamp-oi-G">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-oi-J">
+    <h2>Apr &nbsp; HEJ(Y+1) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-J" class="chart"></div>
+    <div class="stamp" id="stamp-oi-J">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-oi-M">
+    <h2>Jun &nbsp; HEM(Y+1) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-M" class="chart"></div>
+    <div class="stamp" id="stamp-oi-M">data through: —</div>
+  </div>
+  <div class="chart-block" id="block-oi-Q">
+    <h2>Aug &nbsp; HEQ(Y+1) &nbsp;·&nbsp; open interest</h2>
+    <div id="chart-oi-Q" class="chart"></div>
+    <div class="stamp" id="stamp-oi-Q">data through: —</div>
+  </div>
+</div>
+
 <div class="group-title">Spreads — front minus back ($/cwt)</div>
 <div class="section-grid">
   <div class="chart-block" data-protected="true" data-section-id="hog-spread-VZ">
@@ -314,6 +348,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   aligned by days from 1 January of their own year. The chart shows the season whose front leg is nearest to expiry;
   a completed season (V/Z after mid-October) stays up until the next one opens on 1 January. Seasonal band uses 25/50/75 percentile
   across the last 5 prior calendar years' spread values at each day-of-year; the median line uses the last 10 prior years.
+  Since 2026-11-05 the band, the median and the same-day percentile carry each prior year's last settle over weekends
+  and holidays, so every prior year counts on every calendar day; before that the set of years with a value changed
+  from one calendar day to the next and the band and median jumped. Year lines and the current line show trading days only.
   Year boxes go back to 1980 for the futures spreads (years before 1997 predate the lean hog contract, which replaced
   live hogs in February 1997; Norgate carries them under the HE symbols) and to 2013, the start of LM_PK602, for the
   cutout, volume and cut charts. Band and median are unchanged (last 5 and last 10 years).
@@ -328,13 +365,24 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   day. Band, median and year overlays follow the spread rules; the
   stamp shows the last settle, its 10-year same-day percentile and the 30-day change. Levels are nominal.
   <br><br>
+  <strong>Open interest</strong> (written 2026-11-05). Open interest of the same six contracts, in contracts, from
+  Norgate's per-contract open-interest field, on the same season windows, year-role convention, band, median and
+  year overlays as the outright charts. The exchange publishes open interest the morning after the session, so the
+  latest day is blank until the next update and the line usually ends one trading day before the price line.
+  Norgate writes zero for days before a contract's first trade; zeros are treated as missing. Band, median and the
+  same-day percentile carry each prior year's open interest over weekends and holidays, since positions stay open
+  while the market is shut; the year lines show trading days only. Years before 1997 are
+  live hog contracts, and open interest is far higher now than in the 1980s and 1990s, so old overlays sit near the
+  bottom of the chart. The stamp shows the last open interest, its 10-year same-day percentile and the 30-day change.
+  <br><br>
   <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
   The exporter is <code>build_hog_spreads.py</code> in this repo (since 2026-10-06), run by the 08:00
   <code>dashboards_daily</code> chain. No cross-imports.
   <br><br>
   <strong>Pork cutout.</strong> Carcass cutout and primal values ($/cwt) from USDA AMS LM_PK602 (National Daily Pork
   FOB Plant, Negotiated Sales, Afternoon), exported by <code>build_pork_cutout.py</code> into
-  <code>pork_cutout_seasonal.json</code>. Same band, median and year overlays as the spreads.
+  <code>pork_cutout_seasonal.json</code>. Same band, median and year overlays as the spreads, including the weekend
+  carry-forward (since 2026-11-05; the volume and production charts too).
   <br><br>
   <strong>Primal volume.</strong> For each primal, the pounds traded on every item of its cuts section in the same
   report are summed per day, converted to loads of 40,000 lb, and smoothed with a 5-trading-day (one week) moving
@@ -352,7 +400,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   sparerib, ham, belly, jowl, trim, variety, added ingredients), exported by <code>build_pork_cuts.py</code>. Price is
   the report's daily weighted average ($/cwt), drawn through the days the cut traded. Volume is the cut's pounds in
   thousands, 5-trading-day moving average, with a no-trade report day counted as zero. Cuts are matched by the
-  report's item description, so a cut that USDA renamed starts a new history.
+  report's item description, so a cut that USDA renamed starts a new history. The cut charts' band and median are
+  taken on each calendar day without the weekend carry-forward, since a cut can go days without trading.
   <br><br>
   <strong>Cold storage</strong> (written 2026-10-27). End-of-month stocks of frozen pork, total and by cut, from the
   USDA NASS Cold Storage report (public, private and semi-private refrigerated warehouses, million lb), exported by
@@ -590,10 +639,14 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       title: null,
     }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
     const sm = pair.summary || {};
+    // 2026-11-05: open-interest blocks (unit "contracts") print whole contracts with thousands separators
+    const isCount = pair.unit === "contracts";
+    const fmtLast = v => (isCount && v != null) ? Math.round(v).toLocaleString("en-US") : fmtNumUnsigned(v);
+    const fmtChg = v => (isCount && v != null) ? (v > 0 ? "+" : "") + Math.round(v).toLocaleString("en-US") : fmtNum(v);
     document.getElementById("stamp-" + tag).textContent = yTitle
-        ? "last: " + fmtNumUnsigned(sm.current) + "  ·  10y pctile: " +
+        ? "last: " + fmtLast(sm.current) + "  ·  10y pctile: " +
           (sm.pctile_10y_same_doy != null ? fmtNumUnsigned(sm.pctile_10y_same_doy, 1) + "%" : "—") +
-          "  ·  30d: " + fmtNum(sm.change_30d) + "  ·  data through: " + (sm.last_settle_date || "—")
+          "  ·  30d: " + fmtChg(sm.change_30d) + "  ·  data through: " + (sm.last_settle_date || "—")
         : "data through: " + (data.data_through || "—") + "  ·  years with data: " + (pair.n_years_with_data || 0);
   }
 
@@ -673,6 +726,14 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
         "Norgate HE-YYYYM settles  ·  data through " + (data.data_through || "—");
     for (const tag of CONTRACT_TAGS) {
       renderChart(tag, (data.contracts || {})[tag], data, "$/cwt");
+    }
+    // open interest by contract, added 2026-11-05 (usually one trading day behind the settles)
+    const OI = data.open_interest || {};
+    const oiDates = Object.values(OI).map(o => (o && o.summary && o.summary.last_settle_date) || "").filter(Boolean).sort();
+    document.getElementById("oi-through").textContent =
+        "Norgate HE-YYYYM open interest  ·  data through " + (oiDates.length ? oiDates[oiDates.length - 1] : "—");
+    for (const tag of CONTRACT_TAGS) {
+      renderChart("oi-" + tag, OI[tag], data, "contracts");
     }
     renderDrivers(data);
   }
