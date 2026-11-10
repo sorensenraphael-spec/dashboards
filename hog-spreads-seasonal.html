@@ -6,7 +6,7 @@
 <meta http-equiv="refresh" content="900">
 <meta http-equiv="cache-control" content="no-store">
 <meta http-equiv="pragma" content="no-cache">
-<title>Hog spreads seasonal — HE V/Z, Z/G, G/J, Z/M, M/Q</title>
+<title>Hog spreads seasonal — HE V/Z, Z/G, G/J, Z/J, Z/M, M/Q</title>
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 <style>
 :root {
@@ -68,7 +68,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 <header>
   <div>
     <h1>Hog spreads · seasonal</h1>
-    <div class="subhead">HE V/Z · Z/G · G/J · Z/M · M/Q &nbsp;·&nbsp; front minus back ($/cwt)</div>
+    <div class="subhead">HE V/Z · Z/G · G/J · Z/J · Z/M · M/Q &nbsp;·&nbsp; front minus back ($/cwt)</div>
   </div>
   <div>
     <a class="hub-link" href="index.html">← hub</a>
@@ -179,6 +179,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     <h2>G/J &nbsp; HEG(Y+1) − HEJ(Y+1)</h2>
     <div id="chart-GJ" class="chart"></div>
     <div class="stamp" id="stamp-GJ">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-spread-ZJ">
+    <h2>Z/J &nbsp; HEZ(Y) − HEJ(Y+1)</h2>
+    <div id="chart-ZJ" class="chart"></div>
+    <div class="stamp" id="stamp-ZJ">data through: —</div>
   </div>
   <div class="chart-block" data-protected="true" data-section-id="hog-spread-ZM">
     <h2>Z/M &nbsp; HEZ(Y) − HEM(Y+1)</h2>
@@ -354,6 +359,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   Year boxes go back to 1980 for the futures spreads (years before 1997 predate the lean hog contract, which replaced
   live hogs in February 1997; Norgate carries them under the HE symbols) and to 2013, the start of LM_PK602, for the
   cutout, volume and cut charts. Band and median are unchanged (last 5 and last 10 years).
+  Z/J (added 2026-11-10) is December of year Y minus April of Y+1, through the December contract's expiry.
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
@@ -418,7 +424,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 
 <script>
 (function () {
-  const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZM", "MQ"];   // MQ added 2026-10-30
+  const PAIR_TAGS = ["VZ", "ZG", "GJ", "ZJ", "ZM", "MQ"];   // MQ added 2026-10-30; ZJ 2026-11-10
   const CONTRACT_TAGS = ["V", "Z", "G", "J", "M", "Q"];   // outright legs, added 2026-10-28; Q 2026-10-30
   const CUTOUT_TAGS = ["carcass", "loin", "butt", "picnic", "rib", "ham", "belly"];
   const VOLUME_TAGS = ["loin", "butt", "picnic", "rib", "ham", "belly"];
@@ -906,7 +912,7 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 
 <!--
 PROTECTED_SECTIONS: hog-spreads-summary, hog-spread-VZ, hog-spread-ZG,
-                     hog-spread-GJ, hog-spread-ZM, hog-spread-MQ, hog-spreads-drivers
+                     hog-spread-GJ, hog-spread-ZJ, hog-spread-ZM, hog-spread-MQ, hog-spreads-drivers
 Preservation guard: the refresh workflow MUST retain any element with
 `data-protected="true"` and its `data-section-id`. See
 dashboard_refresh.py / dashboard_stubs_build.py.
