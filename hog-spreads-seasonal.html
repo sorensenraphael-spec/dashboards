@@ -58,6 +58,16 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .group-title{margin:26px 0 10px;font-size:12px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .group-title .src{letter-spacing:.03em;text-transform:none;font-size:11px;margin-left:10px}
 .section-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.block-head{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;margin-bottom:6px}
+.block-head h2{margin-bottom:0}
+.block-head select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:4px 8px;font-size:12px;max-width:100%}
+.block-head .unit-toggle{margin-left:0}
+.idx-stats{display:flex;flex-wrap:wrap;gap:14px 40px;align-items:flex-start}
+.idx-stat .k{font-size:11px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.idx-stat .v{font-size:26px;font-variant-numeric:tabular-nums;margin-top:3px}
+.idx-stat .s{font-size:11px;color:var(--dim);margin-top:3px;line-height:1.5;max-width:520px}
+.idx-table{margin:12px 0 0;overflow-x:auto}
+.idx-table table{min-width:640px}
 @media (max-width: 900px) {
   .section-grid { grid-template-columns: 1fr; }
 }
@@ -94,6 +104,56 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 </div>
 
 <div id="year-picker" class="years" hidden></div>
+
+<!-- 2026-11-19: CME Lean Hog Index (today, next, at expiry) and futures vs cash -->
+<div class="group-title">CME Lean Hog Index — today, next and at contract expiry ($/cwt)<span class="src" id="index-through">loading…</span></div>
+<div class="chart-block" data-protected="true" data-section-id="hog-index-estimates">
+  <div class="idx-stats" id="idx-stats"><span style="color:var(--dim);font-size:12px">awaiting data…</span></div>
+  <div class="summary idx-table">
+    <table>
+      <thead><tr>
+        <th>contract</th>
+        <th style="text-align:right">last trading day</th>
+        <th style="text-align:right">days</th>
+        <th style="text-align:right">futures settle</th>
+        <th style="text-align:right">index est. at expiry</th>
+        <th style="text-align:right">25–75% range</th>
+        <th style="text-align:right">futures − est.</th>
+        <th style="text-align:right">years (n)</th>
+      </tr></thead>
+      <tbody id="idx-est-body">
+        <tr><td colspan="8" style="text-align:center;color:var(--dim);padding:24px">awaiting data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="stamp" id="stamp-idx-est"></div>
+</div>
+<div class="section-grid">
+  <div class="chart-block" data-protected="true" data-section-id="hog-index-projection">
+    <h2>Index — normal seasonal path from today vs futures at expiry</h2>
+    <div id="chart-idxproj" class="chart"></div>
+    <div class="stamp" id="stamp-idxproj">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-cash-index">
+    <h2>CME Lean Hog Index — seasonal</h2>
+    <div id="chart-cashidx" class="chart"></div>
+    <div class="stamp" id="stamp-cashidx">data through: —</div>
+  </div>
+</div>
+
+<div class="group-title">Futures vs cash — contract minus index, contract minus cutout ($/cwt)<span class="src" id="basis-through">loading…</span></div>
+<div class="section-grid">
+  <div class="chart-block" data-protected="true" data-section-id="hog-basis-index">
+    <div class="block-head"><h2 id="title-bidx">Futures − CME Lean Hog Index</h2><select id="sel-bidx" aria-label="futures contract compared with the index"></select></div>
+    <div id="chart-bidx" class="chart"></div>
+    <div class="stamp" id="stamp-bidx">data through: —</div>
+  </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-basis-cutout">
+    <div class="block-head"><h2 id="title-bcut">Futures − pork carcass cutout</h2><select id="sel-bcut" aria-label="futures contract compared with the cutout"></select></div>
+    <div id="chart-bcut" class="chart"></div>
+    <div class="stamp" id="stamp-bcut">data through: —</div>
+  </div>
+</div>
 
 <div class="group-title">Underlying contracts — outright settles ($/cwt)<span class="src" id="contracts-through">loading…</span></div>
 <div class="section-grid">
@@ -248,6 +308,11 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     <div id="chart-production" class="chart"></div>
     <div class="stamp" id="stamp-production">data through: —</div>
   </div>
+  <div class="chart-block" data-protected="true" data-section-id="hog-carcass-weight">
+    <div class="block-head"><h2 id="title-weight">Carcass weight — 1-week average (lb)</h2><span class="unit-toggle" data-weight-toggle><button type="button" data-w="weight" class="on">1-week</button><button type="button" data-w="weight_daily">daily</button></span></div>
+    <div id="chart-weight" class="chart"></div>
+    <div class="stamp" id="stamp-weight">data through: —</div>
+  </div>
   <div class="chart-block">
     <h2>Loin volume</h2>
     <div id="chart-vol-loin" class="chart"></div>
@@ -386,6 +451,33 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   while the market is shut; the year lines show trading days only. Years before 1997 are
   live hog contracts, and open interest is far higher now than in the 1980s and 1990s, so old overlays sit near the
   bottom of the chart. The stamp shows the last open interest, its 10-year same-day percentile and the 30-day change.
+  <br><br>
+  <strong>Lean hog index and estimates</strong> (written 2026-11-19). The CME Lean Hog Index ($/cwt) is Norgate's
+  <code>$LH</code> (from November 1995), dated by the later of its two slaughter days. Norgate runs a day or two behind
+  the exchange, so later days are computed from USDA LM_HG201 with the CME formula: the two-day weighted average net
+  price of producer-sold negotiated, swine or pork market formula and negotiated formula hogs, weighted by head times
+  carcass weight. On the overlap with Norgate the computed value matches to within a cent (the check is redone every
+  run, and the USDA value is not used if it drifts); "index today" says which source it came from. The next index
+  keeps the later day of today's index at its own day price and gives the new day that price times the median
+  one-business-day index change on the same calendar date over the last 10 years. The index at a contract's expiry =
+  index today × the median, over the 10 most recent years with data, of the index on that contract's last trading
+  day in the matching year ÷ the index on today's calendar date in the matching year; the range is the 25th to 75th
+  percentile of the same ratios. It assumes this year follows a normal seasonal shape from today's level: no fitted
+  model, no fundamentals, and the ratios include unusual years (2020 sits in the April and May ranges). Futures minus
+  estimate is what the contract prices above (or below) that normal seasonal path. The path chart draws the same
+  calculation for every business day to the last listed contract.
+  <br><br>
+  <strong>Futures vs cash</strong> (written 2026-11-19). Each chart is one HE contract's settle minus the index (left) or
+  minus the LM_PK602 carcass cutout (right), $/cwt, on days where both exist, with the same season windows, year-role
+  convention (October and December of year Y, the other months of Y+1), band, median and year lines as the outright
+  charts. The selector picks the contract month; contracts still trading come first, nearest expiry on top. Against
+  the index the line converges to about zero on the last trading day, since HE settles to the index. Cutout history
+  starts in 2013. Index basis years before 1997 use the live hog era contracts Norgate carries under HE.
+  <br><br>
+  <strong>Carcass weight</strong> (written 2026-11-19). Average carcass weight (lb) of every barrow and gilt in USDA
+  LM_HG201 (producer-sold, packer-sold and packer-owned): carcass pounds over head, by slaughter day. "1-week" pools the
+  last five report rows (six kill days, Saturday inside Friday), head-weighted; "daily" is each report row and shows
+  the weekday pattern (Monday lightest, Friday plus Saturday heaviest, about 4 to 5 lb apart).
   <br><br>
   <strong>Repo separation.</strong> This page reads <code>hog_spreads_seasonal.json</code> only.
   The exporter is <code>build_hog_spreads.py</code> in this repo (since 2026-10-06), run by the 08:00
@@ -706,8 +798,174 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
     CUTOUT = data;
     renderYearPicker({ pairs: data.volume || {} });
     renderChart("production", data.production, data, "M lb carcass / kill day");
+    renderWeight();   // 2026-11-19
     renderVolume();
     applyYears();
+  }
+
+  // ---- 2026-11-19: carcass weight (pork_cutout_seasonal.json: weight / weight_daily) ----
+  let WEIGHT_KEY = "weight";
+  function renderWeight() {
+    if (!CUTOUT) return;
+    const el = document.getElementById("chart-weight");
+    if (window.Plotly && el.data) Plotly.purge(el);
+    el.innerHTML = "";
+    delete YEAR_TRACES["weight"];
+    renderChart("weight", CUTOUT[WEIGHT_KEY], CUTOUT, "lb carcass");
+    document.getElementById("title-weight").textContent = WEIGHT_KEY === "weight"
+        ? "Carcass weight — 1-week average (lb)" : "Carcass weight — daily (lb)";
+    applyYears();
+  }
+  document.querySelectorAll("[data-weight-toggle] button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      WEIGHT_KEY = btn.dataset.w;
+      document.querySelectorAll("[data-weight-toggle] button").forEach(b => b.classList.toggle("on", b === btn));
+      renderWeight();
+    });
+  });
+
+  // ---- 2026-11-19: CME Lean Hog Index, estimates, futures vs cash ----
+  function fmtD(s) {
+    if (!s) return "—";
+    return new Date(s + "T00:00:00Z").toLocaleDateString("en-GB",
+        { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  }
+  function renderIndexEstimates(data) {
+    const e = data.index_estimates;
+    const stats = document.getElementById("idx-stats");
+    const body = document.getElementById("idx-est-body");
+    if (!e || !e.index) {
+      stats.innerHTML = '<span style="color:var(--stale);font-size:12px">awaiting data</span>';
+      renderAwaiting("chart-idxproj");
+      return;
+    }
+    const ix = e.index, nx = e.next || {};
+    const src = ix.source === "USDA LM_HG201 replica"
+        ? "computed from USDA LM_HG201 (CME formula) · Norgate $LH through " + fmtD(ix.norgate_last_date) +
+          ": " + fmtNumUnsigned(ix.norgate_last_value)
+        : "Norgate $LH";
+    const how = nx.method === "known_day_plus_seasonal" && nx.known_day
+        ? "half known: " + fmtD(nx.known_day.date) + " day price " + fmtNumUnsigned(nx.known_day.price) +
+          ", new day = that × median seasonal 1-day change"
+        : "index × median seasonal 1-day change";
+    stats.innerHTML =
+      '<div class="idx-stat"><div class="k">Index today</div><div class="v">' + fmtNumUnsigned(ix.value) + '</div>' +
+      '<div class="s">dated ' + fmtD(ix.date) + ' (later slaughter day) · ' + src + '</div></div>' +
+      '<div class="idx-stat"><div class="k">Next index · ' + fmtD(nx.date) + ' · estimate</div><div class="v">' +
+      fmtNumUnsigned(nx.value) + '</div><div class="s">25–75%: ' + fmtNumUnsigned(nx.p25) + ' – ' +
+      fmtNumUnsigned(nx.p75) + ' · ' + how + ' · n = ' + (nx.n || 0) + ' yrs</div></div>';
+    body.innerHTML = "";
+    for (const r of e.contracts || []) {
+      const tr = document.createElement("tr");
+      const yrs = (r.years || []).length ? r.years[0] + "–" + r.years[r.years.length - 1] + " (" + r.n + ")" : "—";
+      tr.innerHTML = '<td class="pair">' + r.label + '</td>' +
+        '<td class="num">' + fmtD(r.last_trading_day) + '</td>' +
+        '<td class="num">' + r.days + '</td>' +
+        '<td class="num">' + fmtNumUnsigned(r.settle) + '</td>' +
+        '<td class="num">' + fmtNumUnsigned(r.estimate) + '</td>' +
+        '<td class="num">' + fmtNumUnsigned(r.p25) + ' – ' + fmtNumUnsigned(r.p75) + '</td>' +
+        '<td class="num">' + fmtNum(r.futures_minus_estimate) + '</td>' +
+        '<td class="num">' + yrs + '</td>';
+      body.appendChild(tr);
+    }
+    if (!(e.contracts || []).length) {
+      body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:24px">no listed contracts</td></tr>';
+    }
+    const sd = (e.contracts || []).map(r => r.settle_date).sort().pop();
+    document.getElementById("stamp-idx-est").textContent =
+        "index est. = index today × median of [index on the contract's last trading day ÷ index on today's date] over the " +
+        (e.estimate_years || 10) + " most recent years with data  ·  normal seasonality from today's level, not a forecast model" +
+        "  ·  futures settles " + fmtD(sd) + ", Norgate";
+    renderIndexProjection(e);
+  }
+
+  function renderIndexProjection(e) {
+    const el = document.getElementById("chart-idxproj");
+    const p = e.projection || {}, h = e.history || {}, rows = e.contracts || [];
+    if (!(p.dates || []).length) { renderAwaiting("chart-idxproj"); return; }
+    const traces = [
+      { x: p.dates, y: p.p75, type: "scatter", mode: "lines", line: { color: "#4a5568", width: 0 },
+        showlegend: false, hoverinfo: "skip" },
+      { x: p.dates, y: p.p25, type: "scatter", mode: "lines", fill: "tonexty", fillcolor: "rgba(107,133,183,0.22)",
+        line: { color: "#4a5568", width: 0 }, name: "25–75%", hoverinfo: "skip" },
+      { x: p.dates, y: p.median, type: "scatter", mode: "lines", name: "seasonal path (median)",
+        line: { color: "#8fa3c9", width: 1.5, dash: "dot" }, hovertemplate: "%{x|%d %b %y}  %{y:.2f}<extra>seasonal</extra>" },
+      { x: h.dates, y: h.values, type: "scatter", mode: "lines", name: "index",
+        line: { color: "#e8e6df", width: 2 }, hovertemplate: "%{x|%d %b %y}  %{y:.2f}<extra>index</extra>" },
+      { x: rows.map(r => r.last_trading_day), y: rows.map(r => r.estimate), type: "scatter", mode: "markers",
+        name: "index est. at expiry", marker: { color: "#8fa3c9", size: 8 }, text: rows.map(r => r.label),
+        hovertemplate: "%{text}  est. %{y:.2f}<extra></extra>" },
+      { x: rows.map(r => r.last_trading_day), y: rows.map(r => r.settle), type: "scatter", mode: "markers+text",
+        name: "futures settle", marker: { color: "#cb181d", size: 9, symbol: "diamond" }, text: rows.map(r => r.label),
+        textposition: "top center", textfont: { size: 9, color: "#e8e6df" },
+        hovertemplate: "%{text}  settle %{y:.2f}<extra></extra>" },
+    ];
+    if (window.Plotly && el.data) Plotly.purge(el);
+    el.innerHTML = "";
+    Plotly.newPlot(el, traces, {
+      ...CHART_LAYOUT_BASE,
+      xaxis: { ...CHART_LAYOUT_BASE.xaxis, dtick: "M2", tickformat: "%b %y", hoverformat: "%d %b %y" },
+      yaxis: { ...CHART_LAYOUT_BASE.yaxis, title: "$/cwt", zeroline: false },
+    }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
+    const n = (p.n || []).length ? Math.min(...p.n) : 0;
+    document.getElementById("stamp-idxproj").textContent =
+        "index through " + fmtD(e.index.date) + "  ·  path = index today × median seasonal ratio (" + n +
+        " yrs per day; the year set moves one year back for dates more than a year past Norgate's last index)";
+  }
+
+  const BASIS = {};
+  function setupBasis(tag, blocks, data, against) {
+    const sel = document.getElementById("sel-" + tag);
+    const keys = Object.keys(blocks || {}).filter(k => blocks[k] && blocks[k].status === "ok");
+    if (!keys.length) {
+      renderAwaiting("chart-" + tag);
+      sel.hidden = true;
+      return;
+    }
+    const through = data.data_through || "";
+    keys.sort((a, b) => String(blocks[a].season_end).localeCompare(String(blocks[b].season_end)));
+    const live = keys.filter(k => String(blocks[k].season_end) >= through);
+    const done = keys.filter(k => !live.includes(k));
+    const order = live.concat(done);
+    const prev = sel.value;
+    sel.innerHTML = "";
+    for (const k of order) {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = (blocks[k].current_label || k).replace(" \u2212 " + against, "") + "  ·  " +
+          (blocks[k].month || k) + (done.includes(k) ? "  ·  expired" : "");
+      sel.appendChild(o);
+    }
+    sel.value = order.includes(prev) ? prev : order[0];
+    BASIS[tag] = { blocks, data, against };
+    sel.onchange = () => drawBasis(tag);
+    drawBasis(tag);
+  }
+  function drawBasis(tag) {
+    const b = BASIS[tag];
+    if (!b) return;
+    const blk = b.blocks[document.getElementById("sel-" + tag).value];
+    const el = document.getElementById("chart-" + tag);
+    if (window.Plotly && el.data) Plotly.purge(el);
+    el.innerHTML = "";
+    delete YEAR_TRACES[tag];
+    renderChart(tag, blk, b.data, "futures − " + b.against + ", $/cwt");
+    document.getElementById("title-" + tag).textContent =
+        (b.against === "index" ? "Futures − CME Lean Hog Index" : "Futures − pork carcass cutout") +
+        (blk && blk.current_label ? " · " + blk.current_label : "");
+    applyYears();
+  }
+
+  function renderCash(data) {
+    const e = data.index_estimates || {};
+    document.getElementById("index-through").textContent =
+        "Norgate $LH + USDA LM_HG201  ·  index through " + fmtD((e.index || {}).date || (data.cash_index || {}).summary?.last_settle_date);
+    document.getElementById("basis-through").textContent =
+        "Norgate HE-YYYYM settles, CME Lean Hog Index, USDA LM_PK602 cutout through " + fmtD(data.cutout_through);
+    renderChart("cashidx", data.cash_index, data, "$/cwt");
+    renderIndexEstimates(data);
+    setupBasis("bidx", data.basis_index, data, "index");
+    setupBasis("bcut", data.basis_cutout, data, "cutout");
   }
 
   function renderDrivers(data) {
@@ -748,6 +1006,8 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
       renderChart("oi-" + tag, OI[tag], data, "contracts");
     }
     renderDrivers(data);
+    try { renderCash(data); }   // 2026-11-19
+    catch (err) { console.warn("cash index sections:", err); }
   }
 
   // window.__MD__ pattern: try a JS wrapper first; else fetch the raw JSON.
