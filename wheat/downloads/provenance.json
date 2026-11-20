@@ -1,0 +1,66 @@
+{
+  "matif": {
+    "source": "User-supplied Edge Euronext/MATIF settlement workbook",
+    "workbook": "58b45b1a5ec5_MATIF_milling_wheat_Mar_Sep_NovDec_2001_2027.xlsx",
+    "workbookSha256": "66ba60fb96eba4ba7d2b27e0a1e1ab77cc6e463cf2b635bd9c1c79682437ba0a",
+    "nativeUnits": "EUR per metric tonne",
+    "updatesSource": "https://live.euronext.com/en/product/commodities-futures/EBM-DPAR/settlement-prices",
+    "updatesNote": "Initial history comes from the supplied workbook; subsequent published settlements and revisions come from Euronext.",
+    "openInterestNote": "Euronext open-interest timing may differ from the workbook; source revisions are retained."
+  },
+  "fx": {
+    "source": "ECB daily reference rate",
+    "units": "USD per EUR",
+    "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
+    "lastObservation": "2026-11-19"
+  },
+  "us": {
+    "requiredSource": "Actual same-delivery-year March Chicago SRW / KC HRW futures",
+    "nativeUnits": "US cents per bushel",
+    "continuousContractsUsed": false,
+    "source": "Norgate individual-contract daily settlements",
+    "nativeField": "Close",
+    "officialDefinition": "Close is the official settlement price; last-trade exceptions have a 9-suffixed root, unlike ZW and KE.",
+    "documentation": [
+      "https://norgatedata.com/futurespackage.php",
+      "https://norgatedata.com/data-package-faq.php"
+    ],
+    "roots": {
+      "cbot": "ZW",
+      "kc": "KE"
+    },
+    "exports": [
+      {
+        "market": "cbot",
+        "file": "cbot_march_daily.csv",
+        "sha256": "dcdee73428e5334ad6e5cf4cbbdcfd346ed49757ce68dc15b3850fcd3a910984"
+      },
+      {
+        "market": "kc",
+        "file": "kc_march_daily.csv",
+        "sha256": "c9e575ae9e953b858d0f594707f16565203dc01ab6004ac03a33254c09f32ac6"
+      }
+    ],
+    "volumeOpenInterestNote": "Latest vendor volume/open-interest fields may lag; reported zero values are retained and do not establish inactivity.",
+    "importedAt": "2026-11-20T18:26:44+00:00"
+  },
+  "files": [
+    {
+      "file": "matif_march_contracts.csv",
+      "sha256": "9e7eefcc98fa9997ede0339096e7e8958cf83e5956964f8978ec630b11ee3da8"
+    },
+    {
+      "file": "eurusd_ecb.csv",
+      "sha256": "b40ff4b5a8f70855029b2df775f6315586098be41fcc4bfb3de23b1231616856"
+    },
+    {
+      "file": "cbot_march_daily.csv",
+      "sha256": "bb9c842f8c1c509155e317b86e45774fae2c7a6d87c5169c004158e31a40b743"
+    },
+    {
+      "file": "kc_march_daily.csv",
+      "sha256": "a9716d13f165d4ac477f98f8d6210b549062c462c751ed3e262504ca7fba1758"
+    }
+  ],
+  "conversionSource": "https://www.cmegroup.com/trading/agricultural/files/AC-225_MetricGuide.pdf"
+}

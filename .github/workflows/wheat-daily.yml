@@ -1,0 +1,59 @@
+name: Update wheat settlements
+
+on:
+  schedule:
+    # Exactly one slot is selected by the Europe/Zurich DST guard below.
+    - cron: '30 20 * * *'
+    - cron: '30 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: wheat-daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.repository == 'sorensenraphael-spec/dashboards' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+          fetch-depth: 1
+      - name: Select the 22:30 Europe/Zurich slot
+        id: schedule
+        env:
+          SCHEDULE_CRON: ${{ github.event.schedule }}
+        run: python wheat/scripts/update_public.py --schedule-guard >> "$GITHUB_OUTPUT"
+      - name: Check source-preservation and build logic
+        if: steps.schedule.outputs.run == 'true'
+        run: |
+          python wheat/scripts/test_public_update.py
+          python wheat/scripts/test_request_pages_build.py
+      - name: Collect official MATIF settlements and ECB FX
+        if: steps.schedule.outputs.run == 'true'
+        run: python wheat/scripts/update_public.py
+      - name: Commit only wheat data and downloads
+        if: steps.schedule.outputs.run == 'true'
+        id: commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- wheat/data.json wheat/data wheat/downloads
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update official wheat settlements and ECB FX'
+            git push origin HEAD:main
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Request and verify the existing branch-based Pages build
+        if: steps.schedule.outputs.run == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python wheat/scripts/request_pages_build.py --expected-sha '${{ steps.commit.outputs.sha }}'
