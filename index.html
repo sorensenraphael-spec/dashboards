@@ -160,6 +160,18 @@ h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   </a>
 </main>
 
+<div class="group">Wheat</div>
+<main class="grid">
+  <a href="wheat-spreads-seasonal.html" class="tile" data-published="true">
+    <div class="stripe" style="background:#c39a2a"></div>
+    <div class="head"><span class="name">Wheat spreads · seasonal</span><span class="sym">MATIF · CBOT · KC</span></div>
+    <div class="price" style="font-size:14px;color:var(--dim)">Seasonal spread history</div>
+    <div class="change">comparison charts</div>
+    <div class="asof">data vintage shown on page</div>
+    <div class="pending" hidden>page not built yet</div>
+  </a>
+</main>
+
 <div class="group">Livestock</div>
 <main class="grid">
   <a href="hog-spreads-seasonal.html" class="tile">
@@ -221,7 +233,7 @@ h1{font-size:14px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   const present = new Set(D.pages_present || []);
   document.querySelectorAll('.tile').forEach(tile => {
     const href = tile.getAttribute('href');
-    if (!href || present.has(href)) return;
+    if (!href || tile.dataset.published === "true" || present.has(href)) return;
     tile.addEventListener('click', ev => {
       ev.preventDefault();
       const hint = tile.querySelector('.pending');
