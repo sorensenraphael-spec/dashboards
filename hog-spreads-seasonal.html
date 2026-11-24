@@ -68,6 +68,9 @@ h1{font-size:16px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
 .idx-stat .s{font-size:11px;color:var(--dim);margin-top:3px;line-height:1.5;max-width:520px}
 .idx-table{margin:12px 0 0;overflow-x:auto}
 .idx-table table{min-width:640px}
+.fwd-ctl{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fwd-sum{font-size:12px;line-height:1.6;color:var(--dim);margin:2px 0 6px;font-variant-numeric:tabular-nums}
+.fwd-sum b{color:var(--fg);font-weight:500}
 @media (max-width: 900px) {
   .section-grid { grid-template-columns: 1fr; }
 }
@@ -164,6 +167,15 @@ body.fs-lock{overflow:hidden}
     <div id="chart-bcut" class="chart"></div>
     <div class="stamp" id="stamp-bcut">data through: —</div>
   </div>
+</div>
+
+<!-- 2026-11-24: path to expiry from today's date, normalized at today -->
+<div class="group-title">Path to expiry — the same contract from today's date in past years<span class="src" id="fwd-through">loading…</span></div>
+<div class="chart-block" data-protected="true" data-section-id="hog-forward-path">
+  <div class="block-head"><h2 id="title-fwd">Path to expiry</h2><span class="fwd-ctl"><select id="sel-fwd" aria-label="contract"></select><span class="unit-toggle" data-fwd-toggle><button type="button" data-u="usd" class="on">$/cwt</button><button type="button" data-u="pct">%</button></span></span></div>
+  <div class="fwd-sum" id="fwd-sum"></div>
+  <div id="chart-fwd" class="chart"></div>
+  <div class="stamp" id="stamp-fwd">data through: —</div>
 </div>
 
 <div class="group-title">Underlying contracts — outright settles ($/cwt)<span class="src" id="contracts-through">loading…</span></div>
@@ -452,6 +464,15 @@ body.fs-lock{overflow:hidden}
   The current-year overlay is this year's actual spread. Expiry handoff: near-leg last trading day is the 10th business
   day of the contract month (CME rule); the summary column shows calendar days from the last available settle.
   <br><br>
+  <strong>Path to expiry</strong> (added 2026-11-24). For the selected contract (the nearest unexpired one of each month
+  G J K M N Q V Z), every earlier contract of the same month is followed from the same calendar date in its own year (its
+  last settle on or before that date, within 5 days; otherwise that year is left out) to its last trading day, and drawn as the
+  change from that starting settle, in $/cwt or in % of it. The band is the 25–75 percentile of the last 5 contracts and the
+  median line the last 10, each year's value carried over weekends and holidays as in the other charts. The summary takes each
+  of the last 10 contracts' change at its last settle; "today's settle + median" adds that median to today's settle. Year boxes
+  are season years, so for the Feb–Aug contracts the box for year Y ticks the contract of Y+1. Pre-1997 contracts are live
+  hogs. A description of past moves from this date, not a forecast.
+  <br><br>
   <strong>Underlying contracts</strong> (written 2026-10-28; August leg added 2026-10-30). The six legs of the spreads as outright settles
   ($/cwt) on the same calendar axis and with the same year-role convention: in year Y the October and December
   charts show HEV(Y) and HEZ(Y), the February, April, June and August charts show the next year's contracts, so each line
@@ -648,6 +669,9 @@ body.fs-lock{overflow:hidden}
     const set = new Set(ALL_YEARS);
     for (const p of Object.values(data.pairs || {})) {
       Object.keys((p && p.series && p.series.years) || {}).forEach(y => set.add(y));
+    }
+    for (const f of Object.values(data.forward_paths || {})) {   // 2026-11-24
+      Object.keys((f && f.years) || {}).forEach(y => set.add(y));
     }
     ALL_YEARS = Array.from(set).sort();
     const box = document.getElementById("year-picker");
@@ -931,6 +955,110 @@ body.fs-lock{overflow:hidden}
         " yrs per day; the year set moves one year back for dates more than a year past Norgate's last index)";
   }
 
+  // 2026-11-24: path to expiry. Each prior contract of the selected month from the same calendar date as today
+  // to its last trading day, as change from that date's settle; band last 5 / median last 10 prior contracts.
+  let FWD = null, FWD_UNIT = "usd";
+  function renderForward(data) {
+    const F = data.forward_paths || {};
+    const sel = document.getElementById("sel-fwd");
+    const keys = Object.keys(F).filter(k => F[k] && F[k].status === "ok")
+        .sort((a, b) => String(F[a].last_trading_day).localeCompare(String(F[b].last_trading_day)));
+    document.getElementById("fwd-through").textContent =
+        "Norgate HE-YYYYM settles  ·  data through " + (data.data_through || "—");
+    if (!keys.length) { renderAwaiting("chart-fwd"); sel.hidden = true; return; }
+    const prev = sel.value;
+    sel.innerHTML = "";
+    for (const k of keys) {
+      const o = document.createElement("option");
+      o.value = k;
+      o.textContent = F[k].contract + "  ·  " + F[k].month + "  ·  " + F[k].days_to_expiry + " d to expiry";
+      sel.appendChild(o);
+    }
+    sel.value = keys.includes(prev) ? prev : keys[0];
+    FWD = F;
+    sel.onchange = drawForward;
+    document.querySelectorAll("[data-fwd-toggle] button").forEach(btn => {
+      btn.onclick = () => {
+        FWD_UNIT = btn.dataset.u;
+        document.querySelectorAll("[data-fwd-toggle] button").forEach(x => x.classList.toggle("on", x === btn));
+        drawForward();
+      };
+    });
+    drawForward();
+  }
+  function drawForward() {
+    if (!FWD) return;
+    const f = FWD[document.getElementById("sel-fwd").value];
+    const el = document.getElementById("chart-fwd");
+    if (window.Plotly && el.data) Plotly.purge(el);
+    el.innerHTML = "";
+    delete YEAR_TRACES["fwd"];
+    if (!f || f.status !== "ok") { renderAwaiting("chart-fwd"); return; }
+    const pct = FWD_UNIT === "pct";
+    const st = pct ? f.pct : f.usd;
+    const t0 = Date.parse(f.anchor_date + "T00:00:00Z");
+    const day = i => new Date(t0 + i * 86400000).toISOString().slice(0, 10);
+    const line = vals => {
+      const x = [], y = [];
+      (vals || []).forEach((v, i) => { if (v !== null && v !== undefined) { x.push(day(i)); y.push(v); } });
+      return { x, y };
+    };
+    const u = pct ? "%" : " $/cwt";
+    const b75 = line(st.band75), b25 = line(st.band25), med = line(st.median10);
+    const traces = [
+      { x: b75.x, y: b75.y, type: "scatter", mode: "lines", line: { color: "#4a5568", width: 0 },
+        showlegend: false, hoverinfo: "skip" },
+      { x: b25.x, y: b25.y, type: "scatter", mode: "lines", fill: "tonexty", fillcolor: "rgba(107,133,183,0.22)",
+        line: { color: "#4a5568", width: 0 }, name: "5y band (25–75)", hoverinfo: "skip" },
+      { x: med.x, y: med.y, type: "scatter", mode: "lines", name: "10y median",
+        line: { color: "#8fa3c9", width: 1.5, dash: "dot" },
+        hovertemplate: "%{x|%d %b %y}  %{y:+.2f}" + u + "<extra>10y median</extra>" },
+    ];
+    const yearIdx = {};
+    for (const y of Object.keys(f.years || {}).sort()) {
+      const yr = f.years[y];
+      const vals = pct ? yr.chg.map(v => v == null ? null : Math.round(10000 * v / yr.anchor) / 100) : yr.chg;
+      const p = line(vals);
+      yearIdx[y] = traces.length;
+      traces.push({ x: p.x, y: p.y, type: "scatter", mode: "lines", name: yr.label,
+        line: { color: yearColor(y), width: 1.3 }, visible: SELECTED.has(y),
+        hovertemplate: "%{x|%d %b %y}  %{y:+.2f}" + u + "<extra>" + yr.label + " (from " + yr.anchor + ")</extra>" });
+    }
+    traces.push({ x: [f.anchor_date], y: [0], type: "scatter", mode: "markers", name: f.contract + " today " + f.anchor_price,
+      marker: { color: "#cb181d", size: 9 }, hovertemplate: f.contract + " " + f.anchor_price + " on %{x|%d %b %y}<extra></extra>" });
+    YEAR_TRACES["fwd"] = yearIdx;
+    const short = f.days_to_expiry <= 60;
+    Plotly.newPlot(el, traces, {
+      ...CHART_LAYOUT_BASE,
+      xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [f.anchor_date, day(f.n_days - 1)],
+               dtick: short ? 7 * 86400000 : "M1", tickformat: short ? "%d %b" : "%b %y", hoverformat: "%d %b %y" },
+      yaxis: { ...CHART_LAYOUT_BASE.yaxis, title: pct ? "change from today, %" : "change from today, $/cwt" },
+      shapes: [{ type: "line", xref: "x", yref: "paper", x0: f.last_trading_day, x1: f.last_trading_day, y0: 0, y1: 1,
+                 line: { color: "#8a8a80", width: 1, dash: "dash" } }],
+      annotations: [{ x: f.last_trading_day, y: 1, xref: "x", yref: "paper", text: "last trading day", showarrow: false,
+                      xanchor: "right", yanchor: "top", font: { size: 10, color: "#8a8a80" } }],
+    }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
+    const e = f.expiry || {}, eu = e.usd || {}, ep = e.pct || {};
+    const ys = e.years || [];
+    const span = ys.length ? ys[0] + "–" + ys[ys.length - 1] : "—";
+    document.getElementById("title-fwd").textContent = "Path to expiry · " + f.contract + " (" + f.month + ")";
+    document.getElementById("fwd-sum").innerHTML = eu.n
+      ? "<b>" + f.contract + "</b> " + fmtNumUnsigned(f.anchor_price) + " on " + fmtD(f.anchor_date) + " · " +
+        f.days_to_expiry + " days to last trading day " + fmtD(f.last_trading_day) + "<br>" +
+        "Last " + eu.n + " contracts (" + span + "), change from this date to expiry: median <b>" + fmtNum(eu.median) +
+        "</b> $/cwt (" + fmtNum(ep.median, 1) + "%) · 25–75%: " + fmtNum(eu.p25) + " to " + fmtNum(eu.p75) +
+        " · higher in " + eu.n_up + " of " + eu.n + " · today's settle + median: <b>" + fmtNumUnsigned(e.implied_median) + "</b>"
+      : "fewer than one prior contract with data";
+    const by = f.band_years || [];
+    const off = parseInt(f.contract_year, 10) - parseInt(f.season_year, 10);
+    document.getElementById("stamp-fwd").textContent =
+        "band = 25–75% of " + (by.length ? by[0] + "–" + by[by.length - 1] : "last 5") + " · median = last 10 · " +
+        "each prior contract starts at its last settle on or before the same calendar date (shown at 0) · " +
+        "year boxes are season years" + (off ? " (tick " + (parseInt(f.contract_year, 10) - 2) + " for " + f.letter + (parseInt(f.contract_year, 10) - 1) + ")" : "") +
+        " · descriptive, not a forecast · settles through " + fmtD(f.anchor_date);
+    applyYears();
+  }
+
   const BASIS = {};
   function setupBasis(tag, blocks, data, against) {
     const sel = document.getElementById("sel-" + tag);
@@ -1026,6 +1154,8 @@ body.fs-lock{overflow:hidden}
     renderDrivers(data);
     try { renderCash(data); }   // 2026-11-19
     catch (err) { console.warn("cash index sections:", err); }
+    try { renderForward(data); }   // 2026-11-24
+    catch (err) { console.warn("path to expiry:", err); }
   }
 
   // window.__MD__ pattern: try a JS wrapper first; else fetch the raw JSON.
