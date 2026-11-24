@@ -9,6 +9,8 @@ import unittest
 from unittest.mock import patch
 import collection_core as core
 import update_public as update
+import matif_euronext as matif
+from datetime import timedelta
 
 
 class PublicUpdateTest(unittest.TestCase):
@@ -61,8 +63,23 @@ class PublicUpdateTest(unittest.TestCase):
         self.assertEqual(core.read_rows(files['downloads/us_wheat_template.csv']),[])
         with tempfile.TemporaryDirectory() as folder:
             update.write_files(Path(folder),files)
-            self.assertEqual(json.loads((Path(folder)/'data.json').read_text()),self.state['dataset'])
+            self.assertEqual(json.loads((Path(folder)/'data.json').read_text(encoding='utf-8')),self.state['dataset'])
             self.assertFalse(list(Path(folder).rglob('*.pending')))
+
+    def test_latest_unpublished_date_does_not_discard_previous_settlement(self):
+        today=datetime.now(timezone.utc).date()
+        earlier=(today-timedelta(days=1)).isoformat()
+        current=today.isoformat()
+        maturities=[{'value':'03-01-2027','month':'Mar','delivery_year':2027}]
+        selection={'maturities':maturities,'trade_dates':[{'date':earlier,'value':'old'},{'date':current,'value':'new'}]}
+        row={'date':earlier,'contract':'MLH27','month':'Mar','delivery_year':2027}
+        with patch.object(matif,'_request',return_value={'body':'test'}),patch.object(matif,'parse_selection_page',return_value=selection),patch.object(matif,'parse_settlement_table',side_effect=[([row],{'date':earlier,'status':'published'}),matif.DateMismatch(current,earlier)]):
+            result=matif.collect()
+        self.assertEqual(result['rows'],[row])
+        self.assertEqual(result['unpublished_dates'],[current])
+        with patch.object(matif,'_request',return_value={'body':'test'}),patch.object(matif,'parse_selection_page',return_value=selection),patch.object(matif,'parse_settlement_table',side_effect=matif.DateMismatch(earlier,current)):
+            with self.assertRaises(matif.DateMismatch):
+                matif.collect()
 
     def test_swiss_schedule_winter_summer_and_dispatch(self):
         winter=datetime(2026,11,20,21,50,tzinfo=timezone.utc)

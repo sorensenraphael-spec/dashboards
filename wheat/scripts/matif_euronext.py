@@ -38,6 +38,12 @@ class SourceError(RuntimeError):
     """The source could not be read or failed settlement identity checks."""
 
 
+class DateMismatch(SourceError):
+    def __init__(self, requested, actual):
+        self.requested, self.actual = requested, actual
+        super().__init__(f"Requested {requested}, but source explicitly identifies {actual}.")
+
+
 def _text(value: str) -> str:
     return " ".join(value.replace("\xa0", " ").split())
 
@@ -201,7 +207,7 @@ def parse_settlement_table(body: str, requested_date: str, maturities: list[dict
         raise SourceError(f"No unambiguous dated settlement heading: {heading!r}")
     actual_date = _english_date(match[1]).isoformat()
     if actual_date != requested_date:
-        raise SourceError(f"Requested {requested_date}, but source explicitly identifies {actual_date}.")
+        raise DateMismatch(requested_date, actual_date)
     if parser.tables != 1:
         raise SourceError(f"Expected exactly one settlement table, received {parser.tables}.")
     headers = [row for row in parser.rows if row and all(tag == "th" for tag, text in row)]
@@ -243,7 +249,7 @@ def parse_settlement_table(body: str, requested_date: str, maturities: list[dict
     if seen != expected:
         raise SourceError("Source omitted one or more requested contract deliveries.")
     if not rows:
-        if intraday and missing_settlements and len(missing_settlements) == len(expected):
+        if (intraday or actual_date == dt.datetime.now(dt.timezone.utc).date().isoformat()) and missing_settlements and len(missing_settlements) == len(expected):
             return [], {"date": actual_date, "status": "unpublished", "heading": heading,
                         "reason": "All explicitly labelled Settle cells are N/A; Last is ignored."}
         raise SourceError("Empty historical settlement table; refusing an empty successful collection.")
@@ -299,7 +305,20 @@ def collect(*, timeout: float = 30, attempts: int = 3) -> dict:
         payload = {"mt": "M", "md[]": [m["value"] for m in selection["maturities"]], "td": date["value"]}
         response = _request(TABLE_URL, payload, timeout=timeout, attempts=attempts)
         raw_responses.append(response)
-        values, status = parse_settlement_table(response["body"], date["date"], selection["maturities"])
+        try:
+            values, status = parse_settlement_table(response["body"], date["date"], selection["maturities"])
+        except DateMismatch as exc:
+            # Only the newest, current UTC date may return the already verified
+            # previous settlement. Never relabel its data or mask historical errors.
+            published = {r["date"] for r in rows}
+            today = dt.datetime.now(dt.timezone.utc).date().isoformat()
+            newest = max(d["date"] for d in selection["trade_dates"])
+            if exc.requested == today == newest and published and exc.actual == max(published):
+                values, status = [], {"date": exc.requested, "status": "unpublished",
+                                     "reason": "Source still identifies last verified settlement date",
+                                     "actualDate": exc.actual}
+            else:
+                raise
         rows.extend(values)
         statuses.append(status)
     if not rows:

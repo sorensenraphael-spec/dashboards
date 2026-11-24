@@ -12,7 +12,7 @@
     "source": "ECB daily reference rate",
     "units": "USD per EUR",
     "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
-    "lastObservation": "2026-11-20"
+    "lastObservation": "2026-11-23"
   },
   "us": {
     "requiredSource": "Actual same-delivery-year March Chicago SRW / KC HRW futures",
@@ -33,33 +33,39 @@
       {
         "market": "cbot",
         "file": "cbot_march_daily.csv",
-        "sha256": "dcdee73428e5334ad6e5cf4cbbdcfd346ed49757ce68dc15b3850fcd3a910984"
+        "sha256": "89cfe33005fa4e9297eccff4fbca6d71291a104f315ec053d171a67b9ccc8133"
       },
       {
         "market": "kc",
         "file": "kc_march_daily.csv",
-        "sha256": "c9e575ae9e953b858d0f594707f16565203dc01ab6004ac03a33254c09f32ac6"
+        "sha256": "a21286d1743e7d31d7552c7a387439a313071754c7c9285ac9339740982f610c"
       }
     ],
     "volumeOpenInterestNote": "Latest vendor volume/open-interest fields may lag; reported zero values are retained and do not establish inactivity.",
-    "importedAt": "2026-11-20T18:26:44+00:00"
+    "importedAt": "2026-11-20T18:26:44+00:00",
+    "dailyUpdate": "Norgate individual March settlement; 14 calendar day revision overlap",
+    "lastUpdateAt": "2026-11-24T10:25:15.602449+00:00",
+    "latestTradeDates": {
+      "cbot": "2026-11-23",
+      "kc": "2026-11-23"
+    }
   },
   "files": [
     {
       "file": "matif_march_contracts.csv",
-      "sha256": "6b1124a325a0f5f500d198683d97ab791c2f1b66ae8251ae6cd37fd50541a8c1"
+      "sha256": "db0e84ca833ee561d86c632b172a1964e6d58a56e6ff8431fc7dfa7140f47ced"
     },
     {
       "file": "eurusd_ecb.csv",
-      "sha256": "1a98d4b5259d257de6e285df48faabd34d59bc15ffb77382375ef7f96658bca0"
+      "sha256": "4759ff970e19655eea5aa8de44c68c68321c575e6b25217a54ec5eec7b934f06"
     },
     {
       "file": "cbot_march_daily.csv",
-      "sha256": "bb9c842f8c1c509155e317b86e45774fae2c7a6d87c5169c004158e31a40b743"
+      "sha256": "470ab1a68ddecbf5efdbfe034d7cc79581f68898a57feedfff20bbae155491f0"
     },
     {
       "file": "kc_march_daily.csv",
-      "sha256": "a9716d13f165d4ac477f98f8d6210b549062c462c751ed3e262504ca7fba1758"
+      "sha256": "035e055a8fd7e0ff75ac7ace0dbee6c81cb2ee2d143e0481440354663b958e40"
     }
   ],
   "conversionSource": "https://www.cmegroup.com/trading/agricultural/files/AC-225_MetricGuide.pdf"

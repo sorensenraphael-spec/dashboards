@@ -36,12 +36,12 @@ def schedule_due(event, cron, now=None):
 
 
 def load_state(root):
-    dataset=json.loads((root/'data.json').read_text())
-    sources={k:(root/'data/source'/n).read_text() for k,n in NAMES.items() if (root/'data/source'/n).exists()}
+    dataset=json.loads((root/'data.json').read_text(encoding='utf-8'))
+    sources={k:(root/'data/source'/n).read_text(encoding='utf-8') for k,n in NAMES.items() if (root/'data/source'/n).exists()}
     assert sources.get('matif') and sources.get('fx'), 'MATIF/ECB source history is required'
     state={'schemaVersion':1,'dataset':dataset,'sources':sources}
     evidence=root/'data/last_collection.json'
-    if evidence.exists():state['collection']=json.loads(evidence.read_text())
+    if evidence.exists():state['collection']=json.loads(evidence.read_text(encoding='utf-8'))
     return state
 
 
