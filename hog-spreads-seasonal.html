@@ -472,6 +472,10 @@ body.fs-lock{overflow:hidden}
   of the last 10 contracts' change at its last settle; "today's settle + median" adds that median to today's settle. Year boxes
   are season years, so for the Feb–Aug contracts the box for year Y ticks the contract of Y+1. Pre-1997 contracts are live
   hogs. A description of past moves from this date, not a forecast.
+  The Cash entries (added 2026-11-24) run the CME Lean Hog Index (the series in the index charts) and the LM_PK602 carcass
+  cutout the same way from the same calendar date in each earlier year (year box = that year). Having no expiry, each runs
+  to the last trading day of the furthest listed contract, with a dashed line at every listed contract's last trading day;
+  the table takes the last 10 years' change to each of those days and compares today's value + median with the futures settle.
   <br><br>
   <strong>Underlying contracts</strong> (written 2026-10-28; August leg added 2026-10-30). The six legs of the spreads as outright settles
   ($/cwt) on the same calendar axis and with the same year-role convention: in year Y the October and December
@@ -961,18 +965,29 @@ body.fs-lock{overflow:hidden}
   function renderForward(data) {
     const F = data.forward_paths || {};
     const sel = document.getElementById("sel-fwd");
-    const keys = Object.keys(F).filter(k => F[k] && F[k].status === "ok")
+    const ok = Object.keys(F).filter(k => F[k] && F[k].status === "ok");
+    const fut = ok.filter(k => F[k].kind !== "cash")
         .sort((a, b) => String(F[a].last_trading_day).localeCompare(String(F[b].last_trading_day)));
+    const cash = ["index", "cutout"].filter(k => ok.includes(k));   // 2026-11-24 (b)
+    const keys = fut.concat(cash);
     document.getElementById("fwd-through").textContent =
         "Norgate HE-YYYYM settles  ·  data through " + (data.data_through || "—");
     if (!keys.length) { renderAwaiting("chart-fwd"); sel.hidden = true; return; }
     const prev = sel.value;
     sel.innerHTML = "";
-    for (const k of keys) {
-      const o = document.createElement("option");
-      o.value = k;
-      o.textContent = F[k].contract + "  ·  " + F[k].month + "  ·  " + F[k].days_to_expiry + " d to expiry";
-      sel.appendChild(o);
+    for (const [glabel, group] of [["Futures", fut], ["Cash", cash]]) {
+      if (!group.length) continue;
+      const g = document.createElement("optgroup");
+      g.label = glabel;
+      for (const k of group) {
+        const o = document.createElement("option");
+        o.value = k;
+        o.textContent = F[k].kind === "cash"
+            ? F[k].contract + "  ·  to " + fmtD(F[k].last_trading_day) + " (" + F[k].days_to_expiry + " d)"
+            : F[k].contract + "  ·  " + F[k].month + "  ·  " + F[k].days_to_expiry + " d to expiry";
+        g.appendChild(o);
+      }
+      sel.appendChild(g);
     }
     sel.value = keys.includes(prev) ? prev : keys[0];
     FWD = F;
@@ -1024,7 +1039,8 @@ body.fs-lock{overflow:hidden}
         line: { color: yearColor(y), width: 1.3 }, visible: SELECTED.has(y),
         hovertemplate: "%{x|%d %b %y}  %{y:+.2f}" + u + "<extra>" + yr.label + " (from " + yr.anchor + ")</extra>" });
     }
-    traces.push({ x: [f.anchor_date], y: [0], type: "scatter", mode: "markers", name: f.contract + " today " + f.anchor_price,
+    const isCash = f.kind === "cash";
+    traces.push({ x: [f.anchor_date], y: [0], type: "scatter", mode: "markers", name: (isCash ? "today " : f.contract + " today ") + f.anchor_price,
       marker: { color: "#cb181d", size: 9 }, hovertemplate: f.contract + " " + f.anchor_price + " on %{x|%d %b %y}<extra></extra>" });
     YEAR_TRACES["fwd"] = yearIdx;
     const short = f.days_to_expiry <= 60;
@@ -1033,15 +1049,21 @@ body.fs-lock{overflow:hidden}
       xaxis: { ...CHART_LAYOUT_BASE.xaxis, range: [f.anchor_date, day(f.n_days - 1)],
                dtick: short ? 7 * 86400000 : "M1", tickformat: short ? "%d %b" : "%b %y", hoverformat: "%d %b %y" },
       yaxis: { ...CHART_LAYOUT_BASE.yaxis, title: pct ? "change from today, %" : "change from today, $/cwt" },
-      shapes: [{ type: "line", xref: "x", yref: "paper", x0: f.last_trading_day, x1: f.last_trading_day, y0: 0, y1: 1,
-                 line: { color: "#8a8a80", width: 1, dash: "dash" } }],
-      annotations: [{ x: f.last_trading_day, y: 1, xref: "x", yref: "paper", text: "last trading day", showarrow: false,
-                      xanchor: "right", yanchor: "top", font: { size: 10, color: "#8a8a80" } }],
+      shapes: (isCash ? (f.markers || []).map(m => m.last_trading_day) : [f.last_trading_day]).map(d => (
+               { type: "line", xref: "x", yref: "paper", x0: d, x1: d, y0: 0, y1: 1,
+                 line: { color: "#8a8a80", width: 1, dash: "dash" } })),
+      annotations: isCash
+        ? (f.markers || []).map(m => ({ x: m.last_trading_day, y: 1, xref: "x", yref: "paper",
+            text: m.contract.replace(/^HE/, "").replace(/20(\d\d)$/, "$1"), showarrow: false, xanchor: "right",
+            yanchor: "top", font: { size: 9, color: "#8a8a80" } }))
+        : [{ x: f.last_trading_day, y: 1, xref: "x", yref: "paper", text: "last trading day", showarrow: false,
+             xanchor: "right", yanchor: "top", font: { size: 10, color: "#8a8a80" } }],
     }, { responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d", "select2d"] });
     const e = f.expiry || {}, eu = e.usd || {}, ep = e.pct || {};
     const ys = e.years || [];
     const span = ys.length ? ys[0] + "–" + ys[ys.length - 1] : "—";
-    document.getElementById("title-fwd").textContent = "Path to expiry · " + f.contract + " (" + f.month + ")";
+    document.getElementById("title-fwd").textContent = "Path to expiry · " + f.contract + (isCash ? "" : " (" + f.month + ")");
+    if (isCash) { forwardCashSummary(f); applyYears(); return; }
     document.getElementById("fwd-sum").innerHTML = eu.n
       ? "<b>" + f.contract + "</b> " + fmtNumUnsigned(f.anchor_price) + " on " + fmtD(f.anchor_date) + " · " +
         f.days_to_expiry + " days to last trading day " + fmtD(f.last_trading_day) + "<br>" +
@@ -1057,6 +1079,43 @@ body.fs-lock{overflow:hidden}
         "year boxes are season years" + (off ? " (tick " + (parseInt(f.contract_year, 10) - 2) + " for " + f.letter + (parseInt(f.contract_year, 10) - 1) + ")" : "") +
         " · descriptive, not a forecast · settles through " + fmtD(f.anchor_date);
     applyYears();
+  }
+
+  // 2026-11-24 (b): index / cutout summary — the last 10 years' change to every listed contract's last trading day
+  function forwardCashSummary(f) {
+    const pct = FWD_UNIT === "pct";
+    const ys = (f.expiry || {}).years || [];
+    const span = ys.length ? ys[0] + "–" + ys[ys.length - 1] : "—";
+    const settle = {};
+    for (const g of Object.values(FWD || {})) if (g && g.kind !== "cash" && g.status === "ok") settle[g.contract] = g.anchor_price;
+    let rows = "";
+    for (const m of f.markers || []) {
+      const v = pct ? m.pct : m.usd;
+      const s = settle[m.contract];
+      rows += "<tr><td class=\"pair\">" + m.contract + "</td><td class=\"num\">" + fmtD(m.last_trading_day) + "</td>" +
+        "<td class=\"num\">" + m.days + "</td><td class=\"num\">" + fmtNum(v.median, pct ? 1 : 2) + (pct ? "%" : "") + "</td>" +
+        "<td class=\"num\">" + fmtNum(v.p25, pct ? 1 : 2) + " to " + fmtNum(v.p75, pct ? 1 : 2) + "</td>" +
+        "<td class=\"num\">" + (v.n_up != null ? v.n_up + " of " + v.n : "—") + "</td>" +
+        "<td class=\"num\">" + fmtNumUnsigned(m.implied_median) + "</td>" +
+        "<td class=\"num\">" + fmtNumUnsigned(s) + "</td>" +
+        "<td class=\"num\">" + (s != null && m.implied_median != null ? fmtNum(s - m.implied_median) : "—") + "</td></tr>";
+    }
+    document.getElementById("fwd-sum").innerHTML =
+      "<b>" + f.contract + "</b> " + fmtNumUnsigned(f.anchor_price) + " on " + fmtD(f.anchor_date) +
+      " · change from this date to each contract's last trading day, last " + ys.length + " years (" + span + ")" +
+      '<div class="summary idx-table" style="margin:8px 0 4px"><table><thead><tr><th>contract</th>' +
+      '<th style="text-align:right">last trading day</th><th style="text-align:right">days</th>' +
+      '<th style="text-align:right">median change</th><th style="text-align:right">25–75%</th>' +
+      '<th style="text-align:right">higher</th><th style="text-align:right">today + median</th>' +
+      '<th style="text-align:right">futures settle</th><th style="text-align:right">futures − (today + median)</th>' +
+      "</tr></thead><tbody>" + rows + "</tbody></table></div>";
+    const by = f.band_years || [];
+    document.getElementById("stamp-fwd").textContent =
+        "band = 25–75% of " + (by.length ? by[0] + "–" + by[by.length - 1] : "last 5") + " · median = last 10 · " +
+        "each prior year starts at its last value on or before the same calendar date (shown at 0); year boxes = that year · " +
+        (f.key === "index" ? "CME Lean Hog Index: Norgate $LH, extended with the USDA LM_HG201 replica"
+                           : "USDA LM_PK602 carcass cutout") +
+        " · descriptive, not a forecast · through " + fmtD(f.anchor_date);
   }
 
   const BASIS = {};
