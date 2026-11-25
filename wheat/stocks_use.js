@@ -28,12 +28,12 @@ try{
  }
  function render(){
   const w=+week.value,kind=mode.value,period=ref.value;
-  const xlabel=kind==='old'?'Old crop stocks/use (%)':kind==='new'?'New crop stocks/use (%)':'Old minus new stocks/use (pp)';
+  const xlabel=kind==='old'?'Current marketing year stocks/use (%)':kind==='new'?'Next marketing year stocks/use (%)':'Current minus next stocks/use (pp)';
   for(const {p,chart,caption} of cards){
    const rows=p.records.filter(r=>r.week===w&&(kind==='old'||r.new!==null)).map(r=>({...r,x:kind==='old'?r.old:kind==='new'?r.new:r.old-r.new}));
    let hist=rows.filter(r=>r.year<yr);if(period!=='all')hist=hist.filter(r=>r.year>=yr-Number(period));
    const cur=rows.find(r=>r.year===yr),fit=regression(hist),traces=[];
-   const trace=(r,name,color,size)=>({type:'scatter',mode:'markers',name,x:r.map(z=>z.x),y:r.map(z=>z.spread),customdata:r.map(z=>[z.year,z.report,z.old,z.new]),marker:{size,color,opacity:.85,line:{width:1,color:'#141821'}},hovertemplate:'Crop %{customdata[0]}<br>WASDE %{customdata[1]}<br>Old S/U %{customdata[2]:.2f}%<br>New S/U %{customdata[3]}<br>Spread %{y:.1f} c/bu<extra></extra>'});
+   const trace=(r,name,color,size)=>({type:'scatter',mode:'markers',name,x:r.map(z=>z.x),y:r.map(z=>z.spread),customdata:r.map(z=>[z.year,z.report,z.old,z.new]),marker:{size,color,opacity:.85,line:{width:1,color:'#141821'}},hovertemplate:'Crop %{customdata[0]}<br>WASDE %{customdata[1]}<br>Current MY S/U %{customdata[2]:.2f}%<br>Next MY S/U %{customdata[3]}<br>Spread %{y:.1f} c/bu<extra></extra>'});
    if(hist.length)traces.push(trace(hist,'Prior years','#8fcbd3',9));
    if(fit){const xs=[Math.min(...hist.map(r=>r.x)),Math.max(...hist.map(r=>r.x))];traces.push({type:'scatter',mode:'lines',name:'OLS fit (prior years)',x:xs,y:xs.map(x=>fit.a+fit.b*x),line:{color:'#aab4c5',dash:'dot'},hoverinfo:'skip'});}
    if(cur)traces.push(trace([cur],String(yr)+' current','#ff806b',14));
