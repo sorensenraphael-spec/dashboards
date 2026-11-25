@@ -97,10 +97,11 @@
 
     <section class="chart-card matif-card" aria-labelledby="title-september">
       <div class="card-heading"><div><p class="eyebrow">September / September</p><h2 id="title-september">MATIF minus Chicago SRW — September</h2></div><span id="sep-status" class="availability-badge available">Loading...</span></div>
+      <div class="select-controls"><label class="control-field"><span>September display</span><select id="sep-mode"><option value="level">Spread level</option><option value="change">Change from first available week</option></select></label><label class="control-field"><span>September time window</span><select id="sep-window"><option value="available">Available observations</option><option value="full">Full September-August season</option></select></label></div>
       <div id="sep-years" class="year-actions" aria-label="September delivery years"></div>
       <div id="chart-september" class="chart matif-chart" aria-label="September MATIF minus Chicago wheat seasonal spread"></div>
       <p id="caption-september" class="chart-caption"></p>
-      <p class="control-note">Same delivery year, same settlement date; September through August. Positive = MATIF premium. Currency and display controls above also apply here. No futures price carry-forward; ECB FX maximum age three calendar days.</p>
+      <p class="control-note">Same delivery year, same settlement date; September through August. Positive = MATIF premium. The currency and historical-reference controls above also apply here. September has its own display and time-window controls. No futures price carry-forward; ECB FX maximum age three calendar days.</p>
     </section>
 
     <section id="grain-seasonals" aria-labelledby="grain-title" style="margin:24px 0">
@@ -171,7 +172,7 @@
   <noscript><p class="noscript">Enable JavaScript to display the seasonal charts and import contract histories.</p></noscript>
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
-  <script src="wheat/september_spread.js"></script>
+  <script src="wheat/september_spread.js?v=2"></script>
   <script src="wheat/grain_seasonals.js"></script>
   <script src="wheat/stocks_use.js"></script>
   <script src="wheat/export_sales.js"></script>
