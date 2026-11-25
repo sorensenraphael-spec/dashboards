@@ -95,6 +95,14 @@
       <p id="caption-matif" class="chart-caption">Each line follows one March delivery contract through its April–February season.</p>
     </section>
 
+    <section class="chart-card matif-card" aria-labelledby="title-september">
+      <div class="card-heading"><div><p class="eyebrow">September / September</p><h2 id="title-september">MATIF minus Chicago SRW — September</h2></div><span id="sep-status" class="availability-badge available">Loading...</span></div>
+      <div id="sep-years" class="year-actions" aria-label="September delivery years"></div>
+      <div id="chart-september" class="chart matif-chart" aria-label="September MATIF minus Chicago wheat seasonal spread"></div>
+      <p id="caption-september" class="chart-caption"></p>
+      <p class="control-note">Same delivery year, same settlement date; September through August. Positive = MATIF premium. Currency and display controls above also apply here. No futures price carry-forward; ECB FX maximum age three calendar days.</p>
+    </section>
+
     <section id="grain-seasonals" aria-labelledby="grain-title" style="margin:24px 0">
       <div class="section-heading spread-section-heading"><h2 id="grain-title">Grains seasonal charts</h2><span class="muted small">Fixed crop-year contracts</span></div>
       <div class="control-panel">
@@ -163,6 +171,7 @@
   <noscript><p class="noscript">Enable JavaScript to display the seasonal charts and import contract histories.</p></noscript>
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
+  <script src="wheat/september_spread.js"></script>
   <script src="wheat/grain_seasonals.js"></script>
   <script src="wheat/stocks_use.js"></script>
   <script src="wheat/export_sales.js"></script>
