@@ -106,6 +106,20 @@
       <div id="grain-panels"></div>
     </section>
 
+    <section id="su-section" aria-labelledby="su-title" style="margin:24px 0">
+      <div class="section-heading spread-section-heading"><h2 id="su-title">Old/new crop spreads vs stocks-to-use</h2><span class="muted small">Point-in-time USDA WASDE</span></div>
+      <div class="control-panel">
+        <div class="section-heading"><h2>Balance sheet comparison</h2><span class="muted small" id="su-status">Loading...</span></div>
+        <div class="select-controls">
+          <label class="control-field"><span>Seasonal week starting</span><select id="su-week"></select></label>
+          <label class="control-field"><span>Stocks/use measure</span><select id="su-mode"><option value="old">Old crop</option><option value="new">New crop</option><option value="gap">Old minus new (percentage points)</option></select></label>
+          <label class="control-field"><span>Historical sample</span><select id="su-reference"><option value="all">All available (2010 onward)</option><option value="10">Last 10 crop years</option><option value="5">Last 5 crop years</option></select></label>
+        </div>
+        <p class="control-note">USDA ending stocks / total use (including exports). Latest WASDE published strictly before each selected seasonal week; missing or stale (over 62 days) vintages omitted. Each dot is one crop year at the same seasonal week, using the mean matched spread in US cents/bushel. The current week can be partial. Wheat uses the US all-wheat balance for both Chicago and KC; corn September is a transition spread. New crop data generally starts with the May WASDE. OLS is descriptive, uses prior years only, and is not a trading signal. <a href="https://usda.azureedge.us/historical-wasde-report-data-3">USDA historical WASDE releases</a>.</p>
+      </div>
+      <div class="spread-grid" id="su-panels"></div>
+    </section>
+
     <section class="dataset-panel" aria-labelledby="data-title">
       <div class="section-heading"><h2 id="data-title">Data &amp; coverage</h2><span class="muted small">Available observations, not filled estimates</span></div>
       <div id="data-status" class="dataset-status" aria-live="polite">Checking source coverage…</div>
@@ -136,5 +150,6 @@
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
   <script src="wheat/grain_seasonals.js"></script>
+  <script src="wheat/stocks_use.js"></script>
 </body>
 </html>
