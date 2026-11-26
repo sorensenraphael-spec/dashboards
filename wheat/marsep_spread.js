@@ -143,6 +143,7 @@
     for(const s of series){
       const label=document.createElement('label'), input=document.createElement('input');
       input.type='checkbox';input.checked=selected.has(s.year);
+      label.style.whiteSpace='nowrap';label.style.flex='0 0 auto';
       input.addEventListener('change',()=>{input.checked?selected.add(s.year):selected.delete(s.year);render();});
       label.append(input,document.createTextNode(' '+pairLabel(s.year)+' '));$('marsep-years').append(label);
     }

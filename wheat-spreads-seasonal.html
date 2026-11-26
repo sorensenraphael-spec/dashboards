@@ -121,7 +121,7 @@
         <label class="control-field" for="marsep-frequency"><span>Observations</span><select id="marsep-frequency"><option value="daily">Daily settlements</option><option value="weekly">Weekly means</option></select></label>
         <label class="control-field" for="marsep-window"><span>Time window</span><select id="marsep-window"><option value="available">Available observations</option><option value="full">Full April–February season</option></select></label>
       </div>
-      <div id="marsep-years" class="year-actions" role="group" aria-label="March and September contract pairs"></div>
+      <div id="marsep-years" class="year-actions" style="display:flex;flex-wrap:wrap;gap:8px 14px" role="group" aria-label="March and September contract pairs"></div>
       <div id="chart-marsep" class="chart matif-chart" aria-label="MATIF March minus September wheat seasonal spread"><div class="chart-loading">Loading matched MATIF settlements...</div></div>
       <p id="caption-marsep" class="chart-caption"></p>
       <p class="control-note">March minus September of the same delivery year, in EUR/tonne. Positive = March premium over new crop. Each line covers April of the preceding year through February, stopping before March delivery. Same-date settlements only; no futures price carry-forward. The historical-reference selector above controls bands and percentiles, which use completed prior seasons and weekly means. This chart has its own display controls and stays in euros. Workbook history covers 2002–2007 and 2015 onward; missing September contracts in 2008–2014 are left blank. Partial early seasons remain visible but are excluded from historical bands. Updates use the existing daily MATIF collection.</p>
@@ -205,7 +205,7 @@
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
   <script src="wheat/decmar_spread.js?v=2"></script>
-  <script src="wheat/marsep_spread.js?v=1"></script>
+  <script src="wheat/marsep_spread.js?v=2"></script>
   <script src="wheat/september_spread.js?v=2"></script>
   <script src="wheat/grain_seasonals.js"></script>
   <script src="wheat/stocks_use.js"></script>
