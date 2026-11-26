@@ -108,7 +108,7 @@
       <div id="decmar-years" class="year-actions" role="group" aria-label="December and following March contract pairs"></div>
       <div id="chart-decmar" class="chart matif-chart" aria-label="MATIF December minus following March wheat seasonal spread"><div class="chart-loading">Loading matched MATIF settlements...</div></div>
       <p id="caption-decmar" class="chart-caption"></p>
-      <p class="control-note">December of year Y minus March of Y+1, in EUR/tonne. Positive = December premium. Each line covers December of Y−1 through November of Y, stopping before the nearby delivery month. Only same-date settlements are paired; no futures prices are carried forward. This chart has its own display controls and stays in euros. The historical-reference selector above applies to bands and percentiles, which use completed prior seasons and weekly means. The latest daily level is compared with those historical weekly means. Updates use the existing daily MATIF collection.</p>
+      <p class="control-note">December of year Y minus March of Y+1, in EUR/tonne. Positive = December premium. Each line covers December of Y−1 through November of Y, stopping before the nearby delivery month. Only same-date settlements are paired; no futures prices are carried forward. This chart has its own display controls and stays in euros. The historical-reference selector above applies to bands and percentiles, which use completed prior seasons and weekly means. The latest daily level is compared with those historical weekly means. History starts with December 2015 / March 2016 from the supplied Edge workbook. Earlier November contracts are excluded. Updates use the existing daily MATIF collection.</p>
     </section>
 
     <section class="chart-card matif-card" aria-labelledby="title-september">
@@ -188,7 +188,7 @@
   <noscript><p class="noscript">Enable JavaScript to display the seasonal charts and import contract histories.</p></noscript>
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
-  <script src="wheat/decmar_spread.js?v=1"></script>
+  <script src="wheat/decmar_spread.js?v=2"></script>
   <script src="wheat/september_spread.js?v=2"></script>
   <script src="wheat/grain_seasonals.js"></script>
   <script src="wheat/stocks_use.js"></script>

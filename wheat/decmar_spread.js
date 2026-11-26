@@ -18,8 +18,13 @@
   const mean = a => a.reduce((s,v) => s+v,0)/a.length;
   const pairLabel = year => 'Dec ' + year + ' / Mar ' + (year+1);
   try {
-    const response = await fetch('wheat/data/source/matif_all_contracts.csv', {cache:'no-store'});
-    if (!response.ok) throw Error('December/March settlement data unavailable.');
+    const [response, archiveResponse] = await Promise.all([
+      fetch('wheat/data/source/matif_all_contracts.csv', {cache:'no-store'}),
+      fetch('wheat/decmar_history.json', {cache:'no-store'})
+    ]);
+    if (!response.ok || !archiveResponse.ok) throw Error('December/March settlement data unavailable.');
+    const archive = await archiveResponse.json();
+    if (archive.schemaVersion !== 1 || !Array.isArray(archive.series)) throw Error('Unexpected December/March archive format.');
     // This source is a generated numeric CSV with unquoted ISO dates and contract identifiers.
     const lines = (await response.text()).trim().split(/\r?\n/);
     const header = lines.shift().replace(/^\uFEFF/, '').split(',');
@@ -43,12 +48,23 @@
     }
     const march = new Map(rows.filter(r => r.month === 'Mar').map(r => [r.delivery_year + ':' + r.date, r]));
     const groups = new Map();
+    function addPoint(year, date, dec, mar) {
+      if (!Number.isInteger(year) || !/^\d{4}-\d{2}-\d{2}$/.test(date) || ![dec,mar].every(p=>Number.isFinite(p)&&p>0)) throw Error('Invalid archived MATIF pair.');
+      if (date < (year-1)+'-12-01' || date >= year+'-12-01') throw Error('Archived observation outside its delivery season.');
+      if (!groups.has(year)) groups.set(year, []);
+      const points = groups.get(year), index = points.findIndex(p=>p.date===date);
+      const point = {date, x:seasonalDay(date), y:dec-mar, dec, mar};
+      if (index < 0) points.push(point); else points[index] = point;
+    }
+    for (const season of archive.series) {
+      for (const [date,dec,mar] of season.points) addPoint(season.year,date,dec,mar);
+    }
     for (const dec of rows.filter(r => r.month === 'Dec')) {
       const year = Number(dec.delivery_year), mar = march.get((year+1) + ':' + dec.date);
       // One fixed pair per season; stop before the December delivery month.
       if (!mar || dec.date < (year-1)+'-12-01' || dec.date >= year+'-12-01') continue;
-      if (!groups.has(year)) groups.set(year, []);
-      groups.get(year).push({date:dec.date, x:seasonalDay(dec.date), y:Number(dec.matif_eur_t)-Number(mar.matif_eur_t), dec:Number(dec.matif_eur_t), mar:Number(mar.matif_eur_t)});
+      // Published Euronext revisions take precedence over workbook overlaps.
+      addPoint(year, dec.date, Number(dec.matif_eur_t), Number(mar.matif_eur_t));
     }
     const current = Number(asOf.slice(0,4)) + (asOf.slice(5,7) === '12' ? 1 : 0);
     const series = [...groups].sort((a,b) => a[0]-b[0]).map(([year, points]) => {
