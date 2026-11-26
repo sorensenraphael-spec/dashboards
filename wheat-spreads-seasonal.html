@@ -111,6 +111,22 @@
       <p class="control-note">December of year Y minus March of Y+1, in EUR/tonne. Positive = December premium. Each line covers December of Y−1 through November of Y, stopping before the nearby delivery month. Only same-date settlements are paired; no futures prices are carried forward. This chart has its own display controls and stays in euros. The historical-reference selector above applies to bands and percentiles, which use completed prior seasons and weekly means. The latest daily level is compared with those historical weekly means. History starts with December 2015 / March 2016 from the supplied Edge workbook. Earlier November contracts are excluded. Updates use the existing daily MATIF collection.</p>
     </section>
 
+    <section id="matif-marsep" class="chart-card matif-card" aria-labelledby="title-marsep">
+      <div class="card-heading">
+        <div><p class="eyebrow">MATIF old crop / new crop · March / September</p><h2 id="title-marsep">MATIF wheat — March minus September</h2></div>
+        <span id="marsep-status" class="availability-badge available" role="status">Loading...</span>
+      </div>
+      <div class="select-controls">
+        <label class="control-field" for="marsep-mode"><span>March/September display</span><select id="marsep-mode"><option value="level">Spread level</option><option value="change">Change from first available observation</option></select></label>
+        <label class="control-field" for="marsep-frequency"><span>Observations</span><select id="marsep-frequency"><option value="daily">Daily settlements</option><option value="weekly">Weekly means</option></select></label>
+        <label class="control-field" for="marsep-window"><span>Time window</span><select id="marsep-window"><option value="available">Available observations</option><option value="full">Full April–February season</option></select></label>
+      </div>
+      <div id="marsep-years" class="year-actions" role="group" aria-label="March and September contract pairs"></div>
+      <div id="chart-marsep" class="chart matif-chart" aria-label="MATIF March minus September wheat seasonal spread"><div class="chart-loading">Loading matched MATIF settlements...</div></div>
+      <p id="caption-marsep" class="chart-caption"></p>
+      <p class="control-note">March minus September of the same delivery year, in EUR/tonne. Positive = March premium over new crop. Each line covers April of the preceding year through February, stopping before March delivery. Same-date settlements only; no futures price carry-forward. The historical-reference selector above controls bands and percentiles, which use completed prior seasons and weekly means. This chart has its own display controls and stays in euros. Workbook history covers 2002–2007 and 2015 onward; missing September contracts in 2008–2014 are left blank. Partial early seasons remain visible but are excluded from historical bands. Updates use the existing daily MATIF collection.</p>
+    </section>
+
     <section class="chart-card matif-card" aria-labelledby="title-september">
       <div class="card-heading"><div><p class="eyebrow">September / September</p><h2 id="title-september">MATIF minus Chicago SRW — September</h2></div><span id="sep-status" class="availability-badge available">Loading...</span></div>
       <div class="select-controls"><label class="control-field"><span>September display</span><select id="sep-mode"><option value="level">Spread level</option><option value="change">Change from first available week</option></select></label><label class="control-field"><span>September time window</span><select id="sep-window"><option value="available">Available observations</option><option value="full">Full September-August season</option></select></label></div>
@@ -189,6 +205,7 @@
   <script src="wheat/vendor/plotly-2.35.2.min.js"></script>
   <script src="wheat/app.js"></script>
   <script src="wheat/decmar_spread.js?v=2"></script>
+  <script src="wheat/marsep_spread.js?v=1"></script>
   <script src="wheat/september_spread.js?v=2"></script>
   <script src="wheat/grain_seasonals.js"></script>
   <script src="wheat/stocks_use.js"></script>
