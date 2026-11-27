@@ -12,7 +12,7 @@
     "source": "ECB daily reference rate",
     "units": "USD per EUR",
     "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
-    "lastObservation": "2026-11-25"
+    "lastObservation": "2026-11-26"
   },
   "us": {
     "requiredSource": "Actual same-delivery-year March Chicago SRW / KC HRW futures",
@@ -53,19 +53,19 @@
   "files": [
     {
       "file": "matif_march_contracts.csv",
-      "sha256": "43c35a1f4bc78105d0296537e0dea4435ba53fc747bdc686681f2c87fe63fd83"
+      "sha256": "26b98d16f3ba90b760dce7d3864f5960ace1b0e1be6bdd9f5069f02474c3fe23"
     },
     {
       "file": "eurusd_ecb.csv",
-      "sha256": "8c26be19e8a58effc41ebaa82ad85f7e39eb75cd034223db9ae247e1a0d3f947"
+      "sha256": "82a845d405ffcc8d78324e21c1a03bd94c05a5a7b59d0253ecd0088fa352a96f"
     },
     {
       "file": "cbot_march_daily.csv",
-      "sha256": "93b9fd9f73c489faec67e9fd3887792d9a72d7ab774ef5ebc915c178766c1f40"
+      "sha256": "e32670e19b71a8c2722c5f6c4ed592c9274ed4999b6c9a2bc49fe49b1471cb16"
     },
     {
       "file": "kc_march_daily.csv",
-      "sha256": "4201dad0057246754b6dc3fe58c4f216adac31c28c8fe45efacf3aa8aadaa74e"
+      "sha256": "571df98c0ff17c2aa14feb08d7ddad0748756c64bf391c96cfa8d5c23338ce9a"
     }
   ],
   "conversionSource": "https://www.cmegroup.com/trading/agricultural/files/AC-225_MetricGuide.pdf"
