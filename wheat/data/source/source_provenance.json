@@ -33,39 +33,39 @@
       {
         "market": "cbot",
         "file": "cbot_march_daily.csv",
-        "sha256": "e32670e19b71a8c2722c5f6c4ed592c9274ed4999b6c9a2bc49fe49b1471cb16"
+        "sha256": "ac37ed6283a9d13ab68d4409df96c0645afcea0638280367cba1c75332ebaae2"
       },
       {
         "market": "kc",
         "file": "kc_march_daily.csv",
-        "sha256": "571df98c0ff17c2aa14feb08d7ddad0748756c64bf391c96cfa8d5c23338ce9a"
+        "sha256": "d0e3be36ea275f0d29630b178034cb0beb16d62d71b3574644a75e521c82efd7"
       }
     ],
     "volumeOpenInterestNote": "Latest vendor volume/open-interest fields may lag; reported zero values are retained and do not establish inactivity.",
     "importedAt": "2026-11-20T18:26:44+00:00",
     "dailyUpdate": "Norgate individual March settlement; 14 calendar day revision overlap",
-    "lastUpdateAt": "2026-11-26T07:03:47.110803+00:00",
+    "lastUpdateAt": "2026-11-28T07:04:04.292349+00:00",
     "latestTradeDates": {
-      "cbot": "2026-11-25",
-      "kc": "2026-11-25"
+      "cbot": "2026-11-27",
+      "kc": "2026-11-27"
     }
   },
   "files": [
     {
       "file": "matif_march_contracts.csv",
-      "sha256": "d52fda8541d42b23d324dfab3b677faba9e0e2b1c2eff8b77eb8d04db9728008"
+      "sha256": "524757eeadd3715cca15d9baaf0303c31510d0802e8e0af32589ef7ffe67647d"
     },
     {
       "file": "eurusd_ecb.csv",
-      "sha256": "053fcf7241a8e730b3fef1eb8ddc3a3b842b42697b2f826423f687019b258611"
+      "sha256": "b31346726782900702b1c20bc6ff2bc72dba358aea00f9475a4fc6b7eab8fb68"
     },
     {
       "file": "cbot_march_daily.csv",
-      "sha256": "e32670e19b71a8c2722c5f6c4ed592c9274ed4999b6c9a2bc49fe49b1471cb16"
+      "sha256": "431cfab764be1130963a77301ac7cd795f319b531ac5bf48ea33c77d7148b183"
     },
     {
       "file": "kc_march_daily.csv",
-      "sha256": "571df98c0ff17c2aa14feb08d7ddad0748756c64bf391c96cfa8d5c23338ce9a"
+      "sha256": "f908767c135ee0cba32c9f934171fb4169586eee9b27c828e5dfa855942dd68d"
     }
   ],
   "conversionSource": "https://www.cmegroup.com/trading/agricultural/files/AC-225_MetricGuide.pdf"
