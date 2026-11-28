@@ -12,7 +12,7 @@
     "source": "ECB daily reference rate",
     "units": "USD per EUR",
     "url": "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip",
-    "lastObservation": "2026-11-26"
+    "lastObservation": "2026-11-27"
   },
   "us": {
     "requiredSource": "Actual same-delivery-year March Chicago SRW / KC HRW futures",
@@ -53,11 +53,11 @@
   "files": [
     {
       "file": "matif_march_contracts.csv",
-      "sha256": "26b98d16f3ba90b760dce7d3864f5960ace1b0e1be6bdd9f5069f02474c3fe23"
+      "sha256": "d52fda8541d42b23d324dfab3b677faba9e0e2b1c2eff8b77eb8d04db9728008"
     },
     {
       "file": "eurusd_ecb.csv",
-      "sha256": "82a845d405ffcc8d78324e21c1a03bd94c05a5a7b59d0253ecd0088fa352a96f"
+      "sha256": "053fcf7241a8e730b3fef1eb8ddc3a3b842b42697b2f826423f687019b258611"
     },
     {
       "file": "cbot_march_daily.csv",
